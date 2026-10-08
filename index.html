@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>12 Assi — Test politico</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
+<script src="assets/photos.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#0b3a28;--panel:#08301f;--line:#1f5a42;--ink:#f1efe6;--mute:#9cc2af;--accent:#e8dca8}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:22px 18px 40px}
+.logo{font-size:30px;font-weight:700;letter-spacing:-1px;cursor:pointer}.logo span{font-weight:400}
+h1{font-size:40px;line-height:1.05;margin:36px 0 14px;letter-spacing:-1.2px}
+p{color:var(--mute);line-height:1.5;margin:0 0 14px}
+.btn{font:inherit;font-weight:600;background:var(--accent);color:#0b3a28;border:0;border-radius:999px;padding:14px 26px;cursor:pointer;font-size:17px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:18px 0 8px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:14px}
+.q{font-size:25px;line-height:1.25;font-weight:600;margin:34px 0 26px;min-height:96px;letter-spacing:-.4px}
+.opts{display:grid;gap:10px}
+.opt{font:inherit;text-align:left;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16px;cursor:pointer;transition:background .15s,border-color .15s}
+.opt:hover{border-color:var(--accent);background:#0d3d29}
+.axtag{display:inline-flex;align-items:center;gap:8px;color:var(--mute);font-size:14px}
+.dot{width:10px;height:10px;border-radius:50%}
+.card{background:linear-gradient(160deg,#0f4a33,#0a3322 60%);border-radius:22px;padding:22px 18px;border:1px solid var(--line)}
+.kick{letter-spacing:.2em;color:var(--mute);font-size:13px;text-transform:uppercase}
+.card h2{font-size:34px;line-height:1.05;margin:6px 0 18px;letter-spacing:-1px}
+.top{display:flex;gap:14px;align-items:center;background:var(--panel);border-radius:16px;padding:16px;margin-bottom:14px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.hero{background:var(--panel);border-radius:16px;padding:14px 10px;text-align:center}.hero .kick{margin-bottom:10px;font-size:11px}.ph{width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block}.hero .big{font-size:40px;margin-bottom:4px}.hero b{font-size:17px;line-height:1.15;display:block}.big{font-size:54px;font-weight:700;letter-spacing:-2px;line-height:1}
+.ava{border-radius:50%;display:grid;font-size:28px;place-items:center;font-weight:700;font-size:19px;background:#1c6a4b;flex:none}
+.box{background:var(--panel);border-radius:16px;padding:16px;margin-bottom:14px}
+.box h3{margin:0 0 12px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:500}
+.ax{display:grid;grid-template-columns:34px 1fr 52px;gap:10px;align-items:center;margin-bottom:11px}
+.ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:17px}
+.ax b{font-weight:500;font-size:16px;display:block}.ax small{color:var(--mute);font-size:12px}
+.trk{height:6px;background:#1d4d3a;border-radius:6px;margin-top:5px;overflow:hidden}.trk i{display:block;height:100%;border-radius:6px}
+.pc{font-weight:700;font-size:19px;text-align:right}
+.row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:17px;gap:10px}
+.row span:last-child{font-weight:700}
+.act{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tab{font:inherit;font-size:14px;background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}.tab.on{background:var(--accent);color:#0b3a28;border-color:var(--accent)}
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.gallery-card{background:var(--panel);border-radius:14px;padding:12px;text-align:center;border:1px solid var(--line);transition:border-color .2s}
+.gallery-card:hover{border-color:var(--accent)}
+.gallery-card .ph{width:64px;height:64px;margin:0 auto 8px}
+.gallery-card b{font-size:13px;display:block;margin-bottom:4px}
+.gallery-card small{color:var(--mute);font-size:11px}
+.gallery-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.gallery-filter{font:inherit;font-size:13px;background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.gallery-filter.active{background:var(--accent);color:#0b3a28;border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const AX=[
+["Unitario","Federale","#e8692b","🏛"],["Democrazia","Autorità","#1fa38a","🗳"],["Libertà","Sicurezza","#d09a10","🕊"],
+["Multiculturalismo","Nazionalismo","#7c4fe0","🌍"],["Pacifismo","Militarismo","#2f8fe8","☮"],["Non-interventismo","Interventismo","#4caf6e","🛡"],
+["Pubblico","Privato","#e0402f","🏫"],["Pianificazione","Mercato","#9650d8","📋"],["Protezionismo","Libero scambio","#b8692e","⚑"],
+["Irreligioso","Religioso","#f07a1e","⚙"],["Progressista","Tradizionale","#e83e8c","♥"],["Tecnologia","Natura","#5b7fd6","⌬"]];
+
+const Q=[
+[0,1,"Il governo centrale dovrebbe avere più potere delle regioni."],[0,-1,"Le regioni dovrebbero poter approvare leggi proprie, anche diverse da quelle nazionali."],[0,1,"Scuola e sanità dovrebbero funzionare allo stesso modo in tutto il Paese."],
+[1,1,"Le decisioni importanti dovrebbero passare spesso da referendum e partecipazione diretta."],[1,-1,"Un leader forte e deciso è meglio di lunghi dibattiti parlamentari."],[1,1,"Il voto è un diritto di tutti, senza eccezioni."],
+[2,1,"Nessuno dovrebbe essere punito per ciò che dice, anche se offensivo."],[2,-1,"È accettabile sorvegliare le comunicazioni dei cittadini per prevenire i reati."],[2,1,"Le droghe leggere dovrebbero essere legali."],
+[3,1,"Un Paese si arricchisce con la convivenza di culture diverse."],[3,-1,"Chi immigra deve lasciare da parte le proprie tradizioni per integrarsi."],[3,-1,"L'immigrazione dovrebbe essere molto più limitata di oggi."],
+[4,1,"La guerra non è mai giustificata, nemmeno per difesa."],[4,-1,"Un Paese forte ha bisogno di forze armate potenti e ben finanziate."],[4,1,"Le spese militari dovrebbero essere ridotte drasticamente."],
+[5,1,"Il nostro Paese non dovrebbe intervenire nei conflitti esteri."],[5,-1,"Le democrazie hanno il dovere di intervenire contro i regimi oppressivi."],[5,1,"Le basi militari straniere sul nostro territorio minano la sovranità."],
+[6,1,"Sanità, istruzione e trasporti dovrebbero essere gestiti dallo Stato."],[6,-1,"Le imprese private fanno quasi tutto meglio dello Stato."],[6,1,"Energia e banche dovrebbero essere in mano pubblica."],
+[7,1,"Lo Stato dovrebbe pianificare l'economia per ridurre le disuguaglianze."],[7,-1,"Prezzi e salari vanno decisi dal libero mercato."],[7,1,"Servono tasse molto più alte sui grandi patrimoni."],
+[8,1,"I produttori nazionali vanno protetti con i dazi."],[8,-1,"Il libero scambio senza barriere avvantaggia tutti."],[8,1,"Meglio produrre in casa anche se costa di più."],
+[9,1,"La religione non dovrebbe avere alcun ruolo nella vita pubblica."],[9,-1,"I valori religiosi dovrebbero ispirare le leggi."],[9,1,"La religione è soprattutto un retaggio del passato."],
+[10,1,"Il matrimonio tra persone dello stesso sesso dovrebbe essere pienamente riconosciuto."],[10,-1,"La famiglia tradizionale è la base della società e va tutelata."],[10,1,"L'aborto dovrebbe essere un diritto garantito."],
+[11,1,"La tecnologia risolverà i grandi problemi dell'umanità."],[11,-1,"Dovremmo rallentare lo sviluppo tecnologico per proteggere natura e comunità."],[11,1,"Automazione e intelligenza artificiale vanno incoraggiate."]];
+
+const OPT=[["Totalmente d'accordo",2],["D'accordo",1],["Neutrale / non so",0],["In disaccordo",-1],["Totalmente in disaccordo",-2]];
+
+const IDE=[
+["Socialismo democratico","Sinistra",[70,90,70,85,85,75,85,85,55,85,80,55]],
+["Socialdemocrazia","Centro-sinistra",[40,85,70,75,60,45,65,45,35,60,75,60]],
+["Comunismo rivoluzionario","Estrema sinistra",[85,40,30,70,40,50,95,95,60,95,70,70]],
+["Anarchismo","Sinistra libertaria",[10,95,95,80,85,85,15,20,30,90,90,40]],
+["Liberalismo sociale","Centro",[35,80,80,70,55,40,40,30,20,60,75,65]],
+["Liberalismo classico","Centro-destra",[35,70,75,55,45,45,20,15,10,50,55,70]],
+["Libertarismo","Destra libertaria",[15,60,95,60,50,70,3,3,3,60,60,70]],
+["Conservatorismo","Destra",[60,60,45,30,30,30,25,25,40,20,20,55]],
+["Nazionalismo autoritario","Estrema destra",[85,15,20,15,20,35,45,50,75,25,10,55]],
+["Centrismo pragmatico","Centro",[50,65,60,55,50,45,50,40,40,50,50,55]]
+];
+
+const PPL=[
+["Karl Liebknecht","Rivoluzionario","P",0,[70,85,70,85,90,80,90,90,50,85,80,60]],
+["Rosa Luxemburg","Rivoluzionaria","P",0,[70,95,80,85,95,85,95,90,45,85,80,60]],
+["Salvador Allende","Presidente socialista","P",0,[60,90,75,70,70,70,85,75,60,40,75,55]],
+["Gustavo Petro","Presidente della Colombia","P",1,[60,85,70,80,65,55,80,65,55,50,85,30]],
+["Bernie Sanders","Senatore socialdemocratico","P",1,[40,90,70,80,65,50,85,75,55,60,85,50]],
+["Alexandria Ocasio-Cortez","Deputata progressista","P",1,[40,90,70,85,75,55,85,70,50,55,95,55]],
+["Jeremy Corbyn","Laburista","P",1,[45,90,70,80,90,80,85,70,50,70,80,50]],
+["Olof Palme","Premier svedese","P",0,[40,90,75,80,80,75,70,55,40,70,80,60]],
+["Enrico Berlinguer","Segretario del PCI","P",0,[55,85,70,70,80,60,80,70,50,70,70,55]],
+["Lula da Silva","Presidente del Brasile","P",1,[40,85,75,80,70,55,75,60,60,40,75,40]],
+["Thomas Sankara","Rivoluzionario africano","P",0,[75,70,50,70,60,80,85,80,85,60,80,40]],
+["Nelson Mandela","Presidente sudafricano","P",0,[60,90,80,90,80,60,60,50,50,25,65,45]],
+["Martin Luther King","Leader dei diritti civili","P",0,[40,85,85,85,85,60,60,45,40,10,70,50]],
+["Mahatma Gandhi","Leader non violento","P",0,[30,80,75,70,98,85,60,50,85,10,40,10]],
+["Jacinda Ardern","Premier neozelandese","P",1,[40,85,70,85,75,50,60,40,25,60,90,55]],
+["Barack Obama","Presidente USA","P",1,[35,80,70,70,50,30,50,35,20,45,75,65]],
+["Franklin D. Roosevelt","Presidente del New Deal","P",0,[30,75,55,50,40,35,60,50,55,30,60,65]],
+["Abraham Lincoln","Presidente USA","P",0,[50,80,70,65,45,45,40,35,65,35,70,65]],
+["Thomas Jefferson","Padre fondatore USA","P",0,[15,80,90,55,55,70,20,15,40,55,65,55]],
+["Giuseppe Mazzini","Patriota repubblicano","P",0,[60,85,80,60,55,50,40,35,40,35,75,55]],
+["Giuseppe Garibaldi","Eroe del Risorgimento","P",0,[55,85,80,60,40,40,45,40,40,70,75,55]],
+["Camillo Cavour","Statista liberale","P",0,[55,60,70,50,50,45,30,25,30,40,60,70]],
+["Alcide De Gasperi","Statista democristiano","P",0,[50,75,60,55,60,40,45,35,30,15,35,55]],
+["Mario Draghi","Tecnocrate","P",1,[60,70,60,60,50,30,35,25,15,45,55,70]],
+["Angela Merkel","Cancelliera tedesca","P",1,[30,75,60,60,60,40,45,35,25,45,55,60]],
+["Emmanuel Macron","Presidente francese","P",1,[75,65,60,65,50,25,35,30,20,55,60,75]],
+["Charles de Gaulle","Presidente francese","P",0,[85,55,45,30,45,50,55,50,70,20,25,65]],
+["Winston Churchill","Premier britannico","P",0,[60,70,55,35,30,15,35,30,45,40,35,70]],
+["Ronald Reagan","Presidente USA","P",0,[30,60,60,35,20,15,15,15,35,30,35,70]],
+["Margaret Thatcher","Premier britannica","P",0,[70,50,55,25,25,20,10,10,20,35,30,70]],
+["Silvio Berlusconi","Premier italiano","P",0,[45,60,60,40,35,30,15,10,25,35,35,70]],
+["Giorgia Meloni","Premier italiana","P",1,[60,55,45,20,35,40,35,40,60,15,10,45]],
+["Donald Trump","Presidente USA","P",1,[50,45,35,15,30,50,25,25,85,35,15,55]],
+["Javier Milei","Presidente argentino","P",1,[50,55,75,30,40,40,5,5,10,45,30,70]],
+["Narendra Modi","Premier indiano","P",1,[60,60,45,30,45,45,45,40,65,10,25,65]],
+["Lee Kuan Yew","Fondatore di Singapore","P",0,[85,25,25,50,40,40,35,50,25,50,45,85]],
+["Vladimir Putin","Presidente russo","P",1,[90,15,20,25,25,50,55,50,65,30,10,55]],
+["Xi Jinping","Presidente cinese","P",1,[90,15,15,45,50,60,70,85,50,80,40,85]],
+["Hugo Chávez","Presidente venezuelano","P",0,[75,60,40,65,40,60,85,80,70,40,65,40]],
+["Che Guevara","Rivoluzionario","P",0,[70,60,40,70,25,35,95,95,60,85,75,55]],
+["Fidel Castro","Leader cubano","P",0,[90,20,20,60,40,70,98,98,70,80,45,40]],
+["Lenin","Rivoluzionario","P",0,[85,35,25,70,40,50,95,95,60,95,70,70]],
+["Robespierre","Giacobino","P",0,[75,90,50,60,40,40,70,65,50,85,85,50]],
+["Napoleone","Imperatore","P",0,[90,25,35,45,15,15,50,55,55,45,45,65]],
+["Giulio Cesare","Dittatore romano","P",0,[85,30,40,40,25,25,50,50,50,40,50,60]],
+["Benito Mussolini","Dittatore fascista","P",0,[95,5,10,15,10,25,60,65,80,45,20,65]],
+["Augusto Pinochet","Dittatore","P",0,[85,10,30,25,20,25,15,25,40,15,15,60]],
+["Elly Schlein","Segretaria del PD","P",1,[40,85,70,85,70,50,75,55,40,55,90,55]],
+["Giuseppe Conte","Leader del M5S","P",1,[55,70,60,60,60,45,60,45,40,25,55,50]],
+["Matteo Salvini","Leader della Lega","P",1,[60,45,40,10,35,45,30,30,70,20,10,50]],
+["Matteo Renzi","Leader di Italia Viva","P",1,[60,65,65,60,45,35,30,25,20,45,65,75]],
+["Antonio Tajani","Leader di Forza Italia","P",1,[55,70,60,50,50,35,30,25,20,20,35,60]],
+["Romano Prodi","Ex premier","P",1,[55,75,60,60,60,35,45,35,25,25,55,60]],
+["Nichi Vendola","Leader di sinistra","P",1,[45,85,70,80,75,60,80,65,50,60,90,45]],
+["Sergio Mattarella","Presidente della Repubblica","P",1,[50,80,65,65,65,40,55,40,30,20,50,50]],
+["Jean-Luc Mélenchon","Leader della sinistra francese","P",1,[70,80,65,75,75,60,85,75,60,70,80,45]],
+["Marine Le Pen","Leader della destra francese","P",1,[85,50,35,10,40,55,50,45,80,25,10,50]],
+["Keir Starmer","Premier britannico","P",1,[45,70,60,65,50,35,50,35,35,50,65,60]],
+["Olaf Scholz","Ex cancelliere tedesco","P",1,[35,75,65,65,55,40,45,35,25,50,60,60]],
+["Pedro Sánchez","Premier spagnolo","P",1,[45,75,65,75,60,40,55,40,35,55,80,60]],
+["Viktor Orbán","Premier ungherese","P",1,[70,25,30,5,35,55,40,40,75,25,5,50]],
+["Volodymyr Zelensky","Presidente ucraino","P",1,[65,65,55,55,30,10,35,30,30,35,55,70]],
+["Claudia Sheinbaum","Presidente del Messico","P",1,[60,80,65,75,65,65,75,65,60,55,80,60]],
+["Gabriel Boric","Presidente cileno","P",1,[50,85,70,80,65,50,70,50,40,60,90,50]],
+["Joe Biden","Ex presidente USA","P",1,[35,75,65,60,45,20,50,35,40,35,65,65]],
+["Kamala Harris","Politica USA","P",1,[35,75,65,70,45,25,45,30,25,45,75,65]],
+["Sandro Pertini","Presidente della Repubblica","P",0,[50,90,80,70,85,65,70,55,40,60,70,55]],
+["Giacomo Matteotti","Socialista","P",0,[50,90,80,70,70,55,80,60,40,60,70,55]],
+["Palmiro Togliatti","Segretario del PCI","P",0,[75,60,50,65,60,60,90,80,55,60,55,60]],
+["Aldo Moro","Statista democristiano","P",0,[55,75,60,55,65,45,60,45,35,10,45,55]],
+["Carlo Calenda","Leader di Azione","P",1,[55,70,65,60,50,35,30,25,20,50,65,75]],
+["Nicola Fratoianni","Leader di Sinistra Italiana","P",1,[50,85,70,80,75,60,85,70,50,60,85,45]],
+["Roberto Vannacci","Generale e politico","P",1,[70,40,35,5,30,40,30,30,70,20,5,50]],
+["Angelo Bonelli","Co-leader dei Verdi","P",1,[50,85,70,75,75,55,75,60,50,60,85,25]],
+["Riccardo Magi","Leader di +Europa","P",1,[30,85,95,80,70,55,40,30,20,60,95,60]],
+["Emma Bonino","Radicale ed ex ministra","P",1,[35,90,90,85,65,25,35,30,10,60,90,65]],
+["Marco Cappato","Radicale e attivista","P",1,[20,90,95,85,75,60,35,30,20,70,95,70]],
+["Enrico Letta","Ex premier","P",1,[50,80,65,70,60,35,45,35,25,40,65,60]],
+["Massimo D'Alema","Ex premier","P",1,[55,75,55,65,45,35,65,50,40,60,55,55]],
+["Pier Luigi Bersani","Ex segretario del PD","P",1,[55,80,60,65,60,40,65,50,35,50,60,55]],
+["Paolo Gentiloni","Ex premier","P",1,[50,75,60,65,55,30,45,35,25,40,60,65]],
+["Stefano Bonaccini","Presidente PD","P",1,[45,75,60,60,50,35,50,40,30,40,55,65]],
+["Giuseppe Sala","Sindaco di Milano","P",1,[50,70,65,70,50,30,45,35,20,55,70,65]],
+["Maurizio Landini","Segretario CGIL","P",1,[55,85,65,70,80,60,85,70,60,45,70,40]],
+["Beppe Grillo","Fondatore del M5S","P",1,[40,90,70,60,65,65,50,40,50,60,60,30]],
+["Luigi Di Maio","Ex ministro","P",1,[55,70,60,55,50,35,45,35,40,35,55,55]],
+["Pier Ferdinando Casini","Senatore centrista","P",1,[55,70,55,55,55,35,40,35,25,15,40,55]],
+["Guido Crosetto","Ministro della Difesa","P",1,[60,60,50,35,35,25,25,25,30,25,25,65]],
+["Carlo Nordio","Ministro della Giustizia","P",1,[55,65,60,40,45,35,30,25,20,30,30,55]],
+["Giancarlo Giorgetti","Ministro dell'Economia","P",1,[45,60,55,35,40,40,30,25,35,25,25,60]],
+["Roberto Calderoli","Ministro della Lega","P",1,[20,60,50,20,35,40,25,25,55,25,15,50]],
+["Luca Zaia","Presidente del Veneto","P",1,[15,65,55,30,45,40,30,25,50,15,25,55]],
+["Massimiliano Fedriga","Presidente del Friuli V.G.","P",1,[20,65,50,25,40,40,30,30,50,20,25,50]],
+["Francesco Lollobrigida","Ministro dell'Agricoltura","P",1,[60,50,40,15,35,40,40,40,65,15,10,40]],
+["Ignazio La Russa","Presidente del Senato","P",1,[70,45,40,15,25,35,35,40,60,10,5,50]],
+["Daniela Santanchè","Politica di FdI","P",1,[55,50,45,15,30,30,15,20,40,25,15,55]],
+["Maurizio Lupi","Leader di Noi Moderati","P",1,[55,65,55,35,40,35,30,25,30,10,25,55]],
+["Giovanni Donzelli","Dirigente di FdI","P",1,[65,45,40,10,30,40,35,40,65,15,5,45]],
+["Alessandro Di Battista","Ex deputato M5S","P",1,[45,85,65,60,65,70,60,45,60,60,60,35]],
+["Michele Emiliano","Presidente della Puglia","P",1,[50,70,60,60,50,40,55,40,40,35,55,55]],
+["Vincenzo De Luca","Presidente della Campania","P",1,[55,60,55,50,45,40,60,50,40,35,45,60]],
+["Matteo Piantedosi","Ministro dell'Interno","P",1,[70,45,35,25,35,35,40,35,45,25,20,50]],
+["Tommaso Foti","Ministro di FdI","P",1,[60,50,40,15,35,40,35,35,60,10,10,45]],
+["Recep Tayyip Erdoğan","Presidente turco","P",1,[90,20,25,25,25,35,45,45,65,10,10,55]],
+["Benjamin Netanyahu","Premier israeliano","P",1,[75,50,40,25,10,10,30,25,30,25,25,80]],
+["Rishi Sunak","Ex premier britannico","P",1,[75,65,60,40,40,25,25,20,15,35,35,80]],
+["Justin Trudeau","Ex premier canadese","P",1,[35,75,70,85,55,30,50,35,20,55,85,65]],
+["Anthony Albanese","Premier australiano","P",1,[35,80,65,75,55,25,55,40,30,50,75,60]],
+["Nayib Bukele","Presidente salvadoregno","P",1,[90,25,25,25,25,50,40,45,55,35,25,75]],
+["Cyril Ramaphosa","Presidente sudafricano","P",1,[60,80,65,75,65,50,50,45,40,35,55,55]],
+["Bettino Craxi","Leader socialista","P",0,[60,60,50,45,45,35,50,40,40,55,50,65]],
+["Giulio Andreotti","Statista democristiano","P",0,[60,55,45,45,50,30,50,40,45,5,25,55]],
+["Enrico Mattei","Fondatore dell'ENI","P",0,[70,60,50,50,55,60,80,75,70,25,50,70]],
+["Giovanni Giolitti","Statista liberale","P",0,[60,65,60,50,50,35,40,35,50,35,55,60]],
+["Luigi Sturzo","Fondatore del PPI","P",0,[30,85,75,60,65,45,40,35,45,5,50,45]],
+["John F. Kennedy","Presidente USA","P",0,[35,75,65,65,45,15,50,40,40,25,60,80]],
+["Mao Zedong","Leader cinese","P",0,[95,20,15,60,25,45,98,98,60,90,40,55]],
+["Tito","Leader jugoslavo","P",0,[70,35,35,55,50,80,85,75,60,80,55,60]],
+["Mario Monti","Ex premier","P",1,[60,70,65,60,55,35,25,20,10,40,55,65]],
+["Giulio Tremonti","Ex ministro dell'Economia","P",1,[60,60,50,40,40,40,35,35,55,25,30,55]],
+["Gianfranco Fini","Ex presidente della Camera","P",1,[60,65,60,50,45,35,35,30,35,35,45,55]],
+["Antonio Di Pietro","Ex magistrato e politico","P",1,[60,65,55,45,55,45,50,40,40,35,45,55]],
+["Laura Boldrini","Deputata del PD","P",1,[45,85,70,90,85,55,70,55,40,50,90,45]],
+["Chiara Appendino","Politica del M5S","P",1,[45,80,65,65,65,55,55,45,50,40,65,40]],
+["Paola Taverna","Politica del M5S","P",1,[50,85,60,55,55,50,60,45,50,40,55,40]],
+["Gianni Cuperlo","Politico del PD","P",1,[50,85,65,70,65,45,70,55,40,50,65,45]],
+["Andrea Orlando","Politico del PD","P",1,[55,80,60,65,60,40,70,55,40,40,60,50]],
+["Dario Franceschini","Politico del PD","P",1,[55,75,60,65,60,35,55,40,30,25,55,55]],
+["Francesco Boccia","Politico del PD","P",1,[55,80,60,65,60,40,65,50,40,35,60,55]],
+["Peppe Provenzano","Politico del PD","P",1,[50,85,65,75,70,50,75,60,45,45,75,50]],
+["Silvia Salis","Sindaca di Genova","P",1,[45,80,65,75,60,35,55,40,30,45,75,60]],
+["Roberto Gualtieri","Sindaco di Roma","P",1,[55,75,60,65,55,35,55,40,30,40,60,60]],
+["Matteo Lepore","Sindaco di Bologna","P",1,[45,85,65,75,65,45,70,55,40,50,75,50]],
+["Massimo Cacciari","Filosofo","F",1,[45,75,70,55,65,55,55,45,40,60,45,40]],
+["Giorgio Agamben","Filosofo","F",1,[40,80,95,65,70,70,45,35,40,60,60,25]],
+["Ursula von der Leyen","Presidente della Commissione UE","P",1,[50,70,60,65,45,20,45,35,25,30,55,70]],
+["Friedrich Merz","Cancelliere tedesco","P",1,[45,65,60,40,40,25,25,20,15,20,30,70]],
+["Mark Rutte","Segretario generale NATO","P",1,[40,70,65,55,40,20,30,20,15,35,50,70]],
+["Geert Wilders","Leader olandese","P",1,[70,50,50,5,35,40,40,35,60,50,10,50]],
+["Nigel Farage","Leader di Reform UK","P",1,[70,60,60,10,40,55,30,25,35,30,10,55]],
+["Santiago Abascal","Leader di Vox","P",1,[85,45,40,10,30,45,35,40,65,10,5,50]],
+["Alice Weidel","Leader di AfD","P",1,[70,50,50,10,35,50,25,25,55,40,10,55]],
+["Jair Bolsonaro","Ex presidente brasiliano","P",1,[60,45,45,20,25,30,25,30,40,20,10,60]],
+["Evo Morales","Ex presidente boliviano","P",1,[70,70,50,65,55,70,85,75,70,40,60,25]],
+["Nicolás Maduro","Presidente venezuelano","P",1,[85,30,25,55,40,65,90,90,70,40,50,40]],
+["Yoon Suk Yeol","Ex presidente sudcoreano","P",1,[70,45,45,35,25,15,35,30,35,35,30,70]],
+["Aung San Suu Kyi","Leader birmana","P",1,[70,80,70,50,70,55,45,40,40,15,50,45]],
+["Imran Khan","Ex premier pakistano","P",1,[75,65,50,40,40,55,50,45,60,5,20,45]],
+["Mohammed bin Salman","Principe ereditario saudita","P",1,[95,5,15,20,30,35,70,70,60,5,35,85]],
+["Ali Khamenei","Guida suprema iraniana","P",1,[95,10,10,15,25,50,60,60,75,3,3,40]],
+["Kim Jong-un","Leader nordcoreano","P",1,[98,2,3,5,5,60,98,98,90,60,15,55]],
+["Elon Musk","Imprenditore","P",1,[40,50,70,40,35,45,10,10,15,50,45,98]],
+["Pedro Castillo","Ex presidente peruviano","P",1,[60,75,50,55,55,60,70,60,65,30,45,35]],
+["Andrés Manuel López Obrador","Ex presidente messicano","P",1,[70,70,55,60,60,70,70,65,60,25,50,40]],
+["Zohran Mamdani","Sindaco di New York","P",1,[40,90,70,85,70,50,85,65,45,60,95,50]],
+["Judith Butler","Filosofa","F",1,[40,85,85,85,85,65,70,55,40,85,98,50]],
+["Jürgen Habermas","Filosofo","F",1,[40,95,80,80,80,50,55,40,25,70,75,60]],
+["Michael Sandel","Filosofo","F",1,[45,85,65,60,60,45,55,40,35,40,55,45]],
+["Byung-Chul Han","Filosofo","F",1,[40,70,70,55,70,60,50,40,45,50,50,10]],
+["Thomas Piketty","Economista","F",1,[50,85,70,75,65,45,75,65,40,60,75,55]],
+["Yanis Varoufakis","Economista e politico","F",1,[40,90,75,75,70,60,75,60,50,60,75,55]],
+["Shinzo Abe","Premier giapponese","P",0,[75,60,50,25,25,20,30,25,40,25,15,70]],
+["Alexander Hamilton","Padre fondatore USA","P",0,[90,50,50,40,25,25,25,20,70,35,40,70]],
+["George Washington","Primo presidente USA","P",0,[60,70,60,45,45,70,30,25,50,30,50,55]],
+["Simón Bolívar","Libertador","P",0,[70,70,60,60,30,40,50,45,50,40,65,50]],
+["Adolf Hitler","Dittatore nazista","P",0,[98,1,3,1,1,25,50,70,90,40,5,70]],
+["Josef Stalin","Dittatore sovietico","P",0,[98,5,3,50,25,50,98,98,70,95,40,75]],
+["Francisco Franco","Dittatore spagnolo","P",0,[95,3,10,10,15,60,35,45,75,5,2,40]],
+["António Salazar","Dittatore portoghese","P",0,[95,5,10,10,30,60,35,50,80,5,2,30]],
+["Juan Perón","Presidente argentino","P",0,[85,45,30,40,40,70,75,70,85,25,30,50]],
+["Evita Perón","Leader argentina","P",0,[75,50,35,55,45,60,85,75,70,20,60,45]],
+["Jawaharlal Nehru","Premier indiano","P",0,[75,80,65,70,80,80,75,75,70,60,70,80]],
+["Mustafa Kemal Atatürk","Fondatore della Turchia","P",0,[95,55,45,40,50,70,60,65,60,80,75,80]],
+["Michail Gorbaciov","Leader sovietico","P",0,[65,75,65,65,85,70,55,45,45,70,70,65]],
+["Willy Brandt","Cancelliere tedesco","P",0,[45,85,70,70,80,60,55,40,35,50,70,65]],
+["Konrad Adenauer","Cancelliere tedesco","P",0,[40,75,55,50,60,35,40,30,30,15,35,60]],
+["Julius Nyerere","Presidente tanzaniano","P",0,[75,60,50,70,70,85,85,85,75,35,55,35]],
+["Patrice Lumumba","Leader congolese","P",0,[75,75,55,65,55,85,75,70,75,30,65,45]],
+["Kwame Nkrumah","Presidente ghanese","P",0,[90,55,40,70,60,80,85,80,75,35,65,60]],
+["Lev Trockij","Rivoluzionario","P",0,[85,45,35,75,30,50,95,95,55,95,70,75]],
+["Eduard Bernstein","Socialdemocratico","P",0,[45,90,75,70,70,55,70,55,35,70,75,65]],
+["Piero Gobetti","Intellettuale liberale","P",0,[40,85,85,70,65,50,40,30,25,60,70,55]],
+["Carlo Rosselli","Socialista liberale","P",0,[35,90,85,70,60,40,60,45,30,60,75,55]],
+["Altiero Spinelli","Padre dell'Europa unita","P",0,[25,90,80,80,85,50,50,40,20,60,75,60]],
+["Benedetto Croce","Filosofo liberale","F",0,[50,65,85,55,55,50,30,25,30,60,45,55]],
+["Giovanni Gentile","Filosofo fascista","F",0,[95,10,15,20,25,40,50,60,70,50,25,50]],
+["Norberto Bobbio","Filosofo","F",0,[40,90,85,70,80,50,55,40,25,70,70,55]],
+["Umberto Eco","Scrittore e filosofo","F",0,[40,85,85,80,80,50,50,35,25,85,70,60]],
+["Emma Goldman","Anarchica","F",0,[10,95,98,85,90,90,20,20,30,98,95,40]],
+["Pëtr Kropotkin","Anarchico","F",0,[10,95,95,80,75,85,30,25,30,98,80,50]],
+["Pierre-Joseph Proudhon","Anarchico","F",0,[10,90,90,50,60,70,25,15,45,90,60,35]],
+["Socrate","Filosofo","F",0,[50,70,70,50,50,45,45,40,40,30,40,35]],
+["Sant'Agostino","Filosofo e teologo","F",0,[75,40,30,35,45,50,50,45,45,3,15,30]],
+["Tommaso d'Aquino","Filosofo e teologo","F",0,[70,45,35,35,40,45,50,45,45,3,10,30]],
+["Baruch Spinoza","Filosofo","F",0,[40,85,90,65,70,60,45,35,30,75,70,55]],
+["David Hume","Filosofo","F",0,[45,65,75,55,50,50,30,20,25,75,50,60]],
+["G.W.F. Hegel","Filosofo","F",0,[75,50,45,45,40,45,65,60,50,40,45,55]],
+["Arthur Schopenhauer","Filosofo","F",0,[50,40,50,40,60,60,35,35,40,85,30,30]],
+["Søren Kierkegaard","Filosofo","F",0,[40,50,70,40,60,60,35,35,40,5,25,25]],
+["Alexis de Tocqueville","Pensatore liberale","F",0,[35,85,85,55,50,50,30,25,30,35,55,55]],
+["Max Weber","Sociologo","F",0,[60,65,55,45,40,40,40,40,45,60,45,65]],
+["Carl Schmitt","Giurista","F",0,[90,10,15,20,15,40,55,55,65,15,5,45]],
+["Isaiah Berlin","Filosofo liberale","F",0,[35,80,95,60,60,50,45,35,25,50,60,55]],
+["Karl Popper","Filosofo","F",0,[35,85,90,60,60,50,40,25,20,65,70,65]],
+["Walter Benjamin","Filosofo","F",0,[50,75,70,70,70,60,70,55,40,60,60,35]],
+["Herbert Marcuse","Filosofo","F",0,[40,85,85,75,85,70,70,60,40,85,90,35]],
+["Robert Nozick","Filosofo libertario","F",0,[10,60,98,55,55,60,3,3,10,55,50,65]],
+["Platone","Filosofo","F",0,[80,30,25,30,35,40,70,70,50,40,20,40]],
+["Aristotele","Filosofo","F",0,[50,60,50,35,40,40,40,40,40,40,35,40]],
+["Epicuro","Filosofo","F",0,[30,60,65,60,80,80,40,30,30,80,60,45]],
+["Marco Aurelio","Imperatore filosofo","F",0,[75,55,45,60,45,40,50,50,40,35,40,45]],
+["Confucio","Filosofo","F",0,[85,30,30,40,60,50,60,60,50,30,20,35]],
+["Machiavelli","Pensatore politico","F",0,[80,40,35,30,25,30,50,50,50,50,35,55]],
+["Thomas Hobbes","Filosofo","F",0,[90,20,20,40,50,45,50,50,50,55,35,60]],
+["John Locke","Filosofo liberale","F",0,[30,75,85,50,50,55,25,15,25,40,60,60]],
+["Montesquieu","Filosofo","F",0,[30,80,80,50,50,50,35,25,35,40,60,55]],
+["Jean-Jacques Rousseau","Filosofo","F",0,[50,95,60,55,60,55,65,55,50,50,60,25]],
+["Voltaire","Illuminista","F",0,[45,60,80,60,60,50,35,25,25,80,80,65]],
+["Immanuel Kant","Filosofo","F",0,[40,85,75,70,85,55,40,30,25,45,70,55]],
+["Adam Smith","Economista","F",0,[35,70,75,55,50,55,20,10,10,40,60,65]],
+["Edmund Burke","Pensatore conservatore","F",0,[55,50,45,30,35,45,35,30,45,20,10,40]],
+["John Stuart Mill","Filosofo liberale","F",0,[30,85,95,60,60,50,35,25,20,60,85,60]],
+["Henry David Thoreau","Filosofo","F",0,[10,70,95,60,80,85,15,10,35,60,70,5]],
+["Karl Marx","Filosofo ed economista","F",0,[60,70,45,85,45,55,95,90,45,95,80,75]],
+["Michail Bakunin","Anarchico","F",0,[10,95,95,80,50,50,30,20,30,98,85,40]],
+["Friedrich Nietzsche","Filosofo","F",0,[60,20,60,35,25,40,25,30,35,98,40,45]],
+["Antonio Gramsci","Filosofo marxista","F",0,[60,80,60,75,50,50,90,85,50,85,70,60]],
+["Hannah Arendt","Filosofa","F",0,[30,85,80,65,65,50,45,35,30,50,60,40]],
+["Albert Camus","Filosofo","F",0,[40,75,85,65,85,70,55,40,30,85,60,35]],
+["Simone de Beauvoir","Filosofa","F",0,[50,85,85,80,75,65,75,65,40,90,98,60]],
+["John M. Keynes","Economista","F",0,[50,75,65,65,70,50,60,50,35,60,70,70]],
+["Friedrich Hayek","Economista liberale","F",0,[25,60,85,55,55,60,10,5,10,40,40,60]],
+["Murray Rothbard","Libertario","F",0,[5,60,98,55,60,85,2,2,5,60,40,65]],
+["Ayn Rand","Filosofa","F",0,[30,50,85,50,50,70,3,3,10,98,40,90]],
+["John Rawls","Filosofo","F",0,[50,85,80,70,65,50,60,45,35,50,75,55]],
+["Michel Foucault","Filosofo","F",0,[30,80,85,75,70,60,60,45,40,75,85,45]],
+["Roger Scruton","Filosofo conservatore","F",0,[60,60,45,25,35,40,25,25,40,20,10,35]],
+["Noam Chomsky","Linguista e pensatore","F",1,[20,95,90,85,90,90,80,70,45,85,85,45]],
+["Peter Singer","Filosofo","F",1,[40,85,70,85,70,50,60,45,25,90,90,70]],
+["Slavoj Žižek","Filosofo","F",1,[60,70,50,70,60,55,85,75,50,85,60,50]],
+["Papa Francesco","Leader religioso","F",1,[50,75,65,80,85,70,75,60,45,5,45,35]]
+];
+
+const CTR=[
+["Cile di Allende",[60,90,75,70,70,70,85,75,60,40,75,55]],
+["Comune di Parigi",[20,95,60,75,70,60,85,70,50,90,75,50]],
+["Svezia",[30,90,75,70,65,45,65,40,25,60,80,60]],
+["Svizzera",[10,95,70,40,60,70,40,20,35,40,45,55]],
+["Stati Uniti",[20,70,70,55,25,25,25,20,40,30,50,70]],
+["Singapore",[80,35,40,60,50,40,35,50,25,50,45,85]],
+["Cuba",[85,30,25,60,60,70,95,95,70,80,45,40]],
+["Cina",[90,15,15,45,50,60,70,85,50,80,40,85]]
+];
+
+const ITA=new Set(["Elly Schlein","Giuseppe Conte","Matteo Salvini","Matteo Renzi","Antonio Tajani","Romano Prodi","Nichi Vendola","Sergio Mattarella","Giorgia Meloni","Mario Draghi","Carlo Calenda","Nicola Fratoianni","Roberto Vannacci","Maurizio Lupi","Giovanni Donzelli","Alessandro Di Battista","Michele Emiliano","Vincenzo De Luca","Matteo Piantedosi","Tommaso Foti","Angelo Bonelli","Riccardo Magi","Emma Bonino","Marco Cappato","Enrico Letta","Massimo D'Alema","Pier Luigi Bersani","Paolo Gentiloni","Stefano Bonaccini","Giuseppe Sala","Maurizio Landini","Beppe Grillo","Luigi Di Maio","Pier Ferdinando Casini","Guido Crosetto","Carlo Nordio","Giancarlo Giorgetti","Roberto Calderoli","Luca Zaia","Massimiliano Fedriga","Francesco Lollobrigida","Ignazio La Russa","Daniela Santanchè"]);
+
+const app=document.getElementById("app");
+let i=0,ans=[],order=[],currentPage="intro";
+const shuffle=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+
+const PHOTO_CACHE={};
+
+const PRESET_PHOTOS = {
+  "Barack Obama": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Barack_Obama.jpg/600px-Barack_Obama.jpg",
+  "Donald Trump": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Donald_Trump_official_portrait.jpg/600px-Donald_Trump_official_portrait.jpg",
+  "Angela Merkel": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Angela_Merkel_2019.jpg/600px-Angela_Merkel_2019.jpg",
+  "Emmanuel Macron": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Emmanuel_Macron_2022.jpg/600px-Emmanuel_Macron_2022.jpg",
+  "Giorgia Meloni": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Giorgia_Meloni_2023.jpg/600px-Giorgia_Meloni_2023.jpg",
+  "Matteo Salvini": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Matteo_Salvini_2019.jpg/600px-Matteo_Salvini_2019.jpg",
+  "Elly Schlein": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Elly_Schlein_2022.jpg/600px-Elly_Schlein_2022.jpg",
+  "Marine Le Pen": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Marine_Le_Pen_2022.jpg/600px-Marine_Le_Pen_2022.jpg",
+  "Javier Milei": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Javier_Milei_2023.jpg/600px-Javier_Milei_2023.jpg",
+  "Vladimir Putin": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Vladimir_Putin_2024.jpg/600px-Vladimir_Putin_2024.jpg",
+  "Xi Jinping": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Xi_Jinping_2019.jpg/600px-Xi_Jinping_2019.jpg",
+  "Mahatma Gandhi": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Mahatma-Gandhi%2C_studio%2C_1931.jpg/600px-Mahatma-Gandhi%2C_studio%2C_1931.jpg",
+  "Karl Marx": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Karl_Marx_001.jpg/600px-Karl_Marx_001.jpg",
+  "Friedrich Nietzsche": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Nietzsche1882.jpg/600px-Nietzsche1882.jpg",
+  "Socrate": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Socrates_Louvre.jpg/600px-Socrates_Louvre.jpg",
+  "Aristotele": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/600px-Aristotle_Altemps_Inv8575.jpg",
+  "Karl Popper": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Karl_Popper.jpg/600px-Karl_Popper.jpg",
+  "John Locke": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/John_Locke_by_Herman_Verelst.png/600px-John_Locke_by_Herman_Verelst.png",
+  "Thomas Hobbes": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Thomas_Hobbes_%28portrait%29.jpg/600px-Thomas_Hobbes_%28portrait%29.jpg",
+  "Nicola Fratoianni": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Nicola_Fratoianni_2018.jpg/600px-Nicola_Fratoianni_2018.jpg",
+  "Giuseppe Conte": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Giuseppe_Conte_2019.jpg/600px-Giuseppe_Conte_2019.jpg",
+  "Marco Cappato": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Marco_Cappato_2019.jpg/600px-Marco_Cappato_2019.jpg",
+  "Papa Francesco": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Pope_Francis_2021.jpg/600px-Pope_Francis_2021.jpg",
+  "Nelson Mandela": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Nelson_Mandela_1994.jpg/600px-Nelson_Mandela_1994.jpg",
+  "Mao Zedong": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Mao_Zedong_in_1940s.jpg/600px-Mao_Zedong_in_1940s.jpg",
+  "Adolf Hitler": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Hitler_portrait_crop.jpg/600px-Hitler_portrait_crop.jpg",
+  "Josef Stalin": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Joseph_Stalin_1945.jpg/600px-Joseph_Stalin_1945.jpg",
+  "Winston Churchill": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Winston_Churchill_1944.jpg/600px-Winston_Churchill_1944.jpg",
+  "Charles de Gaulle": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Charles_de_Gaulle_1961.jpg/600px-Charles_de_Gaulle_1961.jpg",
+  "Margaret Thatcher": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Margaret_Thatcher_1986.jpg/600px-Margaret_Thatcher_1986.jpg",
+  "Ronald Reagan": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Ronald_Reagan_1985.jpg/600px-Ronald_Reagan_1985.jpg"
+};
+
+function stripAccents(str){
+  return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss");
+}
+
+function buildImageCandidates(name){
+  const raw = String(name || "").trim();
+  if(!raw) return [];
+  const noAcc = stripAccents(raw);
+  const rawNoPunct = raw.replace(/[.,'"]/g, "");
+  const noAccNoPunct = noAcc.replace(/[.,'"]/g, "");
+  const tokens = raw.split(/\s+/).filter(Boolean);
+  const tokensNoAcc = noAcc.split(/\s+/).filter(Boolean);
+
+  const set = new Set();
+  const add = v => { if (v && v.length > 1) set.add(v); };
+
+  add(raw); add(noAcc); add(rawNoPunct); add(noAccNoPunct);
+
+  for (const v of [raw, noAcc, rawNoPunct, noAccNoPunct]) {
+    add(v.replace(/\s+/g, "_"));
+    add(v.replace(/\s+/g, " "));
+    add(v.toLowerCase());
+    add(stripAccents(v).toLowerCase());
+  }
+
+  if (tokens.length > 1) {
+    const first = tokens[0];
+    const last = tokens[tokens.length - 1];
+    const firstNo = tokensNoAcc[0];
+    const lastNo = tokensNoAcc[tokensNoAcc.length - 1];
+    add(first); add(last); add(firstNo); add(lastNo);
+    add(`${first} ${last}`); add(`${firstNo} ${lastNo}`);
+    add(`${first}_${last}`); add(`${firstNo}_${lastNo}`);
+    add(`${last} ${first}`); add(`${lastNo} ${firstNo}`);
+  }
+
+  return [...set];
+}
+
+async function fetchCommonsImageByTitle(title){
+  if(!title) return null;
+  const cleaned = title.replace(/^File:/i, "").trim();
+  const url = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&titles=File:${encodeURIComponent(cleaned)}&prop=imageinfo&iiprop=url&iiurlwidth=600`;
+  try{
+    const res = await fetch(url, { headers: { Accept: "application/json" }});
+    if(!res.ok) return null;
+    const data = await res.json();
+    const page = data?.query?.pages ? Object.values(data.query.pages)[0] : null;
+    return page?.imageinfo?.[0]?.thumburl || page?.imageinfo?.[0]?.url || null;
+  }catch(e){
+    return null;
+  }
+}
+
+async function fetchCommonsImageUrl(name){
+  if (!name) return null;
+  if (window.LOCAL_PHOTOS && window.LOCAL_PHOTOS[name]) return window.LOCAL_PHOTOS[name];
+  if (PRESET_PHOTOS[name]) return PRESET_PHOTOS[name];
+  if (PHOTO_CACHE[name]) return PHOTO_CACHE[name];
+
+  const candidates = buildImageCandidates(name);
+
+  for (const candidate of candidates) {
+    const urls = [
+      `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch=${encodeURIComponent(candidate)}&gsrnamespace=6&gsrprop=title&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=600`,
+      `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&list=search&srsearch=${encodeURIComponent(candidate)}&srnamespace=6&srlimit=5`
+    ];
+
+    for (const url of urls) {
+      try{
+        const res = await fetch(url, { headers: { Accept: "application/json" }});
+        if (!res.ok) continue;
+
+        const data = await res.json();
+
+        const page = data?.query?.pages ? Object.values(data.query.pages).find(p => {
+          if (!p || !p.title) return false;
+          const t = p.title.replace(/^File:/i, "").toLowerCase();
+          const cand = candidate.toLowerCase();
+          return t.includes(cand) || cand.includes(t) || stripAccents(t).includes(stripAccents(cand));
+        }) : null;
+
+        const img = page?.imageinfo?.[0]?.thumburl || page?.imageinfo?.[0]?.url || null;
+        if (img) {
+          PHOTO_CACHE[name] = img;
+          return img;
+        }
+
+        const hits = data?.query?.search || [];
+        for (const hit of hits) {
+          const title = hit.title || "";
+          const imageUrl = await fetchCommonsImageByTitle(title);
+          if (imageUrl) {
+            PHOTO_CACHE[name] = imageUrl;
+            return imageUrl;
+          }
+        }
+      }catch(e){
+      }
+    }
+  }
+
+  PHOTO_CACHE[name] = null;
+  return null;
+}
+
+async function resolvePhotoNames(names){
+  const unique = [...new Set(names.filter(Boolean))];
+  const entries = await Promise.all(unique.map(async name => {
+    try {
+      return [name, await fetchCommonsImageUrl(name)];
+    } catch(e) {
+      return [name, null];
+    }
+  }));
+  return Object.fromEntries(entries);
+}
+
+function head(){return '<div class="logo" onclick="goHome()">12<span> assi</span></div>'}
+function goHome(){currentPage="intro";intro()}
+
+function intro(){
+ app.innerHTML=head()+'<h1>Dove ti collochi davvero?</h1><p>36 affermazioni, 12 assi politici, circa 5 minuti. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini.</p><p>I profili di personalità e Paesi sono stime orientative a scopo di gioco, non giudizi storici.</p><div class="act"><button class="btn" id="go">Inizia il test</button><button class="btn ghost" id="gallery">Galleria</button></div>';
+
+ document.getElementById("go").onclick=()=>{currentPage="quiz";order=shuffle(Q.map((_,k)=>k));ans=[];i=0;ask()};
+ document.getElementById("gallery").onclick=showGallery;
+}
+
+let galleryRequestId = 0;
+
+async function renderGalleryPage(filter){
+  const requestId = ++galleryRequestId;
+  let filtered=PPL;
+  if(filter==='Politici')filtered=PPL.filter(p=>p[2]==='P');
+  if(filter==='Filosofi')filtered=PPL.filter(p=>p[2]==='F');
+  if(filter==='Italia oggi')filtered=PPL.filter(p=>p[3]===1&&p[2]==='P'&&ITA.has(p[0]));
+  if(filter==='Mondo oggi')filtered=PPL.filter(p=>p[3]===1&&p[2]==='P'&&!ITA.has(p[0]));
+  if(filter==='Del passato')filtered=PPL.filter(p=>p[3]===0);
+
+  const names = filtered.map(p=>p[0]);
+  const photoMap = await resolvePhotoNames(names);
+  const ini = n => n.split(" ").filter(w => w.length > 2 || w === w.toUpperCase()).slice(0,2).map(w => w[0]).join("").toUpperCase();
+
+  const html = filtered.map(p => {
+    const photoUrl = photoMap[p[0]];
+    const img = photoUrl
+      ? '<img class="ph" alt="'+p[0]+'" src="'+photoUrl+'" onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ph ava\',textContent:\''+ini(p[0])+'\'}))">'
+      : '<div class="ph ava">'+ini(p[0])+'</div>';
+    return '<div class="gallery-card">'+img+'<b>'+p[0]+'</b><small>'+p[1]+'</small></div>';
+  }).join('');
+
+  const gallery = document.getElementById('gal');
+  if (gallery && requestId === galleryRequestId) gallery.innerHTML = html;
+}
+
+function showGallery(){
+  currentPage="gallery";
+  app.innerHTML=head()+'<h1>Galleria Politici</h1><p>Tutti i '+PPL.length+' leader e filosofi contemplati nel test</p>';
+  const filters=['Tutti','Politici','Filosofi','Italia oggi','Mondo oggi','Del passato'];
+  app.innerHTML+='<div class="gallery-filters">'+filters.map((f,j)=>'<button class="gallery-filter '+(j===0?'active':'')+'" data-f="'+f+'">'+f+'</button>').join('')+'</div><div class="gallery" id="gal"></div>';
+
+  renderGalleryPage("Tutti");
+
+  document.querySelectorAll('.gallery-filter').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('.gallery-filter').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      renderGalleryPage(b.dataset.f);
+    }
+  });
+}
+
+function ask(){
+ const q=Q[order[i]],ax=AX[q[0]];
+ app.innerHTML=head()+'<div class="bar"><i style="width:'+((i/(Q.length-1)*100))+'%"></i></div><div class="meta"><span>Domanda '+(i+1)+' di '+Q.length+'</span><span class="axtag"><i class="dot" style="background:'+ax[2]+'"></i>'+ax[0]+' / '+ax[1]+'</span></div><div class="q">'+q[2]+'</div><div class="opts">'+OPT.map((o,k)=>'<button class="opt" data-k="'+k+'">'+o[0]+'</button>').join("")+'</div><div class="act">'+(i?'<button class="btn ghost" id="back">Indietro</button>':'')+'</div>';
+ app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ans[i]=OPT[b.dataset.k][1];i++;i<Q.length?ask():result()});
+ const bk=document.getElementById("back");if(bk)bk.onclick=()=>{i--;ask()};
+}
+
+function scores(){
+ const s=Array(12).fill(0),n=Array(12).fill(0);
+ order.forEach((qi,k)=>{const q=Q[qi];s[q[0]]+=q[1]*ans[k];n[q[0]]+=2});
+ return s.map((v,k)=>Math.round(50+50*v/n[k]));
+}
+
+const comp=(a,b)=>{let d=0;for(let k=0;k<12;k++)d+=Math.abs(a[k]-b[k]);return Math.max(1,Math.round(100-d/12*1.3))};
+
+const rank=(arr,sc)=>{
+  return arr.filter(Array.isArray).map(x=>{
+    // PPL: [nome, descrizione, tipo, attuale, valori]
+    if (x.length >= 5 && Array.isArray(x[4]) && x[4].length === 12) {
+      return {n:x[0],t:x[1],k:x[2],a:x[3],v:x[4],c:comp(sc,x[4])};
+    }
+    // CTR: [nome, valori]
+    if (x.length >= 2 && Array.isArray(x[1]) && x[1].length === 12) {
+      return {n:x[0],t:"Paese",k:"C",a:1,v:x[1],c:comp(sc,x[1])};
+    }
+    return null;
+  }).filter(Boolean).sort((a,b)=>b.c-a.c);
+};
+
+const ini=n=>n.split(" ").filter(w=>w.length>2||w===w.toUpperCase()).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+
+function heroCard(label, person, photoUrl){
+  const initials = ini(person.n);
+  const imageMarkup = photoUrl
+    ? '<img class="ph" alt="'+person.n+'" src="'+photoUrl+'" onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ph ava\',textContent:\''+initials+'\'}))">'
+    : '<div class="ph ava">'+initials+'</div>';
+  return '<div class="hero"><div class="kick">'+label+'</div>'+imageMarkup+'<div class="big">'+person.c+'%</div><b>'+person.n+'</b><div style="color:var(--mute);font-size:14px">'+person.t+'</div></div>';
+}
+
+async function result(){
+  currentPage="result";
+  const sc=scores();
+  const ide=IDE.map(x=>({n:x[0],cat:x[1],c:comp(sc,x[2])})).sort((a,b)=>b.c-a.c)[0];
+  const ppl=rank(PPL,sc);
+  const ctr=rank(CTR,sc);
+
+  const best=ppl[0] ?? { n:"N/D", c:0 };
+  const O=ppl.find(p => p && p.a && p.k==="P" && ITA.has(p.n)) ?? ppl.find(p => p && p.k==="P") ?? null;
+  const Pp=ppl.find(p => p && !p.a) ?? ppl[0] ?? null;
+
+  const photoNames = [...new Set([
+    ...(O ? [O.n] : []),
+    ...(Pp ? [Pp.n] : []),
+    ...ppl.filter(p => p.a && p.k==="P" && !ITA.has(p.n)).slice(0,3).map(p => p.n),
+    ...ppl.filter(T => true).slice(0,12).map(p => p.n)
+  ])];
+
+  const photoMap = await resolvePhotoNames(photoNames);
+
+  const bars=AX.map((a,k)=>'<div class="ax"><div class="ic" style="background:'+a[2]+'">'+a[3]+'</div><div><b>'+a[0]+'</b><small>contro '+a[1]+'</small><div class="trk"><i style="width:'+sc[k]+'%;background:'+a[2]+'"></i></div></div><div class="pc" style="color:'+a[2]+'">'+sc[k]+'%</div></div>').join("");
+
+  app.innerHTML=head()+'<div class="card" style="margin-top:18px"><div class="kick">'+ide.cat+'</div><h2>'+ide.n+'</h2>'
+  +'<div class="duo">'+(O ? heroCard("Di oggi · Italia", O, photoMap[O.n] || null) : "")+(Pp ? heroCard("Del passato", Pp, photoMap[Pp.n] || null) : "")+'</div>'
+  +'<div class="box"><h3>Nel mondo, oggi</h3>'+ppl.filter(p => p.a && p.k==="P" && !ITA.has(p.n)).slice(0,3).map(p => '<div class="row"><span>'+p.n+'<small style="display:block;color:var(--mute);font-size:13px">'+p.t+'</small></span><span>'+p.c+'%</span></div>').join("")+'</div>'
+  +'<div class="box"><h3>I tuoi 12 assi</h3>'+bars+'</div>'
+  +'<div class="box"><h3>Le tue personalità</h3><div class="tabs" id="tabs"></div><div id="plist"></div></div>'
+  +'<div class="box"><h3>Paesi vicini</h3>'+ctr.slice(0,3).map(p => '<div class="row"><span>'+p.n+'</span><span>'+p.c+'%</span></div>').join("")+'</div></div>'
+  +'<div class="act"><button class="btn" id="cp">Copia risultato</button><button class="btn ghost" id="again">Rifai il test</button></div><p id="msg" style="margin-top:12px"></p>';
+
+  document.getElementById("again").onclick=()=>{currentPage="intro";intro()};
+
+  const T=[["Tutti",p=>1],["Politici",p=>p.k==="P"],["Filosofi",p=>p.k==="F"],["Italia oggi",p=>p.a&&ITA.has(p.n)],["Mondo oggi",p=>p.a&&!ITA.has(p.n)],["Del passato",p=>!p.a]];
+  const tb=document.getElementById("tabs"),pl=document.getElementById("plist");
+  const show=n=>{tb.innerHTML=T.map((t,j)=>'<button class="tab'+(j==n?' on':'')+'" data-j="'+j+'">'+t[0]+'</button>').join(""); pl.innerHTML=ppl.filter(T[n][1]).slice(0,6).map((p,j)=>'<div class="row"><span>'+(j+1)+'. '+p.n+'<small style="display:block;color:var(--mute);font-size:13px">'+p.t+'</small></span><span>'+p.c+'%</span></div>').join(""); tb.querySelectorAll(".tab").forEach(b=>b.onclick=()=>show(+b.dataset.j));};
+  show(0);
+
+  document.getElementById("cp").onclick=async()=>{
+    const t="Il mio risultato 12 Assi: "+ide.n+" ("+ide.cat+")\nPiù compatibile: "+best.n+" "+best.c+"%\n"+AX.map((a,k)=>a[0]+" "+sc[k]+"%").join(" · ");
+    const m=document.getElementById("msg");
+    try{await navigator.clipboard.writeText(t);m.textContent="Risultato copiato."}catch(e){m.textContent="Copia non disponibile: seleziona e copia il testo a mano."}
+  };
+
+  window.scrollTo(0,0);
+}
+
+intro();
+</script>
+</body>
+</html>
