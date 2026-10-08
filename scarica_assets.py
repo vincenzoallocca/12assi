@@ -407,6 +407,14 @@ def download_photos():
         print(f"[{i}/{len(NAMES)}] {name}: ok")
     js = "// Generato da scarica_assets.py\nwindow.LOCAL_PHOTOS = " + json.dumps(mapping, ensure_ascii=False, indent=1) + ";\n"
     (ROOT / "assets" / "photos.js").write_text(js, encoding="utf-8")
+    # versione base64 (serve per esportare il PNG anche aprendo index.html con doppio click)
+    import base64, mimetypes
+    b64 = {}
+    for n, rel in mapping.items():
+        fp = ROOT / rel
+        mt = mimetypes.guess_type(fp.name)[0] or "image/jpeg"
+        b64[n] = "data:" + mt + ";base64," + base64.b64encode(fp.read_bytes()).decode()
+    (ROOT / "assets" / "photos64.js").write_text("window.LOCAL_PHOTOS64 = " + json.dumps(b64, ensure_ascii=False) + ";\n", encoding="utf-8")
     return mapping, failed
 
 
