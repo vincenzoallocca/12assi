@@ -36,6 +36,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .opt:hover{padding-left:14px;color:var(--accent)}.opt:hover::after{color:var(--accent)}
 .opt[aria-pressed="true"]{padding-left:14px;color:var(--accent)}
 .axtag{color:var(--mute)}
+@media(prefers-reduced-motion:reduce){.btn,.bar i,.opt{transition:none}}
 .card{margin-top:22px}
 .kick{color:var(--accent);font-size:12px}
 .card h2{font-size:clamp(40px,12vw,68px);line-height:.92;margin:10px 0 24px;letter-spacing:-.035em;text-transform:uppercase;font-weight:800}
@@ -455,7 +456,7 @@ const CTR=[
 const ITA=new Set(["Mario Monti","Giulio Tremonti","Gianfranco Fini","Antonio Di Pietro","Laura Boldrini","Chiara Appendino","Paola Taverna","Gianni Cuperlo","Andrea Orlando","Dario Franceschini","Francesco Boccia","Peppe Provenzano","Silvia Salis","Roberto Gualtieri","Matteo Lepore","Massimo Cacciari","Giorgio Agamben","Elly Schlein","Giuseppe Conte","Matteo Salvini","Matteo Renzi","Antonio Tajani","Romano Prodi","Nichi Vendola","Sergio Mattarella","Giorgia Meloni","Mario Draghi","Carlo Calenda","Nicola Fratoianni","Roberto Vannacci","Maurizio Lupi","Giovanni Donzelli","Alessandro Di Battista","Michele Emiliano","Vincenzo De Luca","Matteo Piantedosi","Tommaso Foti","Angelo Bonelli","Riccardo Magi","Emma Bonino","Marco Cappato","Enrico Letta","Massimo D'Alema","Pier Luigi Bersani","Paolo Gentiloni","Stefano Bonaccini","Giuseppe Sala","Maurizio Landini","Beppe Grillo","Luigi Di Maio","Pier Ferdinando Casini","Guido Crosetto","Carlo Nordio","Giancarlo Giorgetti","Roberto Calderoli","Luca Zaia","Massimiliano Fedriga","Francesco Lollobrigida","Ignazio La Russa","Daniela Santanchè"]);
 
 const app=document.getElementById("app");
-let i=0,ans=[],order=[],currentPage="intro",adaptiveStopReason=null,activeQuestionIndex=-1;
+let i=0,ans=[],order=[],currentPage="intro",adaptiveStopReason=null,activeQuestionIndex=-1,followUpNoticeShown=false;
 
 const PHOTO_CACHE={};
 
@@ -811,8 +812,8 @@ function head(){return '<div class="top0"><div class="logo" onclick="goHome()">1
 function goHome(){currentPage="intro";intro()}
 
 function intro(){
- app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>Un percorso adattivo esplora i 12 assi con almeno 3 risposte per asse. Il test si conclude quando le risposte sono sufficientemente coerenti, oppure dopo al massimo '+ADAPTIVE_CONFIG.maxQuestions+' domande. La durata varia in base alle risposte. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini. Poi scarichi tutto in un PNG.</p><p class="notice">Le risposte non vengono salvate o inviate. Il percorso è ricalcolato nel browser; le foto mancanti possono essere richieste a Wikimedia quando visualizzate.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
- document.getElementById("go").onclick=()=>{currentPage="quiz";order=[];ans=Array(Q.length);i=0;adaptiveStopReason=null;advanceAdaptive()};
+ app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>Le domande successive si adattano alle tue risposte per approfondire i temi più utili a comprendere le tue posizioni: tutti i 12 assi ricevono almeno 3 risposte. Il test si conclude quando le informazioni sono sufficienti, oppure dopo al massimo '+ADAPTIVE_CONFIG.maxQuestions+' domande. La durata varia in base alle risposte. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini. Poi scarichi tutto in un PNG.</p><p class="notice">Le risposte non vengono salvate o inviate. Il percorso è ricalcolato nel browser; le foto mancanti possono essere richieste a Wikimedia quando visualizzate.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
+ document.getElementById("go").onclick=()=>{currentPage="quiz";order=[];ans=Array(QUIZ_QUESTIONS.length);i=0;adaptiveStopReason=null;followUpNoticeShown=false;advanceAdaptive()};
  document.getElementById("gallery").onclick=showGallery;
 }
 
@@ -3459,10 +3460,12 @@ function ask(){
  const covered=stats.reduce((sum,stat)=>sum+Math.min(stat.answered,ADAPTIVE_CONFIG.minPerAxis),0);
  const required=AX.length*ADAPTIVE_CONFIG.minPerAxis;
  const isFollowUp=QUESTION_BANK[activeQuestionIndex].followUp||stats[q[0]].answered>=ADAPTIVE_CONFIG.minPerAxis;
- const displayPosition=i<order.length?i+1:order.length+1;
- app.innerHTML=head()+'<div class="bar" role="progressbar" aria-label="Copertura minima dei dodici assi" aria-valuemin="0" aria-valuemax="'+required+'" aria-valuenow="'+covered+'"><i style="width:'+Math.round(covered/required*100)+'%"></i></div><div class="meta"><span>Domanda '+String(displayPosition).padStart(2,"0")+' · limite '+ADAPTIVE_CONFIG.maxQuestions+'</span><span class="axtag">Copertura minima '+covered+' / '+required+'</span></div><div class="sec">'+ax[0]+' — '+ax[1]+' · '+(isFollowUp?'approfondimento':'esplorazione')+'</div><div class="q">'+q[2]+'</div><div class="opts">'+OPT.map((o,k)=>'<button class="opt" data-k="'+k+'" aria-pressed="'+(ans[activeQuestionIndex]===o[1]?'true':'false')+'">'+o[0]+'</button>').join("")+'</div>'+(i>0?'<div class="act"><button class="btn ghost" id="back">← Indietro</button></div>':'');
+ const showFollowUpNotice=isFollowUp&&!followUpNoticeShown;
+ if(showFollowUpNotice)followUpNoticeShown=true;
+ app.innerHTML=head()+'<div class="bar" role="progressbar" aria-label="Copertura minima dei dodici assi" aria-valuemin="0" aria-valuemax="'+required+'" aria-valuenow="'+covered+'" aria-valuetext="'+covered+' di '+required+' risposte minime per coprire i dodici assi"><i style="width:'+Math.round(covered/required*100)+'%"></i></div><div class="meta" role="status" aria-live="polite" aria-atomic="true"><span>Risposte date: '+order.length+'</span><span class="axtag">Copertura minima '+covered+' / '+required+' · percorso adattivo, massimo '+ADAPTIVE_CONFIG.maxQuestions+'</span></div><div class="sec">'+ax[0]+' — '+ax[1]+'</div>'+(showFollowUpNotice?'<p class="hint" role="status" aria-live="polite">Approfondiamo questo tema per comprendere meglio la tua posizione.</p>':'')+'<div class="q" id="question-text" role="heading" aria-level="2" aria-live="polite" aria-atomic="true" tabindex="-1">'+q[2]+'</div><div class="opts" role="group" aria-label="Opzioni di risposta">'+OPT.map((o,k)=>'<button class="opt" data-k="'+k+'" aria-pressed="'+(ans[activeQuestionIndex]===o[1]?'true':'false')+'">'+o[0]+'</button>').join("")+'</div>'+(i>0?'<div class="act"><button class="btn ghost" id="back" aria-label="Torna alla domanda precedente">← Indietro</button></div>':'');
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{order=order.slice(0,i);ans[activeQuestionIndex]=OPT[b.dataset.k][1];order.push(activeQuestionIndex);i=order.length;advanceAdaptive()});
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{i--;ask()};
+ document.getElementById("question-text").focus({preventScroll:true});
 }
 
 function adaptiveAnswerMap(){
