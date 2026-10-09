@@ -841,7 +841,7 @@ function head(){return '<div class="top0"><div class="logo" onclick="goHome()">1
 function goHome(){currentPage="intro";intro()}
 
 function intro(){
- app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>Le domande successive si adattano alle tue risposte per approfondire i temi più utili a comprendere le tue posizioni: tutti i 12 assi ricevono almeno 3 risposte. Il test si conclude quando le informazioni sono sufficienti, oppure dopo al massimo '+ADAPTIVE_CONFIG.maxQuestions+' domande. La durata varia in base alle risposte. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini. Poi scarichi tutto in un PNG.</p><p class="notice">Le risposte non vengono salvate o inviate. Il percorso è ricalcolato nel browser; le foto mancanti possono essere richieste a Wikimedia quando visualizzate.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
+ app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>Le domande successive si adattano alle tue risposte per approfondire i temi più utili a comprendere le tue posizioni: tutti i 12 assi ricevono almeno 3 risposte. Il test si conclude quando le informazioni sono sufficienti o quando altre risposte non aiutano a chiarire le dimensioni ancora incerte; in ogni caso, non supera '+ADAPTIVE_CONFIG.maxQuestions+' domande. La durata varia in base alle risposte. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini. Poi scarichi tutto in un PNG.</p><p class="notice">Le risposte non vengono salvate o inviate. Il percorso è ricalcolato nel browser; le foto mancanti possono essere richieste a Wikimedia quando visualizzate.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
  document.getElementById("go").onclick=()=>{currentPage="quiz";order=[];ans=Array(QUIZ_QUESTIONS.length);i=0;adaptiveStopReason=null;followUpNoticeShown=false;advanceAdaptive()};
  document.getElementById("gallery").onclick=showGallery;
 }
@@ -3587,6 +3587,8 @@ async function result(){
     ? "Raggiunto il limite massimo di domande; la stima resta incerta per: "+(uncertainAxes.length?uncertainAxes.join(", "):"alcune dimensioni con copertura insufficiente")+"."
     : adaptiveStopReason==="no-eligible-questions"
       ? "Conclusione anticipata: non restano domande eleggibili. La stima resta incerta per: "+(uncertainAxes.length?uncertainAxes.join(", "):"alcune dimensioni con copertura insufficiente")+"."
+      : adaptiveStopReason==="neutral-responses"
+        ? "Conclusione prudente: le risposte prevalentemente neutrali non hanno chiarito alcune dimensioni; la stima resta incerta per: "+uncertainAxes.join(", ")+"."
       : "Soglia minima di copertura raggiunta e incertezza contenuta.";
   const ide=IDE.map(x=>({n:x[0],cat:x[1],c:comp(sc,x[2])})).sort((a,b)=>b.c-a.c)[0];
   const ppl=rank(PPL,sc);

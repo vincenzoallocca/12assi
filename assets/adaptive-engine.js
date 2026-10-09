@@ -128,6 +128,9 @@
     const stats = getAxisStats(bank, askedIds, answers, axisCount);
     const allAxesCovered = stats.every(stat => stat.answered >= options.minPerAxis);
     const allAxesCertain = stats.every(stat => stat.uncertainty <= options.maxUncertainty);
+    const remainingUncertaintyIsNeutral = stats.every(stat =>
+      stat.uncertainty <= options.maxUncertainty || stat.neutralRate > 0.5
+    );
     const sufficient = askedIds.length >= options.minQuestions && allAxesCovered && allAxesCertain;
     const emptyDiagnostics = { eligibleQuestionIds: [], candidateQuestionIds: [], targetAxes: [] };
 
@@ -136,6 +139,9 @@
     }
     if (sufficient) {
       return { question: null, stopReason: "sufficient-information", stats, diagnostics: emptyDiagnostics };
+    }
+    if (askedIds.length >= options.minQuestions && allAxesCovered && remainingUncertaintyIsNeutral) {
+      return { question: null, stopReason: "neutral-responses", stats, diagnostics: emptyDiagnostics };
     }
 
     const eligible = bank.filter(question =>
