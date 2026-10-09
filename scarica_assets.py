@@ -3,9 +3,12 @@
 Scarica in locale foto e font del sito "12 assi" dentro la cartella assets/.
 
 Uso:   python3 scarica_assets.py
+    python3 scarica_assets.py --optimize-only
+    python3 scarica_assets.py --repair-portraits-only
 Poi:   apri index.html (doppio click). Funziona anche offline.
 
-Solo libreria standard, nessun pip install. Puoi rilanciarlo: salta i file già scaricati.
+Il download usa la libreria standard; l'ottimizzazione WebP usa Pillow se disponibile.
+Gli originali restano come fallback. Puoi rilanciarlo: salta i file già scaricati.
 """
 import json, re, sys, time, shutil, unicodedata, urllib.parse, urllib.request, urllib.error
 from pathlib import Path
@@ -293,6 +296,84 @@ PRESET = {
  "Ronald Reagan": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Ronald_Reagan_1985.jpg/600px-Ronald_Reagan_1985.jpg"
 }
 
+PHOTO_FIXES = {
+ "Antonio Gramsci": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Gramsci.png",
+ "Alexander Hamilton": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Alexander_Hamilton_portrait_by_John_Trumbull_1806.jpg/960px-Alexander_Hamilton_portrait_by_John_Trumbull_1806.jpg",
+ "Aung San Suu Kyi": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Aung_San_Suu_Kyi_par_Claude_Truong-Ngoc_octobre_2013.jpg/960px-Aung_San_Suu_Kyi_par_Claude_Truong-Ngoc_octobre_2013.jpg",
+ "Baruch Spinoza": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Baruch_Spinoza_portrait_HAB_original.jpg/960px-Baruch_Spinoza_portrait_HAB_original.jpg",
+ "Carlo Rosselli": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Carlo_Rosselli_3.jpg",
+ "Dario Franceschini": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Dario_Franceschini_Official_%28cropped%29.jpg/960px-Dario_Franceschini_Official_%28cropped%29.jpg",
+ "Franklin D. Roosevelt": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/FDR_1944_Color_Portrait.jpg/960px-FDR_1944_Color_Portrait.jpg",
+ "Geert Wilders": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Geert_Wilders%2C_painted_portrait_%2833694410786%29.jpg/960px-Geert_Wilders%2C_painted_portrait_%2833694410786%29.jpg",
+ "George Washington": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Gilbert_Stuart_-_George_Washington_%28Lansdowne_Portrait%29_-_Google_Art_Project.jpg/960px-Gilbert_Stuart_-_George_Washington_%28Lansdowne_Portrait%29_-_Google_Art_Project.jpg",
+ "Giacomo Matteotti": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Giacomo_Matteotti_2_%28cropped%29.jpg",
+ "Giulio Cesare": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Retrato_de_Julio_C%C3%A9sar_%2826724093101%29_%28cropped%29.jpg/960px-Retrato_de_Julio_C%C3%A9sar_%2826724093101%29_%28cropped%29.jpg",
+ "Giuseppe Garibaldi": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Giuseppe_Garibaldi_portrait.jpg",
+ "Hugo Chávez": "https://upload.wikimedia.org/wikipedia/commons/5/59/Hugo_Chavez_Portrait_%28cropped%29.jpg",
+ "Immanuel Kant": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Immanuel_Kant_portrait_c1790.jpg/960px-Immanuel_Kant_portrait_c1790.jpg",
+ "Isaiah Berlin": "https://upload.wikimedia.org/wikipedia/commons/a/a8/IsaiahBerlin1983.jpg",
+ "Jürgen Habermas": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/JuergenHabermas_crop1.jpg/960px-JuergenHabermas_crop1.jpg",
+ "Laura Boldrini": "https://upload.wikimedia.org/wikipedia/commons/6/69/Laura_Boldrini_2016.jpg",
+ "Lev Trockij": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Leon_Trotsky_1918_%283x4_rotated_cropped_b%29.jpg/960px-Leon_Trotsky_1918_%283x4_rotated_cropped_b%29.jpg",
+ "Montesquieu": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Charles_Montesquieu.jpg",
+ "Patrice Lumumba": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Patrice_Lumumba_official_portrait.jpg",
+ "Piero Gobetti": "https://upload.wikimedia.org/wikipedia/commons/5/56/Piero_gobetti.JPG",
+ "Salvador Allende": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Salvador_Allende_Gossens-.jpg",
+ "Sant'Agostino": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Saint_Augustine_by_Philippe_de_Champaigne.jpg/960px-Saint_Augustine_by_Philippe_de_Champaigne.jpg",
+ "Thomas Jefferson": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Official_Presidential_portrait_of_Thomas_Jefferson_%28by_Rembrandt_Peale%2C_1800%29.jpg/960px-Official_Presidential_portrait_of_Thomas_Jefferson_%28by_Rembrandt_Peale%2C_1800%29.jpg",
+ "Tommaso d'Aquino": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/St-thomas-aquinasFXD.jpg/960px-St-thomas-aquinasFXD.jpg",
+ "Walter Benjamin": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Walter_Benjamin_vers_1928.jpg",
+ "Nelson Mandela": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Nelson_Mandela_1994.jpg/330px-Nelson_Mandela_1994.jpg",
+ "Mahatma Gandhi": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Mahatma-Gandhi%2C_studio%2C_1931.jpg/330px-Mahatma-Gandhi%2C_studio%2C_1931.jpg",
+ "Barack Obama": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/President_Barack_Obama.jpg/330px-President_Barack_Obama.jpg",
+ "Angela Merkel": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Angela_Merkel_2019_cropped.jpg/330px-Angela_Merkel_2019_cropped.jpg",
+ "Emmanuel Macron": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Emmanuel_Macron_2025_%28cropped%29.jpg/330px-Emmanuel_Macron_2025_%28cropped%29.jpg",
+ "Charles de Gaulle": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/De_Gaulle-OWI_%28cropped%29_%28c%29%282%29.jpg/330px-De_Gaulle-OWI_%28cropped%29_%28c%29%282%29.jpg",
+ "Winston Churchill": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg/330px-Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg",
+ "Ronald Reagan": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Official_Portrait_of_President_Reagan_1981.jpg/330px-Official_Portrait_of_President_Reagan_1981.jpg",
+ "Margaret Thatcher": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Margaret_Thatcher_stock_portrait_%28cropped%29.jpg/330px-Margaret_Thatcher_stock_portrait_%28cropped%29.jpg",
+ "Giorgia Meloni": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Giorgia_Meloni_Official_2024_%28cropped%29.jpg/330px-Giorgia_Meloni_Official_2024_%28cropped%29.jpg",
+ "Donald Trump": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Official_Presidential_Portrait_of_President_Donald_J._Trump_%282025%29.jpg/330px-Official_Presidential_Portrait_of_President_Donald_J._Trump_%282025%29.jpg",
+ "Javier Milei": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Javier_Milei_in_pull-aside_meeting_at_the_United_Nations_Headquarters_%283x4_cropped%29.jpg/330px-Javier_Milei_in_pull-aside_meeting_at_the_United_Nations_Headquarters_%283x4_cropped%29.jpg",
+ "Vladimir Putin": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Vladimir_Putin_%282026_02_23%29.jpg/330px-Vladimir_Putin_%282026_02_23%29.jpg",
+ "Xi Jinping": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Prime_Minister_Keir_Starmer_visits_China_%2855066713683%29_%28cropped%2Bangle%29.jpg/330px-Prime_Minister_Keir_Starmer_visits_China_%2855066713683%29_%28cropped%2Bangle%29.jpg",
+ "Napoleone": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg/330px-Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
+ "Elly Schlein": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Elly_Schlein_in_2023_%28cropped%29.jpg/330px-Elly_Schlein_in_2023_%28cropped%29.jpg",
+ "Giuseppe Conte": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Giuseppe_Conte_Official.jpg/330px-Giuseppe_Conte_Official.jpg",
+ "Matteo Salvini": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Matteo_Salvini_2025_%28cropped%29.jpg/330px-Matteo_Salvini_2025_%28cropped%29.jpg",
+ "Marine Le Pen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Marine_Le_Pen_2025_%283x4_cropped%29.jpg/330px-Marine_Le_Pen_2025_%283x4_cropped%29.jpg",
+ "Olaf Scholz": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Olaf_Scholz_September_2024.jpg/330px-Olaf_Scholz_September_2024.jpg",
+ "Palmiro Togliatti": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Palmiro-Togliatti-00504708.jpg/330px-Palmiro-Togliatti-00504708.jpg",
+ "Nicola Fratoianni": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Nicola_Fratoianni_Quirinale_2022_%28cropped%29.jpg/330px-Nicola_Fratoianni_Quirinale_2022_%28cropped%29.jpg",
+ "Marco Cappato": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Marco_Cappato%2C_10.22_%28cropped%29.jpg/330px-Marco_Cappato%2C_10.22_%28cropped%29.jpg",
+ "Stefano Bonaccini": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/1719930276898_20240702_BONACCINI_Stefano_IT_003.jpg/330px-1719930276898_20240702_BONACCINI_Stefano_IT_003.jpg",
+ "Massimiliano Fedriga": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Massimiliano_Fedriga_in_2024.jpg/330px-Massimiliano_Fedriga_in_2024.jpg",
+ "Giovanni Giolitti": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Portrait_of_Giovanni_Giolitti%2C_1920.jpg/330px-Portrait_of_Giovanni_Giolitti%2C_1920.jpg",
+ "Mao Zedong": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Mao_Zedong_1950_Portrait_%283x4_cropped%29%282%29.jpg/330px-Mao_Zedong_1950_Portrait_%283x4_cropped%29%282%29.jpg",
+ "Paola Taverna": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Ms._Paola_Taverna%2C_OSCE_PA_Autumn_Meeting%2C_Marrakech%2C_5_Oct._2019.jpg/330px-Ms._Paola_Taverna%2C_OSCE_PA_Autumn_Meeting%2C_Marrakech%2C_5_Oct._2019.jpg",
+ "Giorgio Agamben": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Agamben.png/330px-Agamben.png",
+ "Judith Butler": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/JudithButler2013.jpg/330px-JudithButler2013.jpg",
+ "Adolf Hitler": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Hitler_portrait_crop_%28cropped%29%282%29.jpg/330px-Hitler_portrait_crop_%28cropped%29%282%29.jpg",
+ "Josef Stalin": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/StalinCropped1943.jpg/330px-StalinCropped1943.jpg",
+ "Konrad Adenauer": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Bundesarchiv_B_145_Bild-F078072-0004%2C_Konrad_Adenauer.jpg/330px-Bundesarchiv_B_145_Bild-F078072-0004%2C_Konrad_Adenauer.jpg",
+ "Benedetto Croce": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Benedetto_Croce_01.jpg/330px-Benedetto_Croce_01.jpg",
+ "Socrate": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Socrates_Louvre.jpg/330px-Socrates_Louvre.jpg",
+ "David Hume": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/David_Hume_Ramsay.jpg/330px-David_Hume_Ramsay.jpg",
+ "Karl Popper": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Karl_Popper.jpg/330px-Karl_Popper.jpg",
+ "Robert Nozick": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Robert_Nozick_1977_Libertarian_Review_cover_%284x5_cropped%29.jpg/330px-Robert_Nozick_1977_Libertarian_Review_cover_%284x5_cropped%29.jpg",
+ "Platone": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Plato_Silanion_Musei_Capitolini_MC1377.png/330px-Plato_Silanion_Musei_Capitolini_MC1377.png",
+ "Aristotele": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/330px-Aristotle_Altemps_Inv8575.jpg",
+ "Epicuro": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Epikouros_BM_1843.jpg/330px-Epikouros_BM_1843.jpg",
+ "Thomas Hobbes": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Thomas_Hobbes_by_John_Michael_Wright_%28colour%29_%283x4_cropped%29.jpg/330px-Thomas_Hobbes_by_John_Michael_Wright_%28colour%29_%283x4_cropped%29.jpg",
+ "John Locke": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Godfrey_Kneller_-_Portrait_of_John_Locke_%28Hermitage%29.jpg/330px-Godfrey_Kneller_-_Portrait_of_John_Locke_%28Hermitage%29.jpg",
+ "Adam Smith": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Adam_Smith_The_Muir_portrait.jpg/330px-Adam_Smith_The_Muir_portrait.jpg",
+ "Karl Marx": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Karl_Marx_by_John_Jabez_Edwin_Mayall_1875_-_Restored.png/330px-Karl_Marx_by_John_Jabez_Edwin_Mayall_1875_-_Restored.png",
+ "Michail Bakunin": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Mikhail_Bakunin_Nader_%283x4_cropped%29.jpg/330px-Mikhail_Bakunin_Nader_%283x4_cropped%29.jpg",
+ "Friedrich Nietzsche": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Nietzsche187a.jpg/330px-Nietzsche187a.jpg",
+ "Albert Camus": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Albert_Camus%2C_gagnant_de_prix_Nobel%2C_portrait_en_buste%2C_pos%C3%A9_au_bureau%2C_faisant_face_%C3%A0_gauche%2C_cigarette_de_tabagisme.jpg/330px-Albert_Camus%2C_gagnant_de_prix_Nobel%2C_portrait_en_buste%2C_pos%C3%A9_au_bureau%2C_faisant_face_%C3%A0_gauche%2C_cigarette_de_tabagisme.jpg",
+ "Papa Francesco": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Pope_Francis_Korea_Haemi_Castle_19_%284x5_cropped%29.jpg/330px-Pope_Francis_Korea_Haemi_Castle_19_%284x5_cropped%29.jpg"
+}
+
 
 def http_get(url, ua=UA, retries=4):
     for k in range(retries):
@@ -342,6 +423,8 @@ def api(params):
 
 def resolve_url(name):
     """URL dell'immagine: prima quelle fisse, poi ricerca su Wikimedia Commons."""
+    if name in PHOTO_FIXES:
+        return PHOTO_FIXES[name]
     if name in PRESET:
         return PRESET[name]
     for cand in candidates(name):
@@ -376,10 +459,63 @@ def ext_for(url, ctype):
 
 
 def existing(s):
-    for f in PHOTOS.glob(s + ".*"):
+    files = sorted(PHOTOS.glob(s + ".*"), key=lambda f: f.suffix.lower() == ".webp")
+    for f in files:
         if f.stat().st_size > 0:
             return f
     return None
+
+
+def optimize_photo_mapping(mapping):
+    try:
+        from PIL import Image
+    except ImportError:
+        print("WebP non generato: Pillow non disponibile; restano gli originali.")
+        return {}
+    optimized = {}
+    for name, rel in mapping.items():
+        source = ROOT / rel
+        if source.suffix.lower() == ".webp" or not source.is_file():
+            continue
+        target = source.with_suffix(".webp")
+        try:
+            if not target.is_file():
+                with Image.open(source) as image:
+                    image.thumbnail((600, 600), Image.Resampling.LANCZOS)
+                    mode = "RGBA" if "A" in image.getbands() else "RGB"
+                    image.convert(mode).save(target, "WEBP", quality=84, method=6)
+            optimized[name] = "assets/photos/" + target.name
+        except Exception as error:
+            print(f"WebP non generato per {name}: {error}")
+    return optimized
+
+
+def fixed_photo_path(name):
+    url = PHOTO_FIXES[name]
+    return PHOTOS / (slug(name) + "_portrait" + ext_for(url, ""))
+
+
+def download_fixed_photos(mapping):
+    for name, url in PHOTO_FIXES.items():
+        target = fixed_photo_path(name)
+        try:
+            if not target.is_file() or target.stat().st_size == 0:
+                data, ctype = http_get(url)
+                if not ctype.startswith("image/"):
+                    raise RuntimeError("risposta non valida")
+                target.write_bytes(data)
+            mapping[name] = "assets/photos/" + target.name
+            print(f"{name}: ritratto aggiornato")
+        except Exception as error:
+            print(f"{name}: sostituzione non disponibile ({error})")
+    return mapping
+
+
+def write_photo_manifest(mapping, optimized):
+    js = "// Generato da scarica_assets.py\n"
+    js += "window.LOCAL_PHOTOS = " + json.dumps(mapping, ensure_ascii=False, indent=1) + ";\n"
+    js += "window.LOCAL_PHOTOS_WEBP = " + json.dumps(optimized, ensure_ascii=False, indent=1) + ";\n"
+    (ROOT / "assets" / "photos.js").write_text(js, encoding="utf-8")
 
 
 def download_photos():
@@ -387,8 +523,8 @@ def download_photos():
     mapping, failed = {}, []
     for i, name in enumerate(NAMES, 1):
         s = slug(name)
-        f = existing(s)
-        if not f:
+        f = fixed_photo_path(name) if name in PHOTO_FIXES else existing(s)
+        if not f or not f.is_file() or f.stat().st_size == 0:
             try:
                 url = resolve_url(name)
                 if not url:
@@ -396,7 +532,8 @@ def download_photos():
                 data, ctype = http_get(url)
                 if not ctype.startswith("image/"):
                     raise RuntimeError("risposta non valida")
-                f = PHOTOS / (s + ext_for(url, ctype))
+                basename = s + "_portrait" if name in PHOTO_FIXES else s
+                f = PHOTOS / (basename + ext_for(url, ctype))
                 f.write_bytes(data)
                 time.sleep(0.25)  # gentilezza verso Wikimedia
             except Exception as e:
@@ -405,8 +542,8 @@ def download_photos():
                 continue
         mapping[name] = "assets/photos/" + f.name
         print(f"[{i}/{len(NAMES)}] {name}: ok")
-    js = "// Generato da scarica_assets.py\nwindow.LOCAL_PHOTOS = " + json.dumps(mapping, ensure_ascii=False, indent=1) + ";\n"
-    (ROOT / "assets" / "photos.js").write_text(js, encoding="utf-8")
+    optimized = optimize_photo_mapping(mapping)
+    write_photo_manifest(mapping, optimized)
     # versione base64 (serve per esportare il PNG anche aprendo index.html con doppio click)
     import base64, mimetypes
     b64 = {}
@@ -442,6 +579,26 @@ def download_font():
 
 
 def main():
+    if "--repair-portraits-only" in sys.argv:
+        photos_js = (ROOT / "assets" / "photos.js").read_text(encoding="utf-8")
+        match = re.search(r"window\.LOCAL_PHOTOS\s*=\s*(\{.*?\});", photos_js, re.S)
+        if not match:
+            raise RuntimeError("Manifest delle foto locale non valido.")
+        mapping = download_fixed_photos(json.loads(match.group(1)))
+        optimized = optimize_photo_mapping(mapping)
+        write_photo_manifest(mapping, optimized)
+        print(f"Ritratti corretti: {len(PHOTO_FIXES)}")
+        return
+    if "--optimize-only" in sys.argv:
+        photos_js = (ROOT / "assets" / "photos.js").read_text(encoding="utf-8")
+        match = re.search(r"window\.LOCAL_PHOTOS\s*=\s*(\{.*?\});", photos_js, re.S)
+        if not match:
+            raise RuntimeError("Manifest delle foto locale non valido.")
+        mapping = json.loads(match.group(1))
+        optimized = optimize_photo_mapping(mapping)
+        write_photo_manifest(mapping, optimized)
+        print(f"WebP ottimizzate: {len(optimized)}/{len(mapping)}")
+        return
     print("== Foto ==")
     mapping, failed = download_photos()
     print("\n== Font ==")

@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>12 Assi — Test politico</title>
 <link rel="stylesheet" href="assets/fonts/fonts.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
 <script src="assets/photos.js"></script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -64,6 +63,51 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .gallery-card .ph{width:72px;height:72px;margin:0 0 10px;font-size:20px}
 .gallery-card b{font-size:13px;display:block;margin-bottom:4px;text-transform:uppercase}
 .gallery-card small{color:var(--mute);font-size:11px}
+
+.gallery-card{display:block;width:100%;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.gallery-card:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.gallery-card .ph{object-fit:cover}
+.hint{font-size:13px}
+body.mopen{overflow:hidden}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.8);display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.mwrap{position:relative;width:100%;max-width:600px}
+.mcard{background:var(--bg);border:1px solid var(--line);max-height:92vh;max-height:92dvh;overflow-y:auto;overscroll-behavior:contain;padding:22px 18px calc(30px + env(safe-area-inset-bottom,0px));outline:none}
+.mclose{position:absolute;top:8px;right:8px;z-index:2;width:40px;height:40px;background:var(--bg);color:var(--ink);border:1px solid var(--line);font-size:24px;line-height:1;cursor:pointer}
+.mclose:hover{border-color:var(--ink)}
+@media(min-width:640px){.modal{align-items:center}.mcard{max-height:88vh}}
+.mhead{display:flex;gap:16px;align-items:flex-end;padding-right:44px}
+.mph{width:112px;height:112px;object-fit:cover;flex:none;display:block}
+.mhead h2{font-size:clamp(26px,7vw,36px);line-height:.98;margin:6px 0 6px;font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
+.mhead p{margin:0;font-size:14px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-family:ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.1em;font-size:10px;color:var(--mute);border:1px solid var(--line);padding:4px 7px}
+.sim{border-left:2px solid var(--accent);padding:2px 0 2px 12px;margin:0 0 14px;color:var(--ink);font-size:15px;line-height:1.4}
+details.how{border-top:1px solid var(--line);margin-top:6px}
+details.how summary{cursor:pointer;padding:14px 0;font-family:ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.12em;font-size:11px;color:var(--ink)}
+.rax{margin:0 0 16px}
+.rax>b{display:block;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin-bottom:4px;font-weight:500}
+.rq{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.35}
+.rq em{display:block;font-style:normal;margin-top:3px;color:var(--accent);font-weight:700;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em}
+.notice{font-size:12px;border-left:2px solid var(--accent);padding:8px 12px;margin:12px 0;color:var(--mute)}
+.chart{width:100%;display:block;overflow:visible}
+.chart text{font-family:ui-monospace,Menlo,Consolas,monospace;fill:var(--mute);font-size:10px}
+.chart .grid{fill:none;stroke:var(--line);stroke-width:1}
+.radar-shape{fill:rgba(255,59,31,.2);stroke:var(--accent);stroke-width:2}
+.map-point{fill:#62b6a8;opacity:.52;cursor:pointer}
+.map-point:hover,.map-point:focus{opacity:1;stroke:var(--ink);stroke-width:2}
+.map-user{fill:var(--accent);stroke:var(--ink);stroke-width:2}
+.map-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.map-controls label,.gallery-controls label{display:grid;gap:5px;color:var(--mute);font-size:11px}
+.map-controls select,.gallery-controls input,.gallery-controls select,.report-text{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:0;padding:10px;min-width:0}
+.map-nearest{display:grid;gap:0}
+.map-nearest button{display:flex;justify-content:space-between;gap:8px;text-align:left;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--line);padding:10px 0;cursor:pointer}
+.map-nearest button span:last-child{color:var(--accent);font-family:ui-monospace,Menlo,Consolas,monospace}
+.gallery-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.gallery-controls input[type="search"]{grid-column:1/-1;width:100%}
+.report-text{display:block;width:100%;min-height:74px;resize:vertical;margin:8px 0}
+.report-copy{margin:0 0 12px;padding:9px 12px;font-size:11px}
+@media(max-width:420px){.map-controls,.gallery-controls{grid-template-columns:1fr}.gallery-controls input[type="search"]{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -108,7 +152,7 @@ const PPL=[
 ["Karl Liebknecht","Rivoluzionario","P",0,[70,85,70,85,90,80,90,90,50,85,80,60]],
 ["Rosa Luxemburg","Rivoluzionaria","P",0,[70,95,80,85,95,85,95,90,45,85,80,60]],
 ["Salvador Allende","Presidente socialista","P",0,[60,90,75,70,70,70,85,75,60,40,75,55]],
-["Gustavo Petro","Presidente della Colombia","P",1,[60,85,70,80,65,55,80,65,55,50,85,30]],
+["Gustavo Petro","Ex presidente della Colombia","P",1,[60,85,70,80,65,55,80,65,55,50,85,30]],
 ["Bernie Sanders","Senatore socialdemocratico","P",1,[40,90,70,80,65,50,85,75,55,60,85,50]],
 ["Alexandria Ocasio-Cortez","Deputata progressista","P",1,[40,90,70,85,75,55,85,70,50,55,95,55]],
 ["Jeremy Corbyn","Laburista","P",1,[45,90,70,80,90,80,85,70,50,70,80,50]],
@@ -162,13 +206,13 @@ const PPL=[
 ["Sergio Mattarella","Presidente della Repubblica","P",1,[50,80,65,65,65,40,55,40,30,20,50,50]],
 ["Jean-Luc Mélenchon","Leader della sinistra francese","P",1,[70,80,65,75,75,60,85,75,60,70,80,45]],
 ["Marine Le Pen","Leader della destra francese","P",1,[85,50,35,10,40,55,50,45,80,25,10,50]],
-["Keir Starmer","Premier britannico","P",1,[45,70,60,65,50,35,50,35,35,50,65,60]],
+["Keir Starmer","Ex premier britannico","P",1,[45,70,60,65,50,35,50,35,35,50,65,60]],
 ["Olaf Scholz","Ex cancelliere tedesco","P",1,[35,75,65,65,55,40,45,35,25,50,60,60]],
 ["Pedro Sánchez","Premier spagnolo","P",1,[45,75,65,75,60,40,55,40,35,55,80,60]],
-["Viktor Orbán","Premier ungherese","P",1,[70,25,30,5,35,55,40,40,75,25,5,50]],
+["Viktor Orbán","Ex premier ungherese","P",1,[70,25,30,5,35,55,40,40,75,25,5,50]],
 ["Volodymyr Zelensky","Presidente ucraino","P",1,[65,65,55,55,30,10,35,30,30,35,55,70]],
 ["Claudia Sheinbaum","Presidente del Messico","P",1,[60,80,65,75,65,65,75,65,60,55,80,60]],
-["Gabriel Boric","Presidente cileno","P",1,[50,85,70,80,65,50,70,50,40,60,90,50]],
+["Gabriel Boric","Ex presidente cileno","P",1,[50,85,70,80,65,50,70,50,40,60,90,50]],
 ["Joe Biden","Ex presidente USA","P",1,[35,75,65,60,45,20,50,35,40,35,65,65]],
 ["Kamala Harris","Politica USA","P",1,[35,75,65,70,45,25,45,30,25,45,75,65]],
 ["Sandro Pertini","Presidente della Repubblica","P",0,[50,90,80,70,85,65,70,55,40,60,70,55]],
@@ -207,7 +251,7 @@ const PPL=[
 ["Michele Emiliano","Presidente della Puglia","P",1,[50,70,60,60,50,40,55,40,40,35,55,55]],
 ["Vincenzo De Luca","Presidente della Campania","P",1,[55,60,55,50,45,40,60,50,40,35,45,60]],
 ["Matteo Piantedosi","Ministro dell'Interno","P",1,[70,45,35,25,35,35,40,35,45,25,20,50]],
-["Tommaso Foti","Ministro di FdI","P",1,[60,50,40,15,35,40,35,35,60,10,10,45]],
+["Tommaso Foti","Ministro per gli Affari europei","P",1,[60,50,40,15,35,40,35,35,60,10,10,45]],
 ["Recep Tayyip Erdoğan","Presidente turco","P",1,[90,20,25,25,25,35,45,45,65,10,10,55]],
 ["Benjamin Netanyahu","Premier israeliano","P",1,[75,50,40,25,10,10,30,25,30,25,25,80]],
 ["Rishi Sunak","Ex premier britannico","P",1,[75,65,60,40,40,25,25,20,15,35,35,80]],
@@ -249,12 +293,12 @@ const PPL=[
 ["Alice Weidel","Leader di AfD","P",1,[70,50,50,10,35,50,25,25,55,40,10,55]],
 ["Jair Bolsonaro","Ex presidente brasiliano","P",1,[60,45,45,20,25,30,25,30,40,20,10,60]],
 ["Evo Morales","Ex presidente boliviano","P",1,[70,70,50,65,55,70,85,75,70,40,60,25]],
-["Nicolás Maduro","Presidente venezuelano","P",1,[85,30,25,55,40,65,90,90,70,40,50,40]],
+["Nicolás Maduro","Ex presidente venezuelano","P",1,[85,30,25,55,40,65,90,90,70,40,50,40]],
 ["Yoon Suk Yeol","Ex presidente sudcoreano","P",1,[70,45,45,35,25,15,35,30,35,35,30,70]],
 ["Aung San Suu Kyi","Leader birmana","P",1,[70,80,70,50,70,55,45,40,40,15,50,45]],
 ["Imran Khan","Ex premier pakistano","P",1,[75,65,50,40,40,55,50,45,60,5,20,45]],
 ["Mohammed bin Salman","Principe ereditario saudita","P",1,[95,5,15,20,30,35,70,70,60,5,35,85]],
-["Ali Khamenei","Guida suprema iraniana","P",1,[95,10,10,15,25,50,60,60,75,3,3,40]],
+["Ali Khamenei","Ex Guida suprema iraniana","P",0,[95,10,10,15,25,50,60,60,75,3,3,40]],
 ["Kim Jong-un","Leader nordcoreano","P",1,[98,2,3,5,5,60,98,98,90,60,15,55]],
 ["Elon Musk","Imprenditore","P",1,[40,50,70,40,35,45,10,10,15,50,45,98]],
 ["Pedro Castillo","Ex presidente peruviano","P",1,[60,75,50,55,55,60,70,60,65,30,45,35]],
@@ -345,7 +389,7 @@ const PPL=[
 ["Noam Chomsky","Linguista e pensatore","F",1,[20,95,90,85,90,90,80,70,45,85,85,45]],
 ["Peter Singer","Filosofo","F",1,[40,85,70,85,70,50,60,45,25,90,90,70]],
 ["Slavoj Žižek","Filosofo","F",1,[60,70,50,70,60,55,85,75,50,85,60,50]],
-["Papa Francesco","Leader religioso","F",1,[50,75,65,80,85,70,75,60,45,5,45,35]]
+["Papa Francesco","Leader religioso","F",0,[50,75,65,80,85,70,75,60,45,5,45,35]]
 ];
 
 const CTR=[
@@ -359,7 +403,7 @@ const CTR=[
 ["Cina",[90,15,15,45,50,60,70,85,50,80,40,85]]
 ];
 
-const ITA=new Set(["Elly Schlein","Giuseppe Conte","Matteo Salvini","Matteo Renzi","Antonio Tajani","Romano Prodi","Nichi Vendola","Sergio Mattarella","Giorgia Meloni","Mario Draghi","Carlo Calenda","Nicola Fratoianni","Roberto Vannacci","Maurizio Lupi","Giovanni Donzelli","Alessandro Di Battista","Michele Emiliano","Vincenzo De Luca","Matteo Piantedosi","Tommaso Foti","Angelo Bonelli","Riccardo Magi","Emma Bonino","Marco Cappato","Enrico Letta","Massimo D'Alema","Pier Luigi Bersani","Paolo Gentiloni","Stefano Bonaccini","Giuseppe Sala","Maurizio Landini","Beppe Grillo","Luigi Di Maio","Pier Ferdinando Casini","Guido Crosetto","Carlo Nordio","Giancarlo Giorgetti","Roberto Calderoli","Luca Zaia","Massimiliano Fedriga","Francesco Lollobrigida","Ignazio La Russa","Daniela Santanchè"]);
+const ITA=new Set(["Mario Monti","Giulio Tremonti","Gianfranco Fini","Antonio Di Pietro","Laura Boldrini","Chiara Appendino","Paola Taverna","Gianni Cuperlo","Andrea Orlando","Dario Franceschini","Francesco Boccia","Peppe Provenzano","Silvia Salis","Roberto Gualtieri","Matteo Lepore","Massimo Cacciari","Giorgio Agamben","Elly Schlein","Giuseppe Conte","Matteo Salvini","Matteo Renzi","Antonio Tajani","Romano Prodi","Nichi Vendola","Sergio Mattarella","Giorgia Meloni","Mario Draghi","Carlo Calenda","Nicola Fratoianni","Roberto Vannacci","Maurizio Lupi","Giovanni Donzelli","Alessandro Di Battista","Michele Emiliano","Vincenzo De Luca","Matteo Piantedosi","Tommaso Foti","Angelo Bonelli","Riccardo Magi","Emma Bonino","Marco Cappato","Enrico Letta","Massimo D'Alema","Pier Luigi Bersani","Paolo Gentiloni","Stefano Bonaccini","Giuseppe Sala","Maurizio Landini","Beppe Grillo","Luigi Di Maio","Pier Ferdinando Casini","Guido Crosetto","Carlo Nordio","Giancarlo Giorgetti","Roberto Calderoli","Luca Zaia","Massimiliano Fedriga","Francesco Lollobrigida","Ignazio La Russa","Daniela Santanchè"]);
 
 const app=document.getElementById("app");
 let i=0,ans=[],order=[],currentPage="intro";
@@ -596,7 +640,7 @@ const LOCAL_PHOTOS = {
   "Peter Singer": "assets/photos/peter_singer.jpg",
   "Slavoj Žižek": "assets/photos/slavoj_zizek.jpg"
 };
-window.LOCAL_PHOTOS = LOCAL_PHOTOS;
+window.LOCAL_PHOTOS = window.LOCAL_PHOTOS || LOCAL_PHOTOS;
 
 function stripAccents(str){
   return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss");
@@ -652,64 +696,55 @@ async function fetchCommonsImageByTitle(title){
   }
 }
 
+const PHOTO_PENDING={};
 async function fetchCommonsImageUrl(name){
   if (!name) return null;
 
-  // 1) Asset locale: è la sorgente primaria e funziona direttamente nel canvas.
-  if (window.LOCAL_PHOTOS && window.LOCAL_PHOTOS[name]) {
-    return window.LOCAL_PHOTOS[name];
-  }
+  // 1) Asset locale: sorgente primaria, funziona anche nel canvas.
+  if (window.LOCAL_PHOTOS && window.LOCAL_PHOTOS[name]) return (window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[name])||window.LOCAL_PHOTOS[name];
 
-  // 2) URL preimpostato (usato per alcune personalità senza asset locale).
-  if (PRESET_PHOTOS[name]) return PRESET_PHOTOS[name];
+  // 2) Cache (anche negativa) e richieste già in corso.
+  if (name in PHOTO_CACHE) return PHOTO_CACHE[name];
+  if (PHOTO_PENDING[name]) return PHOTO_PENDING[name];
 
-  // 3) Cache delle risoluzioni Wikimedia già trovate.
-  if (PHOTO_CACHE[name]) return PHOTO_CACHE[name];
+  PHOTO_PENDING[name] = (async () => {
+    // 3) URL preimpostato: usato SOLO se l'immagine si carica davvero.
+    //    (prima un URL errato bloccava per sempre la ricerca e restavano le iniziali)
+    const pre = PRESET_PHOTOS[name];
+    if (pre && await imgFrom(pre)) return pre;
 
-  const candidates = buildImageCandidates(name);
-
-  for (const candidate of candidates) {
-    const urls = [
-      `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch=${encodeURIComponent(candidate)}&gsrnamespace=6&gsrprop=title&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=600`,
-      `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&list=search&srsearch=${encodeURIComponent(candidate)}&srnamespace=6&srlimit=5`
-    ];
-
-    for (const url of urls) {
-      try{
-        const res = await fetch(url, { headers: { Accept: "application/json" }});
-        if (!res.ok) continue;
-
-        const data = await res.json();
-
-        const page = data?.query?.pages ? Object.values(data.query.pages).find(p => {
-          if (!p || !p.title) return false;
-          const t = p.title.replace(/^File:/i, "").toLowerCase();
-          const cand = candidate.toLowerCase();
-          return t.includes(cand) || cand.includes(t) || stripAccents(t).includes(stripAccents(cand));
-        }) : null;
-
-        const img = page?.imageinfo?.[0]?.thumburl || page?.imageinfo?.[0]?.url || null;
-        if (img) {
-          PHOTO_CACHE[name] = img;
-          return img;
-        }
-
-        const hits = data?.query?.search || [];
-        for (const hit of hits) {
-          const title = hit.title || "";
-          const imageUrl = await fetchCommonsImageByTitle(title);
-          if (imageUrl) {
-            PHOTO_CACHE[name] = imageUrl;
-            return imageUrl;
+    // 4) Ricerca su Wikimedia Commons (poche varianti del nome, per non inondare di richieste).
+    // solo varianti col nome completo (il solo nome o cognome pescava foto di altre persone)
+    const candidates = buildImageCandidates(name).filter(c => !/\s/.test(name) || /[\s_]/.test(c)).slice(0, 3);
+    for (const candidate of candidates) {
+      const urls = [
+        `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch=${encodeURIComponent(candidate)}&gsrnamespace=6&gsrprop=title&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=600`,
+        `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&list=search&srsearch=${encodeURIComponent(candidate)}&srnamespace=6&srlimit=5`
+      ];
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { headers: { Accept: "application/json" }});
+          if (!res.ok) continue;
+          const data = await res.json();
+          const page = data?.query?.pages ? Object.values(data.query.pages).find(p => {
+            if (!p || !p.title) return false;
+            const t = p.title.replace(/^File:/i, "").toLowerCase();
+            const cand = candidate.toLowerCase();
+            return t.includes(cand) || cand.includes(t) || stripAccents(t).includes(stripAccents(cand));
+          }) : null;
+          const img = page?.imageinfo?.[0]?.thumburl || page?.imageinfo?.[0]?.url || null;
+          if (img) return img;
+          for (const hit of (data?.query?.search || [])) {
+            const imageUrl = await fetchCommonsImageByTitle(hit.title || "");
+            if (imageUrl) return imageUrl;
           }
-        }
-      }catch(e){
+        } catch (e) {}
       }
     }
-  }
+    return null;
+  })().then(u => { PHOTO_CACHE[name] = u; delete PHOTO_PENDING[name]; return u; });
 
-  PHOTO_CACHE[name] = null;
-  return null;
+  return PHOTO_PENDING[name];
 }
 
 async function resolvePhotoNames(names){
@@ -724,57 +759,233 @@ async function resolvePhotoNames(names){
   return Object.fromEntries(entries);
 }
 
-function head(){return '<div class="top0"><div class="logo" onclick="goHome()">12<span>/</span>assi</div><div class="stat">Test politico · 36 domande</div></div>'}
+function head(){return '<div class="top0"><div class="logo" onclick="goHome()">12<span>/</span>assi</div><div class="stat">Test politico · '+Q.length+' domande</div></div>'}
 function goHome(){currentPage="intro";intro()}
 
 function intro(){
- app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>36 affermazioni, 12 assi politici, circa 5 minuti. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini. Poi scarichi tutto in un PNG.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
+ app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>'+Q.length+' affermazioni, '+AX.length+' assi politici, circa 5 minuti. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini. Poi scarichi tutto in un PNG.</p><p class="notice">Le risposte non vengono salvate o inviate. Le foto mancanti possono essere richieste a Wikimedia quando visualizzate.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
  document.getElementById("go").onclick=()=>{currentPage="quiz";order=shuffle(Q.map((_,k)=>k));ans=[];i=0;ask()};
  document.getElementById("gallery").onclick=showGallery;
 }
 
-let galleryRequestId = 0;
+const GAL_FILTERS=[
+  ['Tutti',p=>true],
+  ['Politici',p=>p[2]==='P'],
+  ['Filosofi',p=>p[2]==='F'],
+  ['Italia oggi',p=>p[3]===1&&ITA.has(p[0])],
+  ['Mondo oggi',p=>p[3]===1&&!ITA.has(p[0])],
+  ['Del passato',p=>p[3]===0]
+];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const PROFILE_UPDATED=null;
+const PROFILE_DATA={};
+function profileMetadata(person){
+  const saved=PROFILE_DATA[person[0]]||{};
+  return {...saved,country:saved.country||(ITA.has(person[0])?"Italia":null),era:saved.era||null,updated:saved.updated||PROFILE_UPDATED,
+    confidence:saved.confidence||"indicativa",paraphrase:saved.paraphrase||null,facts:saved.facts||[],
+    axes:AX.map((axis,j)=>({reason:null,sources:[],...(saved.axes&&saved.axes[j]||{})}))};
+}
+let galleryType=0,galleryQuery="",galleryCountry="",galleryEra="",galleryAxis="",galleryBand="";
+function galleryMatches(person){
+  const meta=profileMetadata(person),query=galleryQuery.trim().toLocaleLowerCase("it");
+  if(!GAL_FILTERS[galleryType][1](person))return false;
+  if(query&&!person[0].toLocaleLowerCase("it").includes(query))return false;
+  if(galleryCountry==="unknown"&&meta.country)return false;
+  if(galleryCountry&&galleryCountry!=="unknown"&&meta.country!==galleryCountry)return false;
+  if(galleryEra==="present"&&!person[3]||galleryEra==="past"&&person[3])return false;
+  if(galleryAxis!==""&&galleryBand){
+    const value=person[4][+galleryAxis];
+    if(galleryBand==="left"&&value>40||galleryBand==="middle"&&(value<40||value>60)||galleryBand==="right"&&value<60)return false;
+  }
+  return true;
+}
 
-async function renderGalleryPage(filter){
-  const requestId = ++galleryRequestId;
-  let filtered=PPL;
-  if(filter==='Politici')filtered=PPL.filter(p=>p[2]==='P');
-  if(filter==='Filosofi')filtered=PPL.filter(p=>p[2]==='F');
-  if(filter==='Italia oggi')filtered=PPL.filter(p=>p[3]===1&&p[2]==='P'&&ITA.has(p[0]));
-  if(filter==='Mondo oggi')filtered=PPL.filter(p=>p[3]===1&&p[2]==='P'&&!ITA.has(p[0]));
-  if(filter==='Del passato')filtered=PPL.filter(p=>p[3]===0);
-
-  const names = filtered.map(p=>p[0]);
-  const photoMap = await resolvePhotoNames(names);
-  const ini = n => n.split(" ").filter(w => w.length > 2 || w === w.toUpperCase()).slice(0,2).map(w => w[0]).join("").toUpperCase();
-
-  const html = filtered.map(p => {
-    const photoUrl = photoMap[p[0]];
-    const img = photoUrl
-      ? '<img class="ph" alt="'+p[0]+'" src="'+photoUrl+'" onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ph ava\',textContent:\''+ini(p[0])+'\'}))">'
-      : '<div class="ph ava">'+ini(p[0])+'</div>';
-    return '<div class="gallery-card">'+img+'<b>'+p[0]+'</b><small>'+p[1]+'</small></div>';
-  }).join('');
-
-  const gallery = document.getElementById('gal');
-  if (gallery && requestId === galleryRequestId) gallery.innerHTML = html;
+function swapInPhoto(el,name,url,cls){
+  const im=new Image();im.className=cls;im.alt=name;im.decoding="async";
+  im.onload=()=>{if(el.isConnected)el.replaceWith(im)};
+  im.src=url;
+}
+// foto non locali: caricate solo quando la card è visibile, max 3 ricerche alla volta
+let lazyActive=0;const lazyQ=[];let galObserver=null;
+function pumpLazy(){
+  while(lazyActive<3&&lazyQ.length){
+    const el=lazyQ.shift();if(!el.isConnected)continue;
+    lazyActive++;const name=PPL[+el.dataset.lazy][0];
+    fetchCommonsImageUrl(name).then(u=>{if(u&&el.isConnected)swapInPhoto(el,name,u,"ph")}).catch(()=>{}).finally(()=>{lazyActive--;pumpLazy()});
+  }
+}
+function renderGallery(j){
+  if(galObserver)galObserver.disconnect();
+  lazyQ.length=0;
+  const gal=document.getElementById("gal");
+  if(j!==undefined)galleryType=j;
+  const idxs=PPL.map((p,k)=>k).filter(k=>galleryMatches(PPL[k]));
+  gal.innerHTML=idxs.map(k=>{
+    const p=PPL[k],loc=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[p[0]],webp=window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[p[0]];
+    const ph=loc?'<img class="ph" width="72" height="72" loading="lazy" decoding="async" alt="'+esc(p[0])+'" src="'+esc(webp||loc)+'"'+(webp&&webp!==loc?' data-fallback="'+esc(loc)+'"':'')+'>':'<div class="ph ava" data-lazy="'+k+'">'+esc(ini(p[0]))+'</div>';
+    return '<button type="button" class="gallery-card" data-i="'+k+'" aria-label="Statistiche di '+esc(p[0])+'">'+ph+'<b>'+esc(p[0])+'</b><small>'+esc(p[1])+'</small></button>';
+  }).join("");
+  document.getElementById("galcount").textContent=idxs.length+" / "+PPL.length;
+  if(!idxs.length)gal.innerHTML='<p class="notice">Nessun profilo corrisponde ai filtri.</p>';
+  if("IntersectionObserver" in window){
+    galObserver=new IntersectionObserver(es=>es.forEach(e=>{
+      if(!e.isIntersecting)return;galObserver.unobserve(e.target);
+      const el=e.target.querySelector("[data-lazy]");if(el){lazyQ.push(el);pumpLazy()}
+    }),{rootMargin:"250px"});
+    gal.querySelectorAll(".gallery-card").forEach(c=>{if(c.querySelector("[data-lazy]"))galObserver.observe(c)});
+  }
 }
 
 function showGallery(){
   currentPage="gallery";
-  app.innerHTML=head()+'<div class="sec">§ 02 · Archivio</div><h1>Galleria</h1><p>Tutti i '+PPL.length+' leader e filosofi contemplati nel test</p>';
-  const filters=['Tutti','Politici','Filosofi','Italia oggi','Mondo oggi','Del passato'];
-  app.innerHTML+='<div class="gallery-filters">'+filters.map((f,j)=>'<button class="gallery-filter '+(j===0?'active':'')+'" data-f="'+f+'">'+f+'</button>').join('')+'</div><div class="gallery" id="gal"></div>';
+  app.innerHTML=head()+'<div class="sec">§ 02 · Archivio</div><h1>Galleria</h1><p>Tutti i '+PPL.length+' leader e filosofi contemplati nel test. Tocca una persona per vedere le sue statistiche e come farla uscire nel test.</p>'
+    +'<div class="gallery-filters">'+GAL_FILTERS.map((f,j)=>'<button class="gallery-filter'+(j===galleryType?' active':'')+'" data-f="'+j+'">'+f[0]+'</button>').join("")+'</div>'
+    +'<div class="gallery-controls"><input id="galsearch" type="search" placeholder="Cerca per nome" aria-label="Cerca per nome">'
+    +'<label>Paese<select id="galcountry"><option value="">Tutti i Paesi</option><option value="unknown">Non documentato</option></select></label>'
+    +'<label>Epoca<select id="galera"><option value="">Tutte le epoche</option><option value="present">Attuale</option><option value="past">Passato</option></select></label>'
+    +'<label>Asse<select id="galaxis"><option value="">Tutti gli assi</option>'+AX.map((a,j)=>'<option value="'+j+'">'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label>'
+    +'<label>Valore<select id="galband"><option value="">Qualsiasi valore</option><option value="left">Polo iniziale</option><option value="middle">Intermedio (40–60)</option><option value="right">Polo opposto</option></select></label></div>'
+    +'<p class="notice">I Paesi e le epoche non sono ancora documentati per tutti i profili; i filtri mostrano solo i dati presenti.</p>'
+    +'<div class="meta"><span id="galcount"></span></div><div class="gallery" id="gal"></div>'
+    +'<div class="act"><button class="btn ghost" id="galback">← Indietro</button></div>';
+  const gal=document.getElementById("gal");
+  gal.addEventListener("click",e=>{const c=e.target.closest(".gallery-card");if(c)openPerson(+c.dataset.i)});
+  gal.addEventListener("error",e=>{const t=e.target;if(t.tagName==="IMG"&&t.classList.contains("ph")){if(t.dataset.fallback){const fallback=t.dataset.fallback;t.removeAttribute("data-fallback");t.src=fallback;return}const d=document.createElement("div");d.className="ph ava";d.textContent=ini(t.alt);t.replaceWith(d)}},true);
+  document.querySelectorAll(".gallery-filter").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(".gallery-filter").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");renderGallery(+b.dataset.f);
+  });
+  const countries=[...new Set(PPL.map(person=>profileMetadata(person).country).filter(Boolean))].sort();
+  countries.forEach(country=>document.getElementById("galcountry").insertAdjacentHTML("beforeend",'<option value="'+esc(country)+'">'+esc(country)+'</option>'));
+  const bindings={galsearch:v=>galleryQuery=v,galcountry:v=>galleryCountry=v,galera:v=>galleryEra=v,galaxis:v=>galleryAxis=v,galband:v=>galleryBand=v};
+  Object.entries(bindings).forEach(([id,set])=>document.getElementById(id).addEventListener(id==="galsearch"?"input":"change",e=>{set(e.target.value);renderGallery()}));
+  document.getElementById("galsearch").value=galleryQuery;
+  document.getElementById("galcountry").value=galleryCountry;
+  document.getElementById("galera").value=galleryEra;
+  document.getElementById("galaxis").value=galleryAxis;
+  document.getElementById("galband").value=galleryBand;
+  document.getElementById("galback").onclick=goHome;
+  renderGallery(0);
+  window.scrollTo(0,0);
+}
 
-  renderGalleryPage("Tutti");
+/* ===== Popup persona: statistiche + "come farlo uscire" ===== */
+// Risposta (-2..2) a ogni domanda che porta il punteggio di ogni asse il più vicino possibile al profilo della persona.
+function buildRecipe(v){
+  const ans=Array(Q.length).fill(0);
+  for(let a=0;a<AX.length;a++){
+    const qs=[];Q.forEach((q,qi)=>{if(q[0]===a)qs.push(qi)});
+    const maxS=2*qs.length;
+    const S=Math.max(-maxS,Math.min(maxS,Math.round((v[a]-50)/50*maxS)));
+    const sg=Math.sign(S),vals=qs.map(()=>0);
+    for(let t=0;t<Math.abs(S);t++)vals[t%qs.length]+=sg;
+    qs.forEach((qi,j)=>{ans[qi]=vals[j]*Q[qi][1]});   // q[1] = polarità della domanda
+  }
+  return ans;
+}
+const scoresOf=ans=>{const s=Array(12).fill(0),n=Array(12).fill(0);Q.forEach((q,qi)=>{s[q[0]]+=q[1]*ans[qi];n[q[0]]+=2});return s.map((x,k)=>Math.round(50+50*x/n[k]))};
+const rawComp=(a,b)=>{let d=0;for(let k=0;k<12;k++)d+=Math.abs(a[k]-b[k]);return 100-d/12*1.3};   // stessa formula di comp(), senza arrotondare
+function margin(ans,k){
+  const sc=scoresOf(ans),t=rawComp(sc,PPL[k][4]);let best=-1e9;
+  for(let i=0;i<PPL.length;i++){if(i===k)continue;const c=rawComp(sc,PPL[i][4]);if(c>best)best=c}
+  return t-best;
+}
+// se con la ricetta "naturale" qualcun altro è davanti, ritocca le risposte una alla volta finché esce lui
+function improveRecipe(ans,k){
+  let cur=margin(ans,k);
+  for(let round=0;round<8&&cur<=0;round++){
+    let gain=0,bq=-1,bv=0;
+    for(let qi=0;qi<Q.length;qi++)for(const dv of [-1,1]){
+      const nv=ans[qi]+dv;if(nv<-2||nv>2)continue;
+      const old=ans[qi];ans[qi]=nv;const m=margin(ans,k);ans[qi]=old;
+      if(m-cur>gain+1e-9){gain=m-cur;bq=qi;bv=nv}
+    }
+    if(bq<0)break;ans[bq]=bv;cur+=gain;
+  }
+  return ans;
+}
+const ansLabel=v=>(OPT.find(o=>o[1]===v)||OPT[2])[0];
 
-  document.querySelectorAll('.gallery-filter').forEach(b=>{
-    b.onclick=()=>{
-      document.querySelectorAll('.gallery-filter').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      renderGalleryPage(b.dataset.f);
+let modalFrom=null,modalIdx=-1;
+function ensureModal(){
+  let m=document.getElementById("modal");if(m)return m;
+  m=document.createElement("div");m.id="modal";m.className="modal";
+  m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-labelledby","mTitle");
+  m.innerHTML='<div class="mwrap"><button type="button" class="mclose" aria-label="Chiudi">×</button><div class="mcard" id="mcard" tabindex="-1"></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener("click",e=>{if(e.target===m||e.target.classList.contains("mclose"))closePerson()});
+  m.addEventListener("error",e=>{const t=e.target;if(t.tagName==="IMG"){if(t.dataset.fallback){const fallback=t.dataset.fallback;t.removeAttribute("data-fallback");t.src=fallback;return}const d=document.createElement("div");d.className=t.className+" ava";d.textContent=ini(t.alt);t.replaceWith(d)}},true);
+  document.addEventListener("keydown",e=>{
+    if(!m.classList.contains("on"))return;
+    if(e.key==="Escape"){closePerson();return}
+    if(e.key==="Tab"){
+      const f=[...m.querySelectorAll("button,summary")].filter(x=>x.offsetParent!==null);
+      if(!f.length)return;const first=f[0],last=f[f.length-1];
+      if(e.shiftKey&&(document.activeElement===first||document.activeElement===m.querySelector("#mcard"))){e.preventDefault();last.focus()}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
     }
   });
+  return m;
+}
+function closePerson(){
+  const m=document.getElementById("modal");if(!m)return;
+  m.classList.remove("on");document.body.classList.remove("mopen");modalIdx=-1;
+  if(modalFrom&&modalFrom.isConnected)modalFrom.focus();modalFrom=null;
+}
+async function copyReport(button,name,axisIndex){
+  const row=button.closest(".rax"),reason=row.querySelector("textarea").value.trim();
+  if(!reason){row.querySelector("textarea").focus();row.querySelector("textarea").setCustomValidity("Aggiungi una motivazione per la correzione proposta.");row.querySelector("textarea").reportValidity();return}
+  const proposed=row.querySelector('input[type="number"]');
+  if(!proposed.checkValidity()){proposed.reportValidity();return}
+  const text=["Segnalazione 12 Assi", "Persona: "+name, "Asse: "+AX[axisIndex][0]+" / "+AX[axisIndex][1], "Punteggio attuale: "+PPL[modalIdx][4][axisIndex]+"%", "Correzione proposta: "+proposed.value+"%", "Motivazione: "+reason].join("\n");
+  try{await navigator.clipboard.writeText(text);button.textContent="Segnalazione copiata"}
+  catch(e){const field=row.querySelector("textarea");field.value=text;field.focus();field.select();button.textContent="Testo selezionato: copia"}
+}
+function openPerson(k){
+  const p=PPL[k],name=p[0],v=p[4];
+  modalFrom=document.activeElement;modalIdx=k;
+  const m=ensureModal(),card=document.getElementById("mcard");
+  const meta=profileMetadata(p);
+
+  let ans=buildRecipe(v);
+  if(margin(ans,k)<=0)ans=improveRecipe(ans,k);
+  const sc=scoresOf(ans);
+  const sim=PPL.map((q,i)=>({i,c:comp(sc,q[4]),r:rawComp(sc,q[4])})).sort((a,b)=>b.r-a.r);
+  const pos=1+sim.filter(x=>x.r>sim.find(y=>y.i===k).r+1e-9).length;
+  const mine=comp(sc,v),top=sim[0];
+  const related=PPL.map((person,index)=>({person,index,distance:person[4].reduce((sum,value,j)=>sum+Math.abs(value-v[j]),0)})).filter(x=>x.index!==k).sort((a,b)=>a.distance-b.distance);
+  let simMsg;
+  if(pos===1) simMsg='Rispondendo come indicato sotto esci <b>'+esc(name)+'</b> come persona più compatibile ('+mine+'%).';
+  else simMsg='Rispondendo come indicato sotto arrivi al <b>#'+pos+'</b> con '+mine+'%: davanti c\u2019è '+esc(PPL[top.i][0])+' ('+top.c+'%), il cui profilo è vicino al suo ('+comp(v,PPL[top.i][4])+'% di compatibilità tra i due).';
+
+  const loc=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name],webp=window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[name];
+  const ph=loc?'<img class="mph" alt="'+esc(name)+'" src="'+esc(webp||loc)+'"'+(webp&&webp!==loc?' data-fallback="'+esc(loc)+'"':'')+'>':'<div class="mph ph ava" id="mph">'+esc(ini(name))+'</div>';
+  const tags=[p[2]==="P"?"Politico":"Filosofo",p[3]?"Oggi":"Del passato"].concat(ITA.has(name)?["Italia"]:[]).map(t=>'<span class="tag">'+t+'</span>').join("");
+  const bars=AX.map((a,j)=>'<div class="ax"><div class="ic">'+String(j+1).padStart(2,"0")+'</div><div><b>'+a[0]+'</b><small>contro '+a[1]+'</small><div class="trk"><i style="width:'+v[j]+'%"></i></div></div><div class="pc">'+v[j]+'%</div></div>').join("");
+  const axisDetails=AX.map((a,j)=>'<div class="rax"><b>'+String(j+1).padStart(2,"0")+' · '+a[0]+' / '+a[1]+' — '+v[j]+'%</b>'
+    +'<p>'+(meta.axes[j].reason?esc(meta.axes[j].reason):'Motivazione del punteggio non documentata.')+'</p>'
+    +'<p class="hint">Confidenza: '+(meta.axes[j].confidence==="documentata"?'documentata':'indicativa')+'. '+(meta.axes[j].sources.length?'Fonti: '+meta.axes[j].sources.map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.label||s.url)+'</a>').join(' · '):'Nessuna fonte collegata.')+'</p>'
+    +'<details><summary>Contesta questo punteggio</summary><label>Valore proposto (0–100)<input type="number" min="0" max="100" step="1" value="'+v[j]+'"></label><label>Motivazione<textarea class="report-text" maxlength="1200" placeholder="Spiega la correzione e, se possibile, indica una fonte verificabile."></textarea></label><button class="btn ghost report-copy" type="button" data-axis="'+j+'">Copia segnalazione</button><p class="hint">La segnalazione resta sul tuo dispositivo; copiala e inviala al progetto tramite un canale di contatto.</p></details></div>').join("");
+  const rec=AX.map((a,j)=>'<div class="rax"><b>'+String(j+1).padStart(2,"0")+' · '+a[0]+' / '+a[1]+' — '+v[j]+'%</b>'
+    +Q.map((q,qi)=>q[0]===j?'<div class="rq">'+esc(q[2])+'<em>'+esc(ansLabel(ans[qi]))+'</em></div>':"").join("")+'</div>').join("");
+  const facts=meta.facts.length?'<ol>'+meta.facts.slice(0,3).map(f=>'<li>'+esc(f.text||f)+'</li>').join("")+'</ol>':'<p>Tre fatti chiave: non documentati.</p>';
+  const similarText=related.length?esc(related[0].person[0]):'Non disponibile';
+  const distantText=related.length?esc(related[related.length-1].person[0]):'Non disponibile';
+
+  card.innerHTML='<div class="mhead">'+ph+'<div><div class="kick">'+(p[2]==="P"?"Politico":"Filosofo")+'</div><h2 id="mTitle">'+esc(name)+'</h2><p>'+esc(p[1])+'</p></div></div><div class="tags">'+tags+'</div>'
+    +'<p class="notice">Confidenza complessiva: '+(meta.confidence==="documentata"?'documentata':'indicativa')+'. Ultimo aggiornamento: '+(meta.updated?esc(meta.updated):'data non registrata')+'.</p>'
+    +'<div class="box"><h3>Profilo biografico</h3><p>Frase rappresentativa parafrasata: '+(meta.paraphrase?esc(meta.paraphrase):'non documentata')+'.</p>'+facts+'<div class="row"><span>Epoca</span><span>'+esc(meta.era||'Non documentata')+'</span></div><div class="row"><span>Paese</span><span>'+esc(meta.country||'Non documentato')+'</span></div><div class="row"><span>Più simile*</span><span>'+similarText+'</span></div><div class="row"><span>Più distante*</span><span>'+distantText+'</span></div><p class="hint">* Confronto calcolato sui 12 punteggi indicativi presenti, non è un giudizio storico.</p></div>'
+    +'<div class="box" style="margin-top:20px"><h3>Le sue posizioni sui 12 assi</h3>'+bars+'</div>'
+    +'<div class="box"><h3>Motivazioni, fonti e contestazioni</h3>'+axisDetails+'</div>'
+    +'<div class="box"><h3>Come farlo uscire</h3><p class="sim">'+simMsg+'</p>'
+    +'<details class="how"><summary>Mostra le risposte da dare (' + Q.length + ' domande)</summary>'+rec+'</details></div>';
+  card.querySelectorAll(".report-copy").forEach(button=>button.addEventListener("click",()=>copyReport(button,name,+button.dataset.axis)));
+  card.querySelectorAll(".report-text").forEach(field=>field.addEventListener("input",()=>field.setCustomValidity("")));
+  card.scrollTop=0;
+  m.classList.add("on");document.body.classList.add("mopen");
+  m.querySelector(".mclose").focus();
+
+  if(!loc)fetchCommonsImageUrl(name).then(u=>{const el=document.getElementById("mph");if(u&&el&&modalIdx===k)swapInPhoto(el,name,u,"mph")}).catch(()=>{});
 }
 
 function ask(){
@@ -808,10 +1019,31 @@ const rank=(arr,sc)=>{
 
 const ini=n=>n.split(" ").filter(w=>w.length>2||w===w.toUpperCase()).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 
+function radarMarkup(values){
+  const cx=190,cy=170,r=112,point=(value,index,scale=1)=>{
+    const angle=(Math.PI*2*index/AX.length)-Math.PI/2,distance=r*value/100*scale;
+    return [cx+Math.cos(angle)*distance,cy+Math.sin(angle)*distance];
+  };
+  const grid=[25,50,75,100].map(level=>'<polygon class="grid" points="'+AX.map((_,j)=>point(level,j).join(",")).join(" ")+'"></polygon>').join("");
+  const spokes=AX.map((_,j)=>{const [x,y]=point(100,j);return '<line class="grid" x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'"></line><text x="'+point(116,j)[0]+'" y="'+point(116,j)[1]+'" text-anchor="middle">'+String(j+1).padStart(2,"0")+'</text>'}).join("");
+  return '<svg class="chart" viewBox="0 0 380 340" role="img" aria-label="Grafico radar dei tuoi punteggi sui dodici assi"><title>Il tuo profilo sui dodici assi</title>'+grid+spokes+'<polygon class="radar-shape" points="'+values.map((v,j)=>point(v,j).join(",")).join(" ")+'"></polygon></svg>';
+}
+
+function comparisonMapMarkup(values,xAxis=0,yAxis=1){
+  const w=520,h=340,left=48,right=18,top=18,bottom=48,plotW=w-left-right,plotH=h-top-bottom;
+  const coords=profile=>[left+profile[xAxis]/100*plotW,top+(100-profile[yAxis])/100*plotH];
+  const positions=PPL.map((person,index)=>{const [x,y]=coords(person[4]);return {person,index,x,y,distance:Math.hypot(person[4][xAxis]-values[xAxis],person[4][yAxis]-values[yAxis])}}).sort((a,b)=>a.distance-b.distance);
+  const grid=[0,25,50,75,100].map(v=>'<line class="grid" x1="'+(left+plotW*v/100)+'" y1="'+top+'" x2="'+(left+plotW*v/100)+'" y2="'+(top+plotH)+'"></line><line class="grid" x1="'+left+'" y1="'+(top+plotH*(1-v/100))+'" x2="'+(left+plotW)+'" y2="'+(top+plotH*(1-v/100))+'"></line>').join("");
+  const dots=positions.map(point=>'<circle class="map-point" tabindex="0" role="button" data-person="'+point.index+'" cx="'+point.x.toFixed(1)+'" cy="'+point.y.toFixed(1)+'" r="4"><title>'+esc(point.person[0])+': '+point.person[4][xAxis]+'% / '+point.person[4][yAxis]+'%</title></circle>').join("");
+  const [ux,uy]=coords(values),rating=distance=>Math.round(100-distance/Math.sqrt(2));
+  return '<svg class="chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Mappa di profili e utente sugli assi selezionati">'+grid+dots+'<circle class="map-user" cx="'+ux.toFixed(1)+'" cy="'+uy.toFixed(1)+'" r="7"><title>Il tuo profilo</title></circle><text x="'+(left+plotW/2)+'" y="'+(h-8)+'" text-anchor="middle">'+esc(AX[xAxis][0]+' → '+AX[xAxis][1])+'</text><text x="12" y="'+(top+plotH/2)+'" text-anchor="middle" transform="rotate(-90 12 '+(top+plotH/2)+')">'+esc(AX[yAxis][0]+' → '+AX[yAxis][1])+'</text></svg><div class="map-nearest">'+positions.slice(0,5).map(point=>'<button type="button" data-person="'+point.index+'"><span>'+esc(point.person[0])+'</span><span>'+rating(point.distance)+'% vicinanza</span></button>').join("")+'</div>';
+}
+
 function heroCard(label, person, photoUrl){
   const initials = ini(person.n);
+  const fallback=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[person.n];
   const imageMarkup = photoUrl
-    ? '<img class="ph" alt="'+person.n+'" src="'+photoUrl+'" onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ph ava\',textContent:\''+initials+'\'}))">'
+    ? '<img class="ph" alt="'+person.n+'" src="'+photoUrl+'"'+(fallback&&fallback!==photoUrl?' data-fallback="'+fallback+'"':'')+' onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.removeAttribute(\'data-fallback\')}else{this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ph ava\',textContent:\''+initials+'\'}))}">'
     : '<div class="ph ava">'+initials+'</div>';
   return '<div class="hero"><div class="kick">'+label+'</div>'+imageMarkup+'<div class="big">'+person.c+'%</div><b>'+person.n+'</b><div style="color:var(--mute);font-size:14px">'+person.t+'</div></div>';
 }
@@ -843,7 +1075,10 @@ async function result(){
   app.innerHTML=head()+'<div class="card"><div class="kick">§ 03 · '+ide.cat+'</div><h2>'+ide.n+'</h2>'
   +'<div class="duo">'+(O?heroCard("Oggi · Italia",O,photoMap[O.n]||null):"")+(Pp?heroCard("Del passato",Pp,photoMap[Pp.n]||null):"")+'</div>'
   +'<div class="box"><h3>Nel mondo, oggi</h3>'+rowsOf(world,true)+'</div>'
-  +'<div class="box"><h3>I tuoi 12 assi</h3>'+bars+'</div>'
+  +'<div class="box"><h3>I tuoi 12 assi · stima orientativa</h3>'+bars+'<p class="notice">Punteggi derivati dalle tue risposte: tre domande per asse. Non sono una diagnosi né misure validate.</p></div>'
+  +'<div class="box"><h3>Radar · il tuo profilo</h3>'+radarMarkup(sc)+'</div>'
+  +'<div class="box" id="political-map"><div class="map-controls"><label>Asse orizzontale<select id="map-x">'+AX.map((a,k)=>'<option value="'+k+'">'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label><label>Asse verticale<select id="map-y">'+AX.map((a,k)=>'<option value="'+k+'"'+(k===1?' selected':'')+'>'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label></div><div id="map-plot"></div><p class="hint">La vicinanza qui usa solo i due assi selezionati; gli altri non entrano nel calcolo.</p></div>'
+  +'<div class="notice">Profili dei personaggi: stime indicative. Data di aggiornamento e fonti non registrate; nessun controllo automatico esterno.</div>'
   +'<div class="box"><h3>Le tue personalità</h3><div class="tabs" id="tabs"></div><div id="plist"></div></div>'
   +'<div class="box"><h3>Paesi vicini</h3>'+rowsOf(ctr.slice(0,3),false)+'</div></div>'
   +'<div class="act"><button class="btn" id="wa">Condividi su WhatsApp</button><button class="btn ghost" id="png">Scarica PNG ↓</button><button class="btn ghost" id="cp">Copia testo</button><button class="btn ghost" id="again">Rifai</button></div><p id="msg" class="mono" style="margin-top:14px;font-size:11px"></p>';
@@ -853,6 +1088,12 @@ async function result(){
   const tb=document.getElementById("tabs"),pl=document.getElementById("plist");
   const show=n=>{tb.innerHTML=T.map((t,j)=>'<button class="tab'+(j==n?' on':'')+'" data-j="'+j+'">'+t[0]+'</button>').join("");pl.innerHTML=rowsOf(ppl.filter(T[n][1]).slice(0,6),true);tb.querySelectorAll(".tab").forEach(b=>b.onclick=()=>show(+b.dataset.j))};
   show(0);
+  const map=document.getElementById("political-map"),mapX=document.getElementById("map-x"),mapY=document.getElementById("map-y"),plot=document.getElementById("map-plot");
+  const renderMap=()=>{const x=+mapX.value,y=+mapY.value;plot.innerHTML=comparisonMapMarkup(sc,x,y)};
+  map.addEventListener("change",e=>{if(e.target===mapX||e.target===mapY){if(mapX.value===mapY.value)mapY.value=String((+mapY.value+1)%AX.length);renderMap()}});
+  map.addEventListener("click",e=>{const point=e.target.closest("[data-person]");if(point)openPerson(+point.dataset.person)});
+  map.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches(".map-point")){e.preventDefault();openPerson(+e.target.dataset.person)}});
+  renderMap();
 
   const msg=document.getElementById("msg");
   document.getElementById("cp").onclick=async()=>{
@@ -885,12 +1126,11 @@ const IMG_CACHE={};
 // Restituisce SEMPRE un'immagine "pulita" (che non sporca il canvas) oppure null.
 async function loadImgClean(src,name){
   const isFile=location.protocol==="file:";
-  const local=(window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name])||(src&&!/^https?:/i.test(src)?src:null);
+  const local=(window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[name])||(window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name])||(src&&!/^https?:/i.test(src)?src:null);
   let im=null;
 
-  // 1) Foto locale: stessa origine, quindi sicura per l'esportazione canvas.
-  // Su file:// il browser può comunque bloccare l'accesso agli asset relativi.
-  if(!isFile&&local){im=await imgFrom(local);if(im)return im}
+  // 1) Foto locale: preferita per l'uso offline e sicura nel canvas file://.
+  if(local){im=await imgFrom(local);if(im)return im}
 
   // 2) Foto remota: prima scaricala come Blob, così l'immagine caricata nel
   // canvas non eredita l'origine della pagina e non lo rende "tainted".
@@ -909,10 +1149,10 @@ function wrapLines(x,text,maxW){
   for(const w of words){const t=cur?cur+" "+w:w;if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=w}else cur=t}
   if(cur)lines.push(cur);return lines;
 }
-// Formato 9:16 verticale (1080x1920), ideale per storie Instagram / WhatsApp / TikTok
+// Formato verticale 1080x2200, pensato per la condivisione mobile.
 async function drawCard(d,withPhotos){
   if(document.fonts){try{await Promise.all(["400 20px Outfit","600 20px Outfit","700 20px Outfit","800 20px Outfit"].map(f=>document.fonts.load(f)));await document.fonts.ready}catch(e){}}
-  const W=1080,H=1920,P=64,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const W=1080,H=2200,P=64,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   const BG="#0a0a0a",INK="#f2f0ea",MUTE="#8d8c85",LINE="#2a2a27",AC="#ff3b1f",SANS="Outfit,system-ui,sans-serif",MONO="ui-monospace,Menlo,Consolas,monospace";
   const T=(t,px,py,o={})=>{x.font=(o.w||700)+" "+(o.s||28)+"px "+(o.m?MONO:SANS);x.fillStyle=o.c||INK;x.textAlign=o.a||"left";x.textBaseline="alphabetic";
     x.letterSpacing=(o.ls!==undefined?o.ls:0)+"px";x.fillText(o.u?t.toUpperCase():t,px,py)};
@@ -930,6 +1170,7 @@ async function drawCard(d,withPhotos){
   let fs=112;x.font="800 "+fs+"px "+SANS;x.letterSpacing="-3px";
   while(x.measureText(d.ide.n.toUpperCase()).width>W-2*P&&fs>48){fs-=4;x.font="800 "+fs+"px "+SANS}
   T(d.ide.n,P,196+fs+14,{s:fs,w:800,u:1,ls:-3});
+  T("STIMA ORIENTATIVA · 3 DOMANDE PER ASSE",P,374,{s:15,m:1,c:MUTE,ls:1,w:500});
   // leader: due colonne con foto grandi
   const hy=420,gap=32,cw=(W-2*P-gap)/2,hs=cw;
   for(let k=0;k<2;k++){
@@ -959,6 +1200,12 @@ async function drawCard(d,withPhotos){
     T(a[0].toUpperCase(),bx,by,{s:22,w:700,ls:.5});T(d.sc[k]+"%",bx+colW,by,{s:26,w:800,a:"right"});
     T("contro "+a[1].toLowerCase(),bx,by+26,{s:16,w:400,c:MUTE});
     x.fillStyle=LINE;x.fillRect(bx,by+40,colW,5);x.fillStyle=AC;x.fillRect(bx,by+40,colW*d.sc[k]/100,5)});
+  const rcx=W/2,rcy=1940,rr=94,radarPoint=(value,k)=>{const angle=Math.PI*2*k/AX.length-Math.PI/2,r=rr*value/100;return [rcx+Math.cos(angle)*r,rcy+Math.sin(angle)*r]};
+  T("RADAR · I TUOI 12 ASSI",P,1832,{s:16,m:1,c:MUTE,ls:3,w:500});
+  x.strokeStyle=LINE;x.lineWidth=2;
+  for(const level of [25,50,75,100]){x.beginPath();AX.forEach((_,k)=>{const [px,py]=radarPoint(level,k);k?x.lineTo(px,py):x.moveTo(px,py)});x.closePath();x.stroke()}
+  AX.forEach((_,k)=>{const [px,py]=radarPoint(100,k);x.beginPath();x.moveTo(rcx,rcy);x.lineTo(px,py);x.stroke()});
+  x.beginPath();d.sc.forEach((value,k)=>{const [px,py]=radarPoint(value,k);k?x.lineTo(px,py):x.moveTo(px,py)});x.closePath();x.fillStyle="rgba(255,59,31,.2)";x.fill();x.strokeStyle=AC;x.lineWidth=4;x.stroke();
   // footer
   const fy=H-P;x.fillStyle=LINE;x.fillRect(P,fy-58,W-2*P,2);
   T("PAESE PIÙ VICINO: "+(d.ctr[0]?d.ctr[0].n.toUpperCase()+" "+d.ctr[0].c+"%":"—"),P,fy-12,{s:17,m:1,c:INK,ls:2,w:500});
