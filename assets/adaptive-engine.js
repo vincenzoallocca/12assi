@@ -80,7 +80,7 @@
       const variance = signed.length
         ? signed.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / signed.length
         : 1;
-      const neutralRate = items.length ? items.filter(item => item.answer === 0).length / items.length : 1;
+      const neutralRate = items.length ? items.filter(item => item.answer === 0).length / items.length : 0;
       return {
         answered: items.length,
         neutralRate,
@@ -129,12 +129,13 @@
     const allAxesCovered = stats.every(stat => stat.answered >= options.minPerAxis);
     const allAxesCertain = stats.every(stat => stat.uncertainty <= options.maxUncertainty);
     const sufficient = askedIds.length >= options.minQuestions && allAxesCovered && allAxesCertain;
+    const emptyDiagnostics = { eligibleQuestionIds: [], candidateQuestionIds: [], targetAxes: [] };
 
     if (askedIds.length >= options.maxQuestions) {
-      return { question: null, stopReason: "max-questions", stats };
+      return { question: null, stopReason: "max-questions", stats, diagnostics: emptyDiagnostics };
     }
     if (sufficient) {
-      return { question: null, stopReason: "sufficient-information", stats };
+      return { question: null, stopReason: "sufficient-information", stats, diagnostics: emptyDiagnostics };
     }
 
     const eligible = bank.filter(question =>
@@ -142,7 +143,7 @@
       conditionMatches(question.eligibleWhen, stats[question.axis])
     );
     if (!eligible.length) {
-      return { question: null, stopReason: "no-eligible-questions", stats };
+      return { question: null, stopReason: "no-eligible-questions", stats, diagnostics: emptyDiagnostics };
     }
 
     const undercovered = eligible.filter(question => stats[question.axis].answered < options.minPerAxis);
@@ -184,7 +185,16 @@
         bank.indexOf(a) - bank.indexOf(b);
     });
 
-    return { question: candidates[0], stopReason: null, stats };
+    return {
+      question: candidates[0],
+      stopReason: null,
+      stats,
+      diagnostics: {
+        eligibleQuestionIds: eligible.map(question => question.id),
+        candidateQuestionIds: candidates.map(question => question.id),
+        targetAxes: Array.from(targetAxes)
+      }
+    };
   }
 
   const api = { DEFAULTS, createQuestionBank, getAxisStats, getScores, selectNextQuestion };

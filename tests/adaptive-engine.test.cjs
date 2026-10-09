@@ -198,6 +198,39 @@ test("reports neutral answers as uncertainty rather than as a directional positi
   assert.equal(stats[0].uncertainty, 0.5);
 });
 
+test("separates a confident moderate position from neutral or contradictory answers", () => {
+  const bank = makeBank();
+  const ids = ["a0q0", "a0q1", "a0q2"];
+  const moderate = { a0q0: 1, a0q1: -1, a0q2: 1 };
+  const neutral = { a0q0: 0, a0q1: 0, a0q2: 0 };
+  const contradictory = { a0q0: 2, a0q1: 2, a0q2: -2 };
+
+  assert.equal(getScores(bank, ids, moderate, 2)[0], 75);
+  assert.equal(getAxisStats(bank, ids, moderate, 2)[0].uncertainty, 0);
+  assert.equal(getScores(bank, ids, neutral, 2)[0], 50);
+  assert.equal(getAxisStats(bank, ids, neutral, 2)[0].uncertainty, 0.5);
+  assert.equal(getScores(bank, ids, contradictory, 2)[0], 33);
+  assert.ok(getAxisStats(bank, ids, contradictory, 2)[0].uncertainty > 0.3);
+});
+
+test("documents that current uncertainty does not increase with sample size", () => {
+  const bank = makeBank(1);
+  const oneId = ["a0q0"];
+  const threeIds = ["a0q0", "a0q1", "a0q2"];
+  const fiveIds = ["a0q0", "a0q1", "a0q2", "a0q3", "a0q4"];
+  const oneAnswer = { a0q0: 2 };
+  const threeAnswers = Object.fromEntries(threeIds.map(id => [
+    id, 2 * bank.find(question => question.id === id).axisWeight
+  ]));
+  const fiveAnswers = Object.fromEntries(fiveIds.map(id => [
+    id, 2 * bank.find(question => question.id === id).axisWeight
+  ]));
+
+  assert.equal(getAxisStats(bank, oneId, oneAnswer, 1)[0].uncertainty, 0);
+  assert.equal(getAxisStats(bank, threeIds, threeAnswers, 1)[0].uncertainty, 0);
+  assert.equal(getAxisStats(bank, fiveIds, fiveAnswers, 1)[0].uncertainty, 0);
+});
+
 test("ends when minimum coverage and information criteria are met", () => {
   const bank = makeBank();
   const askedIds = ["a0q0", "a0q1", "a0q2", "a1q0", "a1q1", "a1q2"];
@@ -218,17 +251,120 @@ test("honors the maximum even when more clarification items remain", () => {
 test("stops cleanly when there are no eligible questions", () => {
   const bank = [{ id: "only", axis: 0, axisWeight: 1, text: "only", tags: [] }];
   const result = selectNextQuestion(bank, {
-    askedIds: ["only"], answers: { only: 2 }, axisCount: 1,
+    askedIds: ["only"], answers: { only: 0 }, axisCount: 1,
     config: { ...config, minPerAxis: 1 }
   });
   assert.equal(result.stopReason, "no-eligible-questions");
   assert.equal(result.question, null);
+  assert.ok(result.stats[0].uncertainty > config.maxUncertainty);
+});
+
+test("returns the same next question for identical state", () => {
+  const bank = makeBank(12);
+  const state = {
+    askedIds: ["a0q0", "a0q1", "a0q2", "a1q0", "a1q1", "a1q2"],
+    answers: Object.fromEntries(["a0q0", "a0q1", "a0q2", "a1q0", "a1q1", "a1q2"].map(id => [id, 0])),
+    axisCount: 12,
+    config
+  };
+  assert.equal(
+    selectNextQuestion(bank, state).question.id,
+    selectNextQuestion(bank, state).question.id
+  );
+});
+
+test("selection diagnostics report eligible alternatives and selected candidates", () => {
+  const bank = makeBank();
+  const askedIds = ["a0q0", "a0q1", "a0q2", "a1q0", "a1q1", "a1q2"];
+  const answers = Object.fromEntries(askedIds.map(id => [id, 0]));
+  const result = selectNextQuestion(bank, { askedIds, answers, axisCount: 2, config });
+
+  assert.ok(result.diagnostics.eligibleQuestionIds.includes(result.question.id));
+  assert.ok(result.diagnostics.candidateQuestionIds.includes(result.question.id));
+  assert.ok(result.diagnostics.candidateQuestionIds.length <= result.diagnostics.eligibleQuestionIds.length);
+  assert.ok(result.diagnostics.targetAxes.includes(result.question.axis));
+});
+
+test("each q06 clarification becomes eligible and selectable only for a qualifying axis", () => {
+  const completeBank = loadActualQuestionBank();
+  const originals = completeBank.filter(question => !question.followUp);
+  const clarifications = completeBank.filter(question => question.id.endsWith("-q06"));
+  assert.equal(clarifications.length, 12);
+
+  for (const clarification of clarifications) {
+    assert.equal(clarification.eligibleWhen.minAxisResponses, 2);
+    assert.equal(clarification.eligibleWhen.minUncertainty, 0.3);
+    assert.equal(clarification.eligibleWhen.maxNeutralRate, 0.3);
+
+    const bank = originals.concat(clarification);
+    const askedIds = originals.map(question => question.id);
+    const answers = Object.fromEntries(originals.map(question => {
+      const axisItems = originals.filter(item => item.axis === question.axis);
+      const itemIndex = axisItems.findIndex(item => item.id === question.id);
+      const normalizedDirection = question.axis === clarification.axis && itemIndex % 2 ? -1 : 1;
+      return [question.id, normalizedDirection * question.axisWeight * 2];
+    }));
+    const uncertain = selectNextQuestion(bank, {
+      askedIds,
+      answers,
+      axisCount: 12,
+      config: { ...config, minQuestions: 36, maxQuestions: 60, minPerAxis: 3 }
+    });
+
+    assert.equal(uncertain.stats[clarification.axis].answered, 4);
+    assert.equal(uncertain.stats[clarification.axis].neutralRate, 0);
+    assert.ok(uncertain.stats[clarification.axis].uncertainty > 0.3);
+    assert.ok(uncertain.diagnostics.eligibleQuestionIds.includes(clarification.id));
+    assert.ok(uncertain.diagnostics.candidateQuestionIds.includes(clarification.id));
+    assert.equal(uncertain.question.id, clarification.id);
+
+    const consistentAnswers = Object.fromEntries(originals.map(question => [
+      question.id, question.axisWeight * 2
+    ]));
+    const consistent = selectNextQuestion(bank, {
+      askedIds,
+      answers: consistentAnswers,
+      axisCount: 12,
+      config: { ...config, minQuestions: 36, maxQuestions: 60, minPerAxis: 3 }
+    });
+    assert.equal(consistent.stopReason, "sufficient-information");
+    assert.ok(!consistent.diagnostics.eligibleQuestionIds.includes(clarification.id));
+    assert.ok(!consistent.diagnostics.candidateQuestionIds.includes(clarification.id));
+  }
+});
+
+test("scores, uncertainty, and next selection are invariant to answer order", () => {
+  const bank = makeBank();
+  const askedIds = ["a0q0", "a0q1", "a0q2", "a1q0", "a1q1", "a1q2"];
+  const answers = Object.fromEntries(askedIds.map(id => [id, 0]));
+  const reversedIds = askedIds.slice().reverse();
+
+  assert.deepEqual(getScores(bank, askedIds, answers, 2), getScores(bank, reversedIds, answers, 2));
+  assert.deepEqual(
+    getAxisStats(bank, askedIds, answers, 2),
+    getAxisStats(bank, reversedIds, answers, 2)
+  );
+  const next = selectNextQuestion(bank, { askedIds, answers, axisCount: 2, config }).question;
+  const reorderedNext = selectNextQuestion(bank, { askedIds: reversedIds, answers, axisCount: 2, config }).question;
+  assert.equal(next && next.id, reorderedNext && reorderedNext.id);
+});
+
+test("does not report exhausted ambiguous axes as meeting stop criteria", () => {
+  const bank = [{ id: "only", axis: 0, axisWeight: 1, text: "only", tags: [] }];
+  const state = {
+    askedIds: ["only"], answers: { only: 0 }, axisCount: 1,
+    config: { ...config, minQuestions: 1, maxQuestions: 3, minPerAxis: 1 }
+  };
+  const result = selectNextQuestion(bank, state);
+  assert.equal(result.stopReason, "no-eligible-questions");
+  assert.ok(result.stats[0].uncertainty > state.config.maxUncertainty);
 });
 
 test("handles missing answers without counting them as neutral", () => {
   const bank = makeBank();
   const stats = getAxisStats(bank, ["a0q0"], {}, 2);
   assert.equal(stats[0].answered, 0);
-  assert.equal(stats[0].neutralRate, 1);
+  assert.equal(stats[0].neutralRate, 0);
+  assert.equal(stats[0].uncertainty, 0.5);
   assert.deepEqual(getScores(bank, ["a0q0"], {}, 2), [50, 50]);
 });

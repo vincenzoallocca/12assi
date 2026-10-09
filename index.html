@@ -175,7 +175,36 @@ const FOLLOW_UP_QUESTIONS=[
  {axis:10,axisWeight:1,text:"La legge dovrebbe garantire pari diritti alle famiglie anche quando le loro forme differiscono dalla tradizione.",tags:["family-equality"],priority:2,discrimination:1.2,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3,minNeutralRate:0.3}},
  {axis:10,axisWeight:-1,text:"Le politiche familiari dovrebbero dare particolare sostegno alle forme di famiglia radicate nella tradizione.",tags:["traditional-family-policy"],priority:2,discrimination:1.2,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3,maxNeutralRate:0.3}},
  {axis:11,axisWeight:1,text:"Sosterresti nuovi investimenti tecnologici se accompagnati da valutazioni pubbliche dei rischi ambientali.",tags:["responsible-innovation"],priority:2,discrimination:1.2,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3,minNeutralRate:0.3}},
- {axis:11,axisWeight:-1,text:"Applicheresti il principio di precauzione anche se rallentasse tecnologie con possibili benefici economici.",tags:["precautionary-principle"],priority:2,discrimination:1.2,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3,maxNeutralRate:0.3}}
+ {axis:11,axisWeight:-1,text:"Quando non è ancora chiaro quali rischi comporti una nuova tecnologia, è preferibile limitarne lo sviluppo anche se potrebbe portare benefici economici.",tags:["precautionary-principle"],priority:2,discrimination:1.2,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3,maxNeutralRate:0.3}},
+ {axis:0,axisWeight:-1,text:"Le regioni dovrebbero poter trattenere una quota maggiore delle imposte raccolte sul proprio territorio.",tags:["regional-tax-autonomy"],priority:2,discrimination:1.35,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:0,axisWeight:1,text:"Anche con modelli regionali diversi, le regole nazionali dovrebbero garantire livelli minimi comuni di accesso a sanità e istruzione.",tags:["national-service-floor"],priority:2,discrimination:1.35,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:1,axisWeight:1,text:"Una corte costituzionale dovrebbe poter annullare una legge approvata dalla maggioranza se viola diritti fondamentali.",tags:["constitutional-review"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:1,axisWeight:-1,text:"I governi eletti dovrebbero poter attuare le leggi approvate dal parlamento senza veto di istituzioni non elette, salvo violazioni costituzionali.",tags:["elected-government-oversight"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:2,axisWeight:1,text:"Una manifestazione dovrebbe poter proseguire anche quando causa disagi rilevanti, se non incita alla violenza.",tags:["protest-and-disruption"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:2,axisWeight:-1,text:"Le autorità dovrebbero poter imporre limiti di luogo e orario alle manifestazioni per proteggere l'accesso ai servizi essenziali.",tags:["public-order-limits"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:3,axisWeight:1,text:"Per ottenere la cittadinanza, conoscere la lingua nazionale non dovrebbe essere un requisito obbligatorio.",tags:["citizenship-language"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:3,axisWeight:-1,text:"La cittadinanza dovrebbe richiedere una conoscenza pratica della lingua nazionale e delle istituzioni comuni.",tags:["civic-integration"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:4,axisWeight:1,text:"Quando la sicurezza è minacciata, gli investimenti in diplomazia e protezione civile dovrebbero precedere l'espansione delle forze armate.",tags:["civilian-security-investment"],priority:2,discrimination:1.4,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:4,axisWeight:-1,text:"Le forze armate dovrebbero mantenere capacità di deterrenza credibili anche in tempo di pace.",tags:["military-deterrence-capacity"],priority:2,discrimination:1.4,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:5,axisWeight:1,text:"Un obbligo di difesa collettiva dovrebbe limitarsi alla protezione dei territori degli Stati membri.",tags:["collective-defense-scope"],priority:2,discrimination:1.5,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:5,axisWeight:-1,text:"Un'alleanza dovrebbe poter intervenire anche fuori dai territori membri per impedire minacce armate imminenti.",tags:["preventive-alliance-action"],priority:2,discrimination:1.5,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:6,axisWeight:1,text:"Lo Stato dovrebbe finanziare direttamente i servizi essenziali anche quando sono erogati da fornitori indipendenti.",tags:["public-funding-private-delivery"],priority:2,discrimination:1.45,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:6,axisWeight:-1,text:"Gli utenti dovrebbero poter scegliere tra fornitori pubblici e privati usando contributi pubblici uguali per entrambi.",tags:["provider-choice-vouchers"],priority:2,discrimination:1.45,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:7,axisWeight:1,text:"I lavoratori dovrebbero avere rappresentanza obbligatoria nei consigli delle grandi imprese.",tags:["worker-codetermination"],priority:2,discrimination:1.35,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:7,axisWeight:-1,text:"Le decisioni su investimenti e organizzazione aziendale dovrebbero spettare soprattutto ai proprietari e ai dirigenti.",tags:["corporate-decision-rights"],priority:2,discrimination:1.35,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:8,axisWeight:1,text:"Il Paese dovrebbe mantenere produzione interna di beni essenziali anche quando le importazioni sono più economiche.",tags:["essential-goods-resilience"],priority:2,discrimination:1.45,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:8,axisWeight:-1,text:"Per i beni essenziali è preferibile diversificare i fornitori esteri anziché sostenere una produzione nazionale più costosa.",tags:["diversified-imports"],priority:2,discrimination:1.45,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:9,axisWeight:1,text:"Le organizzazioni religiose dovrebbero ricevere fondi pubblici per servizi sociali alle stesse condizioni degli altri enti.",tags:["faith-based-public-services"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:9,axisWeight:-1,text:"Gli enti che offrono servizi pubblici non dovrebbero ricevere fondi statali se richiedono l'adesione religiosa degli utenti.",tags:["religious-service-conditions"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:10,axisWeight:1,text:"Le scuole dovrebbero includere programmi di educazione affettiva e sessuale comuni a tutti gli studenti.",tags:["common-sex-education"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:10,axisWeight:-1,text:"Le famiglie dovrebbero poter esentare i figli dalle parti dell'educazione scolastica che contrastano con le proprie convinzioni morali.",tags:["parental-school-exemption"],priority:2,discrimination:1.3,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:11,axisWeight:1,text:"L'introduzione di automazione che riduce significativamente l'occupazione dovrebbe essere accompagnata da percorsi di ricollocamento per i lavoratori.",tags:["automation-worker-transition"],priority:2,discrimination:1.5,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:11,axisWeight:-1,text:"Le nuove tecnologie dovrebbero poter essere sperimentate su piccola scala prima che siano definiti tutti i requisiti normativi.",tags:["technology-sandboxing"],priority:2,discrimination:1.5,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:11,axisWeight:1,text:"I sistemi digitali che consumano molta energia o acqua dovrebbero poter essere limitati durante carenze locali di queste risorse.",tags:["digital-resource-limits"],priority:2,discrimination:1.55,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:8,axisWeight:1,text:"Le importazioni dovrebbero poter essere limitate quando i produttori esteri non rispettano gli stessi standard ambientali richiesti ai produttori nazionali.",tags:["environmental-trade-standards"],priority:2,discrimination:1.5,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:5,axisWeight:-1,text:"Il Paese dovrebbe poter partecipare a missioni di pace autorizzate dall'ONU anche quando non è minacciato direttamente.",tags:["un-peacekeeping"],priority:2,discrimination:1.55,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:2,axisWeight:-1,text:"La polizia dovrebbe poter usare il riconoscimento facciale automatizzato negli spazi pubblici per identificare sospetti, con controlli successivi.",tags:["public-facial-recognition"],priority:2,discrimination:1.5,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}},
+ {axis:1,axisWeight:1,text:"Un referendum nazionale dovrebbe poter abrogare una legge approvata dal parlamento.",tags:["referendum-legislative-override"],priority:2,discrimination:1.45,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}}
 ];
 
 const ADAPTIVE_CONFIG=Object.freeze({minQuestions:36,maxQuestions:60,minPerAxis:3,maxUncertainty:0.3});
@@ -456,7 +485,7 @@ const CTR=[
 const ITA=new Set(["Mario Monti","Giulio Tremonti","Gianfranco Fini","Antonio Di Pietro","Laura Boldrini","Chiara Appendino","Paola Taverna","Gianni Cuperlo","Andrea Orlando","Dario Franceschini","Francesco Boccia","Peppe Provenzano","Silvia Salis","Roberto Gualtieri","Matteo Lepore","Massimo Cacciari","Giorgio Agamben","Elly Schlein","Giuseppe Conte","Matteo Salvini","Matteo Renzi","Antonio Tajani","Romano Prodi","Nichi Vendola","Sergio Mattarella","Giorgia Meloni","Mario Draghi","Carlo Calenda","Nicola Fratoianni","Roberto Vannacci","Maurizio Lupi","Giovanni Donzelli","Alessandro Di Battista","Michele Emiliano","Vincenzo De Luca","Matteo Piantedosi","Tommaso Foti","Angelo Bonelli","Riccardo Magi","Emma Bonino","Marco Cappato","Enrico Letta","Massimo D'Alema","Pier Luigi Bersani","Paolo Gentiloni","Stefano Bonaccini","Giuseppe Sala","Maurizio Landini","Beppe Grillo","Luigi Di Maio","Pier Ferdinando Casini","Guido Crosetto","Carlo Nordio","Giancarlo Giorgetti","Roberto Calderoli","Luca Zaia","Massimiliano Fedriga","Francesco Lollobrigida","Ignazio La Russa","Daniela Santanchè"]);
 
 const app=document.getElementById("app");
-let i=0,ans=[],order=[],currentPage="intro",adaptiveStopReason=null,activeQuestionIndex=-1,followUpNoticeShown=false;
+let i=0,ans=[],order=[],currentPage="intro",adaptiveStopReason=null,activeQuestionIndex=-1,followUpNoticeShown=false,quizRenderToken=0;
 
 const PHOTO_CACHE={};
 
@@ -3451,6 +3480,7 @@ function openPerson(k){
 }
 
 function ask(){
+ const renderToken=++quizRenderToken;
  const pathBefore=order.slice(0,Math.min(i,order.length));
  const selection=i<order.length?null:AdaptiveQuizEngine.selectNextQuestion(QUESTION_BANK,adaptiveState(pathBefore));
  if(selection&&!selection.question){adaptiveStopReason=selection.stopReason;result();return}
@@ -3463,7 +3493,12 @@ function ask(){
  const showFollowUpNotice=isFollowUp&&!followUpNoticeShown;
  if(showFollowUpNotice)followUpNoticeShown=true;
  app.innerHTML=head()+'<div class="bar" role="progressbar" aria-label="Copertura minima dei dodici assi" aria-valuemin="0" aria-valuemax="'+required+'" aria-valuenow="'+covered+'" aria-valuetext="'+covered+' di '+required+' risposte minime per coprire i dodici assi"><i style="width:'+Math.round(covered/required*100)+'%"></i></div><div class="meta" role="status" aria-live="polite" aria-atomic="true"><span>Risposte date: '+order.length+'</span><span class="axtag">Copertura minima '+covered+' / '+required+' · percorso adattivo, massimo '+ADAPTIVE_CONFIG.maxQuestions+'</span></div><div class="sec">'+ax[0]+' — '+ax[1]+'</div>'+(showFollowUpNotice?'<p class="hint" role="status" aria-live="polite">Approfondiamo questo tema per comprendere meglio la tua posizione.</p>':'')+'<div class="q" id="question-text" role="heading" aria-level="2" aria-live="polite" aria-atomic="true" tabindex="-1">'+q[2]+'</div><div class="opts" role="group" aria-label="Opzioni di risposta">'+OPT.map((o,k)=>'<button class="opt" data-k="'+k+'" aria-pressed="'+(ans[activeQuestionIndex]===o[1]?'true':'false')+'">'+o[0]+'</button>').join("")+'</div>'+(i>0?'<div class="act"><button class="btn ghost" id="back" aria-label="Torna alla domanda precedente">← Indietro</button></div>':'');
- app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{order=order.slice(0,i);ans[activeQuestionIndex]=OPT[b.dataset.k][1];order.push(activeQuestionIndex);i=order.length;advanceAdaptive()});
+ let answered=false;
+ app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+  if(answered||renderToken!==quizRenderToken||currentPage!=="quiz")return;
+  answered=true;
+  order=order.slice(0,i);ans[activeQuestionIndex]=OPT[b.dataset.k][1];order.push(activeQuestionIndex);i=order.length;advanceAdaptive()
+ });
  const bk=document.getElementById("back");if(bk)bk.onclick=()=>{i--;ask()};
  document.getElementById("question-text").focus({preventScroll:true});
 }
@@ -3543,11 +3578,15 @@ function heroCard(label, person, photoUrl){
 async function result(){
   currentPage="result";
   const sc=scores();
-  const coverage=AdaptiveQuizEngine.getAxisStats(QUESTION_BANK,order.map(index=>QUESTION_BANK[index].id),adaptiveAnswerMap(),AX.length).map(stat=>stat.answered);
+  const axisStats=AdaptiveQuizEngine.getAxisStats(QUESTION_BANK,order.map(index=>QUESTION_BANK[index].id),adaptiveAnswerMap(),AX.length);
+  const coverage=axisStats.map(stat=>stat.answered);
+  const uncertainAxes=axisStats
+    .map((stat,index)=>stat.uncertainty>ADAPTIVE_CONFIG.maxUncertainty?AX[index][0]:null)
+    .filter(Boolean);
   const stoppingNote=adaptiveStopReason==="max-questions"
-    ? "Raggiunto il limite massimo; gli assi potrebbero richiedere ulteriore approfondimento."
+    ? "Raggiunto il limite massimo di domande; la stima resta incerta per: "+(uncertainAxes.length?uncertainAxes.join(", "):"alcune dimensioni con copertura insufficiente")+"."
     : adaptiveStopReason==="no-eligible-questions"
-      ? "Non restano domande eleggibili; alcuni assi potrebbero avere informazioni insufficienti."
+      ? "Conclusione anticipata: non restano domande eleggibili. La stima resta incerta per: "+(uncertainAxes.length?uncertainAxes.join(", "):"alcune dimensioni con copertura insufficiente")+"."
       : "Soglia minima di copertura raggiunta e incertezza contenuta.";
   const ide=IDE.map(x=>({n:x[0],cat:x[1],c:comp(sc,x[2])})).sort((a,b)=>b.c-a.c)[0];
   const ppl=rank(PPL,sc);
