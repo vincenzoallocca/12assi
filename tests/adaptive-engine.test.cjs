@@ -1,5 +1,8 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
 const {
   createQuestionBank,
   getAxisStats,
@@ -27,12 +30,101 @@ function makeBank(axisCount = 2) {
 
 const config = { minQuestions: 6, maxQuestions: 10, minPerAxis: 3, maxUncertainty: 0.3 };
 
+function readDeclaration(source, name) {
+  const match = source.match(new RegExp("\\bconst\\s+" + name + "\\s*="));
+  assert.ok(match, "Missing declaration: " + name);
+  let start = match.index + match[0].length;
+  while (/\s/.test(source[start])) start++;
+  const pairs = { "[": "]", "{": "}", "(": ")" };
+  const stack = [pairs[source[start]]];
+  let quote = null;
+  let escaped = false;
+  for (let index = start + 1; index < source.length; index++) {
+    const char = source[index];
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (char === "\\") escaped = true;
+      else if (char === quote) quote = null;
+      continue;
+    }
+    if (char === "'" || char === '"' || char === "`") quote = char;
+    else if (char === "/" && source[index + 1] === "/") {
+      index = source.indexOf("\n", index + 2);
+    } else if (char === "/" && source[index + 1] === "*") {
+      index = source.indexOf("*/", index + 2) + 1;
+    } else if (pairs[char]) stack.push(pairs[char]);
+    else if (char === stack[stack.length - 1]) {
+      stack.pop();
+      if (!stack.length) {
+        return vm.runInNewContext("(" + source.slice(start, index + 1) + ")");
+      }
+    }
+  }
+  throw new Error("Unclosed declaration: " + name);
+}
+
+function loadActualQuestionBank() {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const axes = readDeclaration(html, "AX");
+  const questions = readDeclaration(html, "Q");
+  const followUps = readDeclaration(html, "FOLLOW_UP_QUESTIONS");
+  const tags = readDeclaration(html, "QUESTION_TAGS");
+  return createQuestionBank(questions, followUps, axes.length, tags);
+}
+
 test("converts the existing question tuples into stable, tagged axis questions", () => {
   const bank = createQuestionBank([[0, 1, "first"], [0, -1, "second"]], [
     { axis: 0, axisWeight: 1, text: "probe", followUp: true, tags: ["clarify"] }
   ], 1, [["public", "regional"]]);
   assert.deepEqual(bank.map(question => question.id), ["axis-01-q01", "axis-01-q02", "axis-01-q03"]);
   assert.deepEqual(bank.map(question => question.tags[0]), ["public", "regional", "clarify"]);
+});
+
+test("editorial revisions preserve the complete bank, item polarity, and metadata", () => {
+  const bank = loadActualQuestionBank();
+  const expected = {
+    "axis-01-q03": [1, "public-services", "Gli standard essenziali di scuola e sanità dovrebbero essere uguali in tutto il Paese."],
+    "axis-02-q02": [-1, "executive-authority", "In generale, è preferibile che il governo decida rapidamente, anche se ciò riduce il tempo per la consultazione parlamentare."],
+    "axis-02-q03": [1, "voting-rights", "I cittadini adulti dovrebbero avere diritto di voto."],
+    "axis-03-q04": [-1, "surveillance", "Per prevenire reati gravi, le autorità dovrebbero poter accedere alle comunicazioni private senza una preventiva autorizzazione del giudice."],
+    "axis-04-q01": [1, "cultural-pluralism", "La presenza di culture e religioni diverse nella società è un valore da tutelare."],
+    "axis-04-q02": [-1, "assimilation", "Chi immigra dovrebbe adottare le consuetudini culturali prevalenti nel Paese ospitante, anche quando differiscono dalle proprie."],
+    "axis-05-q02": [-1, "defense-spending", "Il Paese dovrebbe investire di più nelle capacità di difesa delle forze armate."],
+    "axis-05-q04": [-1, "conscription", "Il Paese dovrebbe prevedere il servizio militare obbligatorio."],
+    "axis-07-q02": [-1, "private-efficiency", "Per la maggior parte dei servizi pubblici, è preferibile l'erogazione da parte di imprese private anziché di enti statali."],
+    "axis-07-q03": [1, "strategic-sectors", "Energia e banche dovrebbero essere di proprietà pubblica."],
+    "axis-08-q01": [1, "redistribution", "Lo Stato dovrebbe stabilire obiettivi economici e coordinare produzione e investimenti per ridurre le disuguaglianze."],
+    "axis-09-q02": [-1, "free-trade", "Il Paese dovrebbe ridurre le barriere commerciali per favorire il libero scambio."],
+    "axis-10-q01": [1, "secularism", "Le istituzioni pubbliche dovrebbero essere neutrali rispetto alle religioni."],
+    "axis-10-q03": [1, "religion-role", "Le motivazioni religiose dovrebbero avere un peso limitato nelle decisioni pubbliche."],
+    "axis-11-q02": [-1, "family-tradition", "Le politiche familiari dovrebbero dare particolare sostegno alle forme di famiglia comunemente considerate tradizionali."],
+    "axis-12-q01": [1, "tech-optimism", "Sono ottimista sul contributo che la tecnologia può dare al progresso della società."],
+    "axis-12-q06": [-1, "precautionary-principle", "Quando non è ancora chiaro quali rischi comporti una nuova tecnologia, è preferibile limitarne lo sviluppo anche se potrebbe portare benefici economici."]
+  };
+
+  assert.equal(bank.length, 101);
+  assert.equal(new Set(bank.map(question => question.id)).size, 101);
+  assert.equal(Object.keys(expected).length, 17);
+
+  for (const [id, [axisWeight, tag, text]] of Object.entries(expected)) {
+    const question = bank.find(item => item.id === id);
+    assert.ok(question, "Missing expected question " + id);
+    assert.equal(question.axisWeight, axisWeight, id + " polarity");
+    assert.equal(question.text, text, id + " text");
+    assert.deepEqual(Array.from(question.tags), [tag], id + " tags");
+    assert.equal(bank.filter(item => item.text === text).length, 1, id + " text uniqueness");
+    assert.equal(question.scoreWeight, 1, id + " score weight");
+    assert.equal(question.followUp, id === "axis-12-q06", id + " follow-up status");
+    assert.equal(question.priority, id === "axis-12-q06" ? 2 : 1, id + " priority");
+    assert.equal(question.discrimination, id === "axis-12-q06" ? 1.2 : 1, id + " discrimination");
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(question.eligibleWhen)),
+      id === "axis-12-q06"
+        ? { minAxisResponses: 2, minUncertainty: 0.3, maxNeutralRate: 0.3 }
+        : null,
+      id + " eligibility"
+    );
+  }
 });
 
 test("can cover all twelve axes before prioritizing uncertain axes", () => {
