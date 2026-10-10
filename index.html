@@ -56,6 +56,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .pc{font-weight:800;font-size:19px;text-align:right}
 .row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;font-size:16px;gap:10px;border-bottom:1px solid var(--line)}
 .row span:last-child{font-weight:800;color:var(--accent)}
+.row span:first-child{color:var(--mute)}.row span:last-child{text-align:right}
 .act{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
 .tabs,.gallery-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .tab,.gallery-filter{font-size:10px;background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:0;padding:7px 10px;cursor:pointer}
@@ -86,6 +87,17 @@ body.mopen{overflow:hidden}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .tag{font-family:ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.1em;font-size:10px;color:var(--mute);border:1px solid var(--line);padding:4px 7px}
 .sim{border-left:2px solid var(--accent);padding:2px 0 2px 12px;margin:0 0 14px;color:var(--ink);font-size:15px;line-height:1.4}
+.profile-quote{position:relative;margin:22px 0 24px;padding:44px 20px 18px 22px;border:1px solid var(--line);border-left:5px solid var(--accent);background:linear-gradient(135deg,rgba(255,59,31,.10),rgba(255,59,31,0) 60%),var(--panel);overflow:hidden}
+.profile-quote::before{content:"\201C";position:absolute;top:-6px;right:14px;font:italic 800 120px/1 Georgia,"Times New Roman",serif;color:var(--accent);opacity:.22;pointer-events:none}
+.quote-label{position:absolute;top:14px;left:22px;display:inline-block;color:#000;background:var(--accent);padding:3px 8px;font:700 10px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.16em;text-transform:uppercase}
+.profile-quote blockquote{margin:0}
+.profile-quote p{margin:0 0 16px;color:var(--ink);font:italic 400 clamp(21px,5.6vw,27px)/1.35 Georgia,"Times New Roman",serif;letter-spacing:0}
+.profile-quote figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 14px;border-top:1px solid var(--line);padding-top:10px;font-size:12px}
+.profile-quote cite{font-style:normal;font-weight:700;color:var(--ink);letter-spacing:.02em}
+.quote-source{display:flex;flex-wrap:wrap;gap:6px 10px;color:var(--mute);align-items:baseline}
+.quote-tr{font:600 9px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);padding:2px 6px}
+.quote-source a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+.quote-source a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 details.how{border-top:1px solid var(--line);margin-top:6px}
 details.how summary{cursor:pointer;padding:14px 0;font-family:ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.12em;font-size:11px;color:var(--ink)}
 .rax{margin:0 0 16px}
@@ -207,7 +219,7 @@ const FOLLOW_UP_QUESTIONS=[
  {axis:1,axisWeight:1,text:"Un referendum nazionale dovrebbe poter abrogare una legge approvata dal parlamento.",tags:["referendum-legislative-override"],priority:2,discrimination:1.45,followUp:true,eligibleWhen:{minAxisResponses:2,minUncertainty:0.3}}
 ];
 
-const ADAPTIVE_CONFIG=Object.freeze({minQuestions:36,maxQuestions:60,minPerAxis:3,maxUncertainty:0.3});
+const ADAPTIVE_CONFIG=Object.freeze({minQuestions:36,maxQuestions:60,minPerAxis:3,maxUncertainty:0.3,maxPerAxis:4});
 const QUIZ_QUESTIONS=Q.concat(FOLLOW_UP_QUESTIONS.map(question=>[question.axis,question.axisWeight,question.text]));
 const QUESTION_BANK=AdaptiveQuizEngine.createQuestionBank(Q,FOLLOW_UP_QUESTIONS,AX.length,QUESTION_TAGS);
 const QUESTION_INDEX=new Map(QUESTION_BANK.map((question,index)=>[question.id,index]));
@@ -507,7 +519,7 @@ const PRESET_PHOTOS = {
   "Socrate": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Socrates_Louvre.jpg/600px-Socrates_Louvre.jpg",
   "Aristotele": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/600px-Aristotle_Altemps_Inv8575.jpg",
   "Karl Popper": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Karl_Popper.jpg/600px-Karl_Popper.jpg",
-  "John Locke": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/John_Locke_by_Herman_Verelst.png/600px-John_Locke_by_Herman_Verelst.png",
+  "John Locke": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Godfrey_Kneller_-_Portrait_of_John_Locke_%28Hermitage%29.jpg/330px-Godfrey_Kneller_-_Portrait_of_John_Locke_%28Hermitage%29.jpg",
   "Thomas Hobbes": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Thomas_Hobbes_%28portrait%29.jpg/600px-Thomas_Hobbes_%28portrait%29.jpg",
   "Nicola Fratoianni": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Nicola_Fratoianni_2018.jpg/600px-Nicola_Fratoianni_2018.jpg",
   "Giuseppe Conte": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Giuseppe_Conte_2019.jpg/600px-Giuseppe_Conte_2019.jpg",
@@ -523,200 +535,200 @@ const PRESET_PHOTOS = {
   "Ronald Reagan": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Ronald_Reagan_1985.jpg/600px-Ronald_Reagan_1985.jpg"
 };
 
-// Foto locali: vengono usate prima delle immagini remote. Questo rende il PNG
+// Foto locali (solo WebP): vengono usate prima delle immagini remote. Questo rende il PNG
 // esportabile anche quando Wikimedia non risponde o il browser blocca CORS.
 const LOCAL_PHOTOS = {
-  "Karl Liebknecht": "assets/photos/karl_liebknecht.jpg",
-  "Rosa Luxemburg": "assets/photos/rosa_luxemburg.jpg",
-  "Salvador Allende": "assets/photos/salvador_allende.jpg",
-  "Gustavo Petro": "assets/photos/gustavo_petro.jpg",
-  "Bernie Sanders": "assets/photos/bernie_sanders.jpg",
-  "Alexandria Ocasio-Cortez": "assets/photos/alexandria_ocasio_cortez.jpg",
-  "Jeremy Corbyn": "assets/photos/jeremy_corbyn.jpg",
-  "Olof Palme": "assets/photos/olof_palme.jpg",
-  "Enrico Berlinguer": "assets/photos/enrico_berlinguer.jpg",
-  "Lula da Silva": "assets/photos/lula_da_silva.jpg",
-  "Thomas Sankara": "assets/photos/thomas_sankara.jpg",
-  "Martin Luther King": "assets/photos/martin_luther_king.jpg",
-  "Jacinda Ardern": "assets/photos/jacinda_ardern.jpg",
-  "Franklin D. Roosevelt": "assets/photos/franklin_d_roosevelt.jpg",
-  "Abraham Lincoln": "assets/photos/abraham_lincoln.jpg",
-  "Thomas Jefferson": "assets/photos/thomas_jefferson.jpg",
-  "Giuseppe Mazzini": "assets/photos/giuseppe_mazzini.jpg",
-  "Giuseppe Garibaldi": "assets/photos/giuseppe_garibaldi.jpg",
-  "Camillo Cavour": "assets/photos/camillo_cavour.jpg",
-  "Alcide De Gasperi": "assets/photos/alcide_de_gasperi.jpg",
-  "Mario Draghi": "assets/photos/mario_draghi.jpg",
-  "Silvio Berlusconi": "assets/photos/silvio_berlusconi.jpg",
-  "Narendra Modi": "assets/photos/narendra_modi.png",
-  "Lee Kuan Yew": "assets/photos/lee_kuan_yew.jpg",
-  "Hugo Chávez": "assets/photos/hugo_chavez.jpg",
-  "Che Guevara": "assets/photos/che_guevara.jpg",
-  "Fidel Castro": "assets/photos/fidel_castro.jpg",
-  "Lenin": "assets/photos/lenin.png",
-  "Robespierre": "assets/photos/robespierre.jpg",
-  "Giulio Cesare": "assets/photos/giulio_cesare.jpg",
-  "Benito Mussolini": "assets/photos/benito_mussolini.jpg",
-  "Augusto Pinochet": "assets/photos/augusto_pinochet.jpg",
-  "Matteo Renzi": "assets/photos/matteo_renzi.jpg",
-  "Antonio Tajani": "assets/photos/antonio_tajani.jpg",
-  "Romano Prodi": "assets/photos/romano_prodi.jpg",
-  "Nichi Vendola": "assets/photos/nichi_vendola.jpg",
-  "Sergio Mattarella": "assets/photos/sergio_mattarella.jpg",
-  "Jean-Luc Mélenchon": "assets/photos/jean_luc_melenchon.jpg",
-  "Keir Starmer": "assets/photos/keir_starmer.jpg",
-  "Pedro Sánchez": "assets/photos/pedro_sanchez.jpg",
-  "Viktor Orbán": "assets/photos/viktor_orban.jpg",
-  "Volodymyr Zelensky": "assets/photos/volodymyr_zelensky.jpg",
-  "Claudia Sheinbaum": "assets/photos/claudia_sheinbaum.jpg",
-  "Gabriel Boric": "assets/photos/gabriel_boric.png",
-  "Joe Biden": "assets/photos/joe_biden.jpg",
-  "Kamala Harris": "assets/photos/kamala_harris.jpg",
-  "Sandro Pertini": "assets/photos/sandro_pertini.png",
-  "Giacomo Matteotti": "assets/photos/giacomo_matteotti.jpg",
-  "Aldo Moro": "assets/photos/aldo_moro.jpg",
-  "Carlo Calenda": "assets/photos/carlo_calenda.jpg",
-  "Roberto Vannacci": "assets/photos/roberto_vannacci.jpg",
-  "Angelo Bonelli": "assets/photos/angelo_bonelli.jpg",
-  "Riccardo Magi": "assets/photos/riccardo_magi.jpg",
-  "Emma Bonino": "assets/photos/emma_bonino.jpg",
-  "Enrico Letta": "assets/photos/enrico_letta.jpg",
-  "Massimo D'Alema": "assets/photos/massimo_d_alema.jpg",
-  "Pier Luigi Bersani": "assets/photos/pier_luigi_bersani.jpg",
-  "Paolo Gentiloni": "assets/photos/paolo_gentiloni.jpg",
-  "Giuseppe Sala": "assets/photos/giuseppe_sala.jpg",
-  "Maurizio Landini": "assets/photos/maurizio_landini.jpg",
-  "Beppe Grillo": "assets/photos/beppe_grillo.jpg",
-  "Luigi Di Maio": "assets/photos/luigi_di_maio.jpg",
-  "Pier Ferdinando Casini": "assets/photos/pier_ferdinando_casini.jpg",
-  "Guido Crosetto": "assets/photos/guido_crosetto.jpg",
-  "Carlo Nordio": "assets/photos/carlo_nordio.png",
-  "Giancarlo Giorgetti": "assets/photos/giancarlo_giorgetti.jpg",
-  "Roberto Calderoli": "assets/photos/roberto_calderoli.jpg",
-  "Luca Zaia": "assets/photos/luca_zaia.jpg",
-  "Francesco Lollobrigida": "assets/photos/francesco_lollobrigida.jpg",
-  "Ignazio La Russa": "assets/photos/ignazio_la_russa.jpg",
-  "Daniela Santanchè": "assets/photos/daniela_santanche.jpg",
-  "Maurizio Lupi": "assets/photos/maurizio_lupi.jpg",
-  "Giovanni Donzelli": "assets/photos/giovanni_donzelli.jpg",
-  "Alessandro Di Battista": "assets/photos/alessandro_di_battista.jpg",
-  "Michele Emiliano": "assets/photos/michele_emiliano.jpg",
-  "Vincenzo De Luca": "assets/photos/vincenzo_de_luca.jpg",
-  "Matteo Piantedosi": "assets/photos/matteo_piantedosi.png",
-  "Tommaso Foti": "assets/photos/tommaso_foti.jpg",
-  "Recep Tayyip Erdoğan": "assets/photos/recep_tayyip_erdogan.jpg",
-  "Benjamin Netanyahu": "assets/photos/benjamin_netanyahu.jpg",
-  "Rishi Sunak": "assets/photos/rishi_sunak.jpg",
-  "Justin Trudeau": "assets/photos/justin_trudeau.jpg",
-  "Anthony Albanese": "assets/photos/anthony_albanese.jpg",
-  "Nayib Bukele": "assets/photos/nayib_bukele.jpg",
-  "Cyril Ramaphosa": "assets/photos/cyril_ramaphosa.jpg",
-  "Bettino Craxi": "assets/photos/bettino_craxi.jpg",
-  "Giulio Andreotti": "assets/photos/giulio_andreotti.jpg",
-  "Enrico Mattei": "assets/photos/enrico_mattei.jpg",
-  "Luigi Sturzo": "assets/photos/luigi_sturzo.jpg",
-  "John F. Kennedy": "assets/photos/john_f_kennedy.jpg",
-  "Tito": "assets/photos/tito.png",
-  "Mario Monti": "assets/photos/mario_monti.jpg",
-  "Giulio Tremonti": "assets/photos/giulio_tremonti.jpg",
-  "Gianfranco Fini": "assets/photos/gianfranco_fini.jpg",
-  "Antonio Di Pietro": "assets/photos/antonio_di_pietro.jpg",
-  "Laura Boldrini": "assets/photos/laura_boldrini.jpg",
-  "Chiara Appendino": "assets/photos/chiara_appendino.png",
-  "Gianni Cuperlo": "assets/photos/gianni_cuperlo.jpg",
-  "Andrea Orlando": "assets/photos/andrea_orlando.jpg",
-  "Dario Franceschini": "assets/photos/dario_franceschini.jpg",
-  "Francesco Boccia": "assets/photos/francesco_boccia.jpg",
-  "Peppe Provenzano": "assets/photos/peppe_provenzano.jpg",
-  "Silvia Salis": "assets/photos/silvia_salis.png",
-  "Roberto Gualtieri": "assets/photos/roberto_gualtieri.jpg",
-  "Matteo Lepore": "assets/photos/matteo_lepore.jpg",
-  "Massimo Cacciari": "assets/photos/massimo_cacciari.jpg",
-  "Ursula von der Leyen": "assets/photos/ursula_von_der_leyen.jpg",
-  "Friedrich Merz": "assets/photos/friedrich_merz.jpg",
-  "Mark Rutte": "assets/photos/mark_rutte.jpg",
-  "Geert Wilders": "assets/photos/geert_wilders.jpg",
-  "Nigel Farage": "assets/photos/nigel_farage.jpg",
-  "Santiago Abascal": "assets/photos/santiago_abascal.jpg",
-  "Alice Weidel": "assets/photos/alice_weidel.jpg",
-  "Jair Bolsonaro": "assets/photos/jair_bolsonaro.jpg",
-  "Evo Morales": "assets/photos/evo_morales.jpg",
-  "Nicolás Maduro": "assets/photos/nicolas_maduro.jpg",
-  "Yoon Suk Yeol": "assets/photos/yoon_suk_yeol.jpg",
-  "Aung San Suu Kyi": "assets/photos/aung_san_suu_kyi.jpg",
-  "Imran Khan": "assets/photos/imran_khan.jpg",
-  "Mohammed bin Salman": "assets/photos/mohammed_bin_salman.jpg",
-  "Ali Khamenei": "assets/photos/ali_khamenei.jpg",
-  "Kim Jong-un": "assets/photos/kim_jong_un.jpg",
-  "Elon Musk": "assets/photos/elon_musk.jpg",
-  "Pedro Castillo": "assets/photos/pedro_castillo.jpg",
-  "Andrés Manuel López Obrador": "assets/photos/andres_manuel_lopez_obrador.jpg",
-  "Zohran Mamdani": "assets/photos/zohran_mamdani.jpg",
-  "Jürgen Habermas": "assets/photos/jurgen_habermas.jpg",
-  "Michael Sandel": "assets/photos/michael_sandel.jpg",
-  "Byung-Chul Han": "assets/photos/byung_chul_han.jpg",
-  "Thomas Piketty": "assets/photos/thomas_piketty.jpg",
-  "Yanis Varoufakis": "assets/photos/yanis_varoufakis.jpg",
-  "Shinzo Abe": "assets/photos/shinzo_abe.jpg",
-  "Alexander Hamilton": "assets/photos/alexander_hamilton.jpg",
-  "George Washington": "assets/photos/george_washington.jpg",
-  "Simón Bolívar": "assets/photos/simon_bolivar.jpg",
-  "Francisco Franco": "assets/photos/francisco_franco.jpg",
-  "António Salazar": "assets/photos/antonio_salazar.jpg",
-  "Juan Perón": "assets/photos/juan_peron.jpg",
-  "Evita Perón": "assets/photos/evita_peron.jpg",
-  "Jawaharlal Nehru": "assets/photos/jawaharlal_nehru.jpg",
-  "Mustafa Kemal Atatürk": "assets/photos/mustafa_kemal_ataturk.jpg",
-  "Michail Gorbaciov": "assets/photos/michail_gorbaciov.jpg",
-  "Willy Brandt": "assets/photos/willy_brandt.jpg",
-  "Julius Nyerere": "assets/photos/julius_nyerere.jpg",
-  "Patrice Lumumba": "assets/photos/patrice_lumumba.jpg",
-  "Kwame Nkrumah": "assets/photos/kwame_nkrumah.jpg",
-  "Lev Trockij": "assets/photos/lev_trockij.jpg",
-  "Eduard Bernstein": "assets/photos/eduard_bernstein.jpg",
-  "Piero Gobetti": "assets/photos/piero_gobetti.jpg",
-  "Carlo Rosselli": "assets/photos/carlo_rosselli.jpg",
-  "Altiero Spinelli": "assets/photos/altiero_spinelli.jpg",
-  "Giovanni Gentile": "assets/photos/giovanni_gentile.png",
-  "Norberto Bobbio": "assets/photos/norberto_bobbio.png",
-  "Umberto Eco": "assets/photos/umberto_eco.jpg",
-  "Emma Goldman": "assets/photos/emma_goldman.jpg",
-  "Pëtr Kropotkin": "assets/photos/petr_kropotkin.jpg",
-  "Pierre-Joseph Proudhon": "assets/photos/pierre_joseph_proudhon.png",
-  "Sant'Agostino": "assets/photos/sant_agostino.jpg",
-  "Tommaso d'Aquino": "assets/photos/tommaso_d_aquino.jpg",
-  "Baruch Spinoza": "assets/photos/baruch_spinoza.jpg",
-  "G.W.F. Hegel": "assets/photos/g_w_f_hegel.jpg",
-  "Arthur Schopenhauer": "assets/photos/arthur_schopenhauer.jpg",
-  "Søren Kierkegaard": "assets/photos/s_ren_kierkegaard.jpg",
-  "Alexis de Tocqueville": "assets/photos/alexis_de_tocqueville.jpg",
-  "Max Weber": "assets/photos/max_weber.jpg",
-  "Carl Schmitt": "assets/photos/carl_schmitt.jpg",
-  "Isaiah Berlin": "assets/photos/isaiah_berlin.jpg",
-  "Walter Benjamin": "assets/photos/walter_benjamin.jpg",
-  "Herbert Marcuse": "assets/photos/herbert_marcuse.jpg",
-  "Marco Aurelio": "assets/photos/marco_aurelio.jpg",
-  "Confucio": "assets/photos/confucio.jpg",
-  "Machiavelli": "assets/photos/machiavelli.jpg",
-  "Montesquieu": "assets/photos/montesquieu.jpg",
-  "Jean-Jacques Rousseau": "assets/photos/jean_jacques_rousseau.jpg",
-  "Voltaire": "assets/photos/voltaire.jpg",
-  "Immanuel Kant": "assets/photos/immanuel_kant.jpg",
-  "Edmund Burke": "assets/photos/edmund_burke.jpg",
-  "John Stuart Mill": "assets/photos/john_stuart_mill.jpg",
-  "Henry David Thoreau": "assets/photos/henry_david_thoreau.jpg",
-  "Hannah Arendt": "assets/photos/hannah_arendt.jpg",
-  "Simone de Beauvoir": "assets/photos/simone_de_beauvoir.png",
-  "John M. Keynes": "assets/photos/john_m_keynes.jpg",
-  "Friedrich Hayek": "assets/photos/friedrich_hayek.jpg",
-  "Murray Rothbard": "assets/photos/murray_rothbard.png",
-  "Ayn Rand": "assets/photos/ayn_rand.png",
-  "John Rawls": "assets/photos/john_rawls.jpg",
-  "Michel Foucault": "assets/photos/michel_foucault.jpg",
-  "Roger Scruton": "assets/photos/roger_scruton.jpg",
-  "Noam Chomsky": "assets/photos/noam_chomsky.jpg",
-  "Peter Singer": "assets/photos/peter_singer.jpg",
-  "Slavoj Žižek": "assets/photos/slavoj_zizek.jpg"
+  "Karl Liebknecht": "assets/photos/karl_liebknecht.webp",
+  "Rosa Luxemburg": "assets/photos/rosa_luxemburg.webp",
+  "Salvador Allende": "assets/photos/salvador_allende.webp",
+  "Gustavo Petro": "assets/photos/gustavo_petro.webp",
+  "Bernie Sanders": "assets/photos/bernie_sanders.webp",
+  "Alexandria Ocasio-Cortez": "assets/photos/alexandria_ocasio_cortez.webp",
+  "Jeremy Corbyn": "assets/photos/jeremy_corbyn.webp",
+  "Olof Palme": "assets/photos/olof_palme.webp",
+  "Enrico Berlinguer": "assets/photos/enrico_berlinguer.webp",
+  "Lula da Silva": "assets/photos/lula_da_silva.webp",
+  "Thomas Sankara": "assets/photos/thomas_sankara.webp",
+  "Martin Luther King": "assets/photos/martin_luther_king.webp",
+  "Jacinda Ardern": "assets/photos/jacinda_ardern.webp",
+  "Franklin D. Roosevelt": "assets/photos/franklin_d_roosevelt.webp",
+  "Abraham Lincoln": "assets/photos/abraham_lincoln.webp",
+  "Thomas Jefferson": "assets/photos/thomas_jefferson.webp",
+  "Giuseppe Mazzini": "assets/photos/giuseppe_mazzini.webp",
+  "Giuseppe Garibaldi": "assets/photos/giuseppe_garibaldi.webp",
+  "Camillo Cavour": "assets/photos/camillo_cavour.webp",
+  "Alcide De Gasperi": "assets/photos/alcide_de_gasperi.webp",
+  "Mario Draghi": "assets/photos/mario_draghi.webp",
+  "Silvio Berlusconi": "assets/photos/silvio_berlusconi.webp",
+  "Narendra Modi": "assets/photos/narendra_modi.webp",
+  "Lee Kuan Yew": "assets/photos/lee_kuan_yew.webp",
+  "Hugo Chávez": "assets/photos/hugo_chavez.webp",
+  "Che Guevara": "assets/photos/che_guevara.webp",
+  "Fidel Castro": "assets/photos/fidel_castro.webp",
+  "Lenin": "assets/photos/lenin.webp",
+  "Robespierre": "assets/photos/robespierre.webp",
+  "Giulio Cesare": "assets/photos/giulio_cesare.webp",
+  "Benito Mussolini": "assets/photos/benito_mussolini.webp",
+  "Augusto Pinochet": "assets/photos/augusto_pinochet.webp",
+  "Matteo Renzi": "assets/photos/matteo_renzi.webp",
+  "Antonio Tajani": "assets/photos/antonio_tajani.webp",
+  "Romano Prodi": "assets/photos/romano_prodi.webp",
+  "Nichi Vendola": "assets/photos/nichi_vendola.webp",
+  "Sergio Mattarella": "assets/photos/sergio_mattarella.webp",
+  "Jean-Luc Mélenchon": "assets/photos/jean_luc_melenchon.webp",
+  "Keir Starmer": "assets/photos/keir_starmer.webp",
+  "Pedro Sánchez": "assets/photos/pedro_sanchez.webp",
+  "Viktor Orbán": "assets/photos/viktor_orban.webp",
+  "Volodymyr Zelensky": "assets/photos/volodymyr_zelensky.webp",
+  "Claudia Sheinbaum": "assets/photos/claudia_sheinbaum.webp",
+  "Gabriel Boric": "assets/photos/gabriel_boric.webp",
+  "Joe Biden": "assets/photos/joe_biden.webp",
+  "Kamala Harris": "assets/photos/kamala_harris.webp",
+  "Sandro Pertini": "assets/photos/sandro_pertini.webp",
+  "Giacomo Matteotti": "assets/photos/giacomo_matteotti.webp",
+  "Aldo Moro": "assets/photos/aldo_moro.webp",
+  "Carlo Calenda": "assets/photos/carlo_calenda.webp",
+  "Roberto Vannacci": "assets/photos/roberto_vannacci.webp",
+  "Angelo Bonelli": "assets/photos/angelo_bonelli.webp",
+  "Riccardo Magi": "assets/photos/riccardo_magi.webp",
+  "Emma Bonino": "assets/photos/emma_bonino.webp",
+  "Enrico Letta": "assets/photos/enrico_letta.webp",
+  "Massimo D'Alema": "assets/photos/massimo_d_alema.webp",
+  "Pier Luigi Bersani": "assets/photos/pier_luigi_bersani.webp",
+  "Paolo Gentiloni": "assets/photos/paolo_gentiloni.webp",
+  "Giuseppe Sala": "assets/photos/giuseppe_sala.webp",
+  "Maurizio Landini": "assets/photos/maurizio_landini.webp",
+  "Beppe Grillo": "assets/photos/beppe_grillo.webp",
+  "Luigi Di Maio": "assets/photos/luigi_di_maio.webp",
+  "Pier Ferdinando Casini": "assets/photos/pier_ferdinando_casini.webp",
+  "Guido Crosetto": "assets/photos/guido_crosetto.webp",
+  "Carlo Nordio": "assets/photos/carlo_nordio.webp",
+  "Giancarlo Giorgetti": "assets/photos/giancarlo_giorgetti.webp",
+  "Roberto Calderoli": "assets/photos/roberto_calderoli.webp",
+  "Luca Zaia": "assets/photos/luca_zaia.webp",
+  "Francesco Lollobrigida": "assets/photos/francesco_lollobrigida.webp",
+  "Ignazio La Russa": "assets/photos/ignazio_la_russa.webp",
+  "Daniela Santanchè": "assets/photos/daniela_santanche.webp",
+  "Maurizio Lupi": "assets/photos/maurizio_lupi.webp",
+  "Giovanni Donzelli": "assets/photos/giovanni_donzelli.webp",
+  "Alessandro Di Battista": "assets/photos/alessandro_di_battista.webp",
+  "Michele Emiliano": "assets/photos/michele_emiliano.webp",
+  "Vincenzo De Luca": "assets/photos/vincenzo_de_luca.webp",
+  "Matteo Piantedosi": "assets/photos/matteo_piantedosi.webp",
+  "Tommaso Foti": "assets/photos/tommaso_foti.webp",
+  "Recep Tayyip Erdoğan": "assets/photos/recep_tayyip_erdogan.webp",
+  "Benjamin Netanyahu": "assets/photos/benjamin_netanyahu.webp",
+  "Rishi Sunak": "assets/photos/rishi_sunak.webp",
+  "Justin Trudeau": "assets/photos/justin_trudeau.webp",
+  "Anthony Albanese": "assets/photos/anthony_albanese.webp",
+  "Nayib Bukele": "assets/photos/nayib_bukele.webp",
+  "Cyril Ramaphosa": "assets/photos/cyril_ramaphosa.webp",
+  "Bettino Craxi": "assets/photos/bettino_craxi.webp",
+  "Giulio Andreotti": "assets/photos/giulio_andreotti.webp",
+  "Enrico Mattei": "assets/photos/enrico_mattei.webp",
+  "Luigi Sturzo": "assets/photos/luigi_sturzo.webp",
+  "John F. Kennedy": "assets/photos/john_f_kennedy.webp",
+  "Tito": "assets/photos/tito.webp",
+  "Mario Monti": "assets/photos/mario_monti.webp",
+  "Giulio Tremonti": "assets/photos/giulio_tremonti.webp",
+  "Gianfranco Fini": "assets/photos/gianfranco_fini.webp",
+  "Antonio Di Pietro": "assets/photos/antonio_di_pietro.webp",
+  "Laura Boldrini": "assets/photos/laura_boldrini.webp",
+  "Chiara Appendino": "assets/photos/chiara_appendino.webp",
+  "Gianni Cuperlo": "assets/photos/gianni_cuperlo.webp",
+  "Andrea Orlando": "assets/photos/andrea_orlando.webp",
+  "Dario Franceschini": "assets/photos/dario_franceschini.webp",
+  "Francesco Boccia": "assets/photos/francesco_boccia.webp",
+  "Peppe Provenzano": "assets/photos/peppe_provenzano.webp",
+  "Silvia Salis": "assets/photos/silvia_salis.webp",
+  "Roberto Gualtieri": "assets/photos/roberto_gualtieri.webp",
+  "Matteo Lepore": "assets/photos/matteo_lepore.webp",
+  "Massimo Cacciari": "assets/photos/massimo_cacciari.webp",
+  "Ursula von der Leyen": "assets/photos/ursula_von_der_leyen.webp",
+  "Friedrich Merz": "assets/photos/friedrich_merz.webp",
+  "Mark Rutte": "assets/photos/mark_rutte.webp",
+  "Geert Wilders": "assets/photos/geert_wilders.webp",
+  "Nigel Farage": "assets/photos/nigel_farage.webp",
+  "Santiago Abascal": "assets/photos/santiago_abascal.webp",
+  "Alice Weidel": "assets/photos/alice_weidel.webp",
+  "Jair Bolsonaro": "assets/photos/jair_bolsonaro.webp",
+  "Evo Morales": "assets/photos/evo_morales.webp",
+  "Nicolás Maduro": "assets/photos/nicolas_maduro.webp",
+  "Yoon Suk Yeol": "assets/photos/yoon_suk_yeol.webp",
+  "Aung San Suu Kyi": "assets/photos/aung_san_suu_kyi.webp",
+  "Imran Khan": "assets/photos/imran_khan.webp",
+  "Mohammed bin Salman": "assets/photos/mohammed_bin_salman.webp",
+  "Ali Khamenei": "assets/photos/ali_khamenei.webp",
+  "Kim Jong-un": "assets/photos/kim_jong_un.webp",
+  "Elon Musk": "assets/photos/elon_musk.webp",
+  "Pedro Castillo": "assets/photos/pedro_castillo.webp",
+  "Andrés Manuel López Obrador": "assets/photos/andres_manuel_lopez_obrador.webp",
+  "Zohran Mamdani": "assets/photos/zohran_mamdani.webp",
+  "Jürgen Habermas": "assets/photos/jurgen_habermas.webp",
+  "Michael Sandel": "assets/photos/michael_sandel.webp",
+  "Byung-Chul Han": "assets/photos/byung_chul_han.webp",
+  "Thomas Piketty": "assets/photos/thomas_piketty.webp",
+  "Yanis Varoufakis": "assets/photos/yanis_varoufakis.webp",
+  "Shinzo Abe": "assets/photos/shinzo_abe.webp",
+  "Alexander Hamilton": "assets/photos/alexander_hamilton.webp",
+  "George Washington": "assets/photos/george_washington.webp",
+  "Simón Bolívar": "assets/photos/simon_bolivar.webp",
+  "Francisco Franco": "assets/photos/francisco_franco.webp",
+  "António Salazar": "assets/photos/antonio_salazar.webp",
+  "Juan Perón": "assets/photos/juan_peron.webp",
+  "Evita Perón": "assets/photos/evita_peron.webp",
+  "Jawaharlal Nehru": "assets/photos/jawaharlal_nehru.webp",
+  "Mustafa Kemal Atatürk": "assets/photos/mustafa_kemal_ataturk.webp",
+  "Michail Gorbaciov": "assets/photos/michail_gorbaciov.webp",
+  "Willy Brandt": "assets/photos/willy_brandt.webp",
+  "Julius Nyerere": "assets/photos/julius_nyerere.webp",
+  "Patrice Lumumba": "assets/photos/patrice_lumumba.webp",
+  "Kwame Nkrumah": "assets/photos/kwame_nkrumah.webp",
+  "Lev Trockij": "assets/photos/lev_trockij.webp",
+  "Eduard Bernstein": "assets/photos/eduard_bernstein.webp",
+  "Piero Gobetti": "assets/photos/piero_gobetti.webp",
+  "Carlo Rosselli": "assets/photos/carlo_rosselli.webp",
+  "Altiero Spinelli": "assets/photos/altiero_spinelli.webp",
+  "Giovanni Gentile": "assets/photos/giovanni_gentile.webp",
+  "Norberto Bobbio": "assets/photos/norberto_bobbio.webp",
+  "Umberto Eco": "assets/photos/umberto_eco.webp",
+  "Emma Goldman": "assets/photos/emma_goldman.webp",
+  "Pëtr Kropotkin": "assets/photos/petr_kropotkin.webp",
+  "Pierre-Joseph Proudhon": "assets/photos/pierre_joseph_proudhon.webp",
+  "Sant'Agostino": "assets/photos/sant_agostino.webp",
+  "Tommaso d'Aquino": "assets/photos/tommaso_d_aquino.webp",
+  "Baruch Spinoza": "assets/photos/baruch_spinoza.webp",
+  "G.W.F. Hegel": "assets/photos/g_w_f_hegel.webp",
+  "Arthur Schopenhauer": "assets/photos/arthur_schopenhauer.webp",
+  "Søren Kierkegaard": "assets/photos/s_ren_kierkegaard.webp",
+  "Alexis de Tocqueville": "assets/photos/alexis_de_tocqueville.webp",
+  "Max Weber": "assets/photos/max_weber.webp",
+  "Carl Schmitt": "assets/photos/carl_schmitt.webp",
+  "Isaiah Berlin": "assets/photos/isaiah_berlin.webp",
+  "Walter Benjamin": "assets/photos/walter_benjamin.webp",
+  "Herbert Marcuse": "assets/photos/herbert_marcuse.webp",
+  "Marco Aurelio": "assets/photos/marco_aurelio.webp",
+  "Confucio": "assets/photos/confucio.webp",
+  "Machiavelli": "assets/photos/machiavelli.webp",
+  "Montesquieu": "assets/photos/montesquieu.webp",
+  "Jean-Jacques Rousseau": "assets/photos/jean_jacques_rousseau.webp",
+  "Voltaire": "assets/photos/voltaire.webp",
+  "Immanuel Kant": "assets/photos/immanuel_kant.webp",
+  "Edmund Burke": "assets/photos/edmund_burke.webp",
+  "John Stuart Mill": "assets/photos/john_stuart_mill.webp",
+  "Henry David Thoreau": "assets/photos/henry_david_thoreau.webp",
+  "Hannah Arendt": "assets/photos/hannah_arendt.webp",
+  "Simone de Beauvoir": "assets/photos/simone_de_beauvoir.webp",
+  "John M. Keynes": "assets/photos/john_m_keynes.webp",
+  "Friedrich Hayek": "assets/photos/friedrich_hayek.webp",
+  "Murray Rothbard": "assets/photos/murray_rothbard.webp",
+  "Ayn Rand": "assets/photos/ayn_rand.webp",
+  "John Rawls": "assets/photos/john_rawls.webp",
+  "Michel Foucault": "assets/photos/michel_foucault.webp",
+  "Roger Scruton": "assets/photos/roger_scruton.webp",
+  "Noam Chomsky": "assets/photos/noam_chomsky.webp",
+  "Peter Singer": "assets/photos/peter_singer.webp",
+  "Slavoj Žižek": "assets/photos/slavoj_zizek.webp"
 };
 window.LOCAL_PHOTOS = window.LOCAL_PHOTOS || LOCAL_PHOTOS;
 
@@ -779,7 +791,7 @@ async function fetchCommonsImageUrl(name){
   if (!name) return null;
 
   // 1) Asset locale: sorgente primaria, funziona anche nel canvas.
-  if (window.LOCAL_PHOTOS && window.LOCAL_PHOTOS[name]) return (window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[name])||window.LOCAL_PHOTOS[name];
+  if (window.LOCAL_PHOTOS && window.LOCAL_PHOTOS[name]) return window.LOCAL_PHOTOS[name];
 
   // 2) Cache (anche negativa) e richieste già in corso.
   if (name in PHOTO_CACHE) return PHOTO_CACHE[name];
@@ -856,6 +868,209 @@ const GAL_FILTERS=[
 ];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const PROFILE_UPDATED=null;
+const PROFILE_COUNTRY_HINTS={
+  "Karl Liebknecht":"Germania","Rosa Luxemburg":"Polonia","Salvador Allende":"Cile",
+  "Gustavo Petro":"Colombia","Bernie Sanders":"Stati Uniti","Alexandria Ocasio-Cortez":"Stati Uniti",
+  "Jeremy Corbyn":"Regno Unito","Olof Palme":"Svezia","Enrico Berlinguer":"Italia",
+  "Lula da Silva":"Brasile","Thomas Sankara":"Burkina Faso","Nelson Mandela":"Sudafrica",
+  "Martin Luther King":"Stati Uniti","Mahatma Gandhi":"India","Jacinda Ardern":"Nuova Zelanda",
+  "Barack Obama":"Stati Uniti","Franklin D. Roosevelt":"Stati Uniti","Abraham Lincoln":"Stati Uniti",
+  "Thomas Jefferson":"Stati Uniti","Giuseppe Mazzini":"Italia","Giuseppe Garibaldi":"Italia",
+  "Camillo Cavour":"Italia","Alcide De Gasperi":"Italia","Mario Draghi":"Italia",
+  "Angela Merkel":"Germania","Emmanuel Macron":"Francia","Charles de Gaulle":"Francia",
+  "Winston Churchill":"Regno Unito","Ronald Reagan":"Stati Uniti","Margaret Thatcher":"Regno Unito",
+  "Silvio Berlusconi":"Italia","Giorgia Meloni":"Italia","Donald Trump":"Stati Uniti",
+  "Javier Milei":"Argentina","Narendra Modi":"India","Lee Kuan Yew":"Singapore",
+  "Vladimir Putin":"Russia","Xi Jinping":"Cina","Hugo Chávez":"Venezuela",
+  "Che Guevara":"Argentina","Fidel Castro":"Cuba","Lenin":"Russia",
+  "Robespierre":"Francia","Napoleone":"Francia","Giulio Cesare":"Roma antica",
+  "Benito Mussolini":"Italia","Augusto Pinochet":"Cile","Elly Schlein":"Italia",
+  "Giuseppe Conte":"Italia","Matteo Salvini":"Italia","Matteo Renzi":"Italia",
+  "Antonio Tajani":"Italia","Romano Prodi":"Italia","Nichi Vendola":"Italia",
+  "Sergio Mattarella":"Italia","Jean-Luc Mélenchon":"Francia","Marine Le Pen":"Francia",
+  "Keir Starmer":"Regno Unito","Olaf Scholz":"Germania","Pedro Sánchez":"Spagna",
+  "Viktor Orbán":"Ungheria","Volodymyr Zelensky":"Ucraina","Claudia Sheinbaum":"Messico",
+  "Gabriel Boric":"Cile","Joe Biden":"Stati Uniti","Kamala Harris":"Stati Uniti",
+  "Sandro Pertini":"Italia","Giacomo Matteotti":"Italia","Palmiro Togliatti":"Italia",
+  "Aldo Moro":"Italia","Carlo Calenda":"Italia","Nicola Fratoianni":"Italia",
+  "Roberto Vannacci":"Italia","Angelo Bonelli":"Italia","Riccardo Magi":"Italia",
+  "Emma Bonino":"Italia","Marco Cappato":"Italia","Enrico Letta":"Italia",
+  "Massimo D'Alema":"Italia","Pier Luigi Bersani":"Italia","Paolo Gentiloni":"Italia",
+  "Stefano Bonaccini":"Italia","Giuseppe Sala":"Italia","Maurizio Landini":"Italia",
+  "Beppe Grillo":"Italia","Luigi Di Maio":"Italia","Pier Ferdinando Casini":"Italia",
+  "Guido Crosetto":"Italia","Carlo Nordio":"Italia","Giancarlo Giorgetti":"Italia",
+  "Roberto Calderoli":"Italia","Luca Zaia":"Italia","Massimiliano Fedriga":"Italia",
+  "Francesco Lollobrigida":"Italia","Ignazio La Russa":"Italia","Daniela Santanchè":"Italia",
+  "Maurizio Lupi":"Italia","Giovanni Donzelli":"Italia","Alessandro Di Battista":"Italia",
+  "Michele Emiliano":"Italia","Vincenzo De Luca":"Italia","Matteo Piantedosi":"Italia",
+  "Tommaso Foti":"Italia","Recep Tayyip Erdoğan":"Turchia","Benjamin Netanyahu":"Israele",
+  "Rishi Sunak":"Regno Unito","Justin Trudeau":"Canada","Anthony Albanese":"Australia",
+  "Nayib Bukele":"El Salvador","Cyril Ramaphosa":"Sudafrica","Bettino Craxi":"Italia",
+  "Giulio Andreotti":"Italia","Enrico Mattei":"Italia","Giovanni Giolitti":"Italia",
+  "Luigi Sturzo":"Italia","John F. Kennedy":"Stati Uniti","Mao Zedong":"Cina",
+  "Tito":"Jugoslavia","Mario Monti":"Italia","Giulio Tremonti":"Italia",
+  "Gianfranco Fini":"Italia","Antonio Di Pietro":"Italia","Laura Boldrini":"Italia",
+  "Chiara Appendino":"Italia","Paola Taverna":"Italia","Gianni Cuperlo":"Italia",
+  "Andrea Orlando":"Italia","Dario Franceschini":"Italia","Francesco Boccia":"Italia",
+  "Peppe Provenzano":"Italia","Silvia Salis":"Italia","Roberto Gualtieri":"Italia",
+  "Matteo Lepore":"Italia","Massimo Cacciari":"Italia","Giorgio Agamben":"Italia",
+  "Ursula von der Leyen":"Germania","Friedrich Merz":"Germania","Mark Rutte":"Paesi Bassi",
+  "Geert Wilders":"Paesi Bassi","Nigel Farage":"Regno Unito","Santiago Abascal":"Spagna",
+  "Alice Weidel":"Germania","Jair Bolsonaro":"Brasile","Evo Morales":"Bolivia",
+  "Nicolás Maduro":"Venezuela","Yoon Suk Yeol":"Corea del Sud","Aung San Suu Kyi":"Myanmar",
+  "Imran Khan":"Pakistan","Mohammed bin Salman":"Arabia Saudita","Ali Khamenei":"Iran",
+  "Kim Jong-un":"Corea del Nord","Elon Musk":"Sudafrica","Pedro Castillo":"Perù",
+  "Andrés Manuel López Obrador":"Messico","Zohran Mamdani":"Stati Uniti",
+  "Judith Butler":"Stati Uniti","Jürgen Habermas":"Germania","Michael Sandel":"Stati Uniti",
+  "Byung-Chul Han":"Corea del Sud","Thomas Piketty":"Francia","Yanis Varoufakis":"Grecia",
+  "Shinzo Abe":"Giappone","Alexander Hamilton":"Stati Uniti","George Washington":"Stati Uniti",
+  "Simón Bolívar":"Venezuela","Adolf Hitler":"Austria","Josef Stalin":"Unione Sovietica",
+  "Francisco Franco":"Spagna","António Salazar":"Portogallo","Juan Perón":"Argentina",
+  "Evita Perón":"Argentina","Jawaharlal Nehru":"India","Mustafa Kemal Atatürk":"Turchia",
+  "Michail Gorbaciov":"Unione Sovietica","Willy Brandt":"Germania","Konrad Adenauer":"Germania",
+  "Julius Nyerere":"Tanzania","Patrice Lumumba":"Repubblica Democratica del Congo",
+  "Kwame Nkrumah":"Ghana","Lev Trockij":"Russia","Eduard Bernstein":"Germania",
+  "Piero Gobetti":"Italia","Carlo Rosselli":"Italia","Altiero Spinelli":"Italia",
+  "Benedetto Croce":"Italia","Giovanni Gentile":"Italia","Norberto Bobbio":"Italia",
+  "Umberto Eco":"Italia","Emma Goldman":"Stati Uniti","Pëtr Kropotkin":"Russia",
+  "Pierre-Joseph Proudhon":"Francia","Socrate":"Grecia antica","Sant'Agostino":"Impero romano",
+  "Tommaso d'Aquino":"Italia","Baruch Spinoza":"Paesi Bassi","David Hume":"Regno Unito",
+  "G.W.F. Hegel":"Germania","Arthur Schopenhauer":"Germania","Søren Kierkegaard":"Danimarca",
+  "Alexis de Tocqueville":"Francia","Max Weber":"Germania","Carl Schmitt":"Germania",
+  "Isaiah Berlin":"Regno Unito","Karl Popper":"Austria","Walter Benjamin":"Germania",
+  "Herbert Marcuse":"Germania","Robert Nozick":"Stati Uniti","Platone":"Grecia antica",
+  "Aristotele":"Grecia antica","Epicuro":"Grecia antica","Marco Aurelio":"Impero romano",
+  "Confucio":"Cina antica","Machiavelli":"Italia","Thomas Hobbes":"Regno Unito",
+  "John Locke":"Regno Unito","Montesquieu":"Francia","Jean-Jacques Rousseau":"Ginevra",
+  "Voltaire":"Francia","Immanuel Kant":"Prussia","Adam Smith":"Regno Unito",
+  "Edmund Burke":"Irlanda","John Stuart Mill":"Regno Unito","Henry David Thoreau":"Stati Uniti",
+  "Karl Marx":"Germania","Michail Bakunin":"Russia","Friedrich Nietzsche":"Germania",
+  "Antonio Gramsci":"Italia","Hannah Arendt":"Germania","Albert Camus":"Francia",
+  "Simone de Beauvoir":"Francia","John M. Keynes":"Regno Unito","Friedrich Hayek":"Austria",
+  "Murray Rothbard":"Stati Uniti","Ayn Rand":"Russia","John Rawls":"Stati Uniti",
+  "Michel Foucault":"Francia","Roger Scruton":"Regno Unito","Noam Chomsky":"Stati Uniti",
+  "Peter Singer":"Australia","Slavoj Žižek":"Slovenia","Papa Francesco":"Argentina"
+};
+const PROFILE_ERA_HINTS={
+  "Antichità":[
+    "Socrate","Platone","Aristotele","Epicuro","Giulio Cesare","Marco Aurelio","Confucio"
+  ],
+  "Tarda antichità":[
+    "Sant'Agostino"
+  ],
+  "Medioevo":[
+    "Tommaso d'Aquino"
+  ],
+  "Rinascimento":[
+    "Machiavelli"
+  ],
+  "Prima età moderna e Illuminismo (XVII-XVIII secolo)":[
+    "Thomas Hobbes","John Locke","Baruch Spinoza","Montesquieu","Jean-Jacques Rousseau",
+    "Voltaire","Immanuel Kant","Adam Smith","Edmund Burke","David Hume"
+  ],
+  "Rivoluzione americana (XVIII secolo)":[
+    "Thomas Jefferson","Alexander Hamilton","George Washington"
+  ],
+  "Rivoluzione francese e Impero (XVIII-XIX secolo)":[
+    "Robespierre","Napoleone"
+  ]
+};
+const PROFILE_ERA_BY_NAME=Object.fromEntries(Object.entries(PROFILE_ERA_HINTS).flatMap(([era,names])=>names.map(name=>[name,era])));
+const PROFILE_QUOTES={
+  "Rosa Luxemburg":{
+    text:"La libertà è sempre la libertà di chi la pensa diversamente.",
+    translation:true,
+    source:{label:"La rivoluzione russa",url:"https://www.marxists.org/archive/luxemburg/1918/russian-revolution/ch06.htm"}
+  },
+  "Salvador Allende":{
+    text:"La storia è nostra e la fanno i popoli.",
+    translation:true,
+    source:{label:"Ultimo discorso, 11 settembre 1973",url:"https://www.marxists.org/espanol/allende/11-9-73.htm"}
+  },
+  "Martin Luther King":{
+    text:"Io ho un sogno.",
+    translation:true,
+    source:{label:"Discorso alla marcia su Washington",url:"https://kinginstitute.stanford.edu/king-papers/documents/i-have-dream-address-delivered-march-washington-jobs-and-freedom"}
+  },
+  "Franklin D. Roosevelt":{
+    text:"L'unica cosa di cui dobbiamo avere paura è la paura stessa.",
+    translation:true,
+    source:{label:"Discorso inaugurale del 1933",url:"https://www.archives.gov/milestone-documents/franklin-d-roosevelt-inaugural-address"}
+  },
+  "Abraham Lincoln":{
+    text:"Il governo del popolo, dal popolo, per il popolo.",
+    translation:true,
+    source:{label:"Discorso di Gettysburg",url:"https://www.archives.gov/milestone-documents/gettysburg-address"}
+  },
+  "Thomas Jefferson":{
+    text:"Tutti gli uomini sono creati uguali.",
+    translation:true,
+    source:{label:"Dichiarazione d'indipendenza",url:"https://www.archives.gov/founding-docs/declaration-transcript"}
+  },
+  "Mario Draghi":{
+    text:"Farò tutto il necessario per preservare l'euro.",
+    translation:true,
+    source:{label:"Discorso alla Global Investment Conference",url:"https://www.ecb.europa.eu/press/key/date/2012/html/sp120726.en.html"}
+  },
+  "Winston Churchill":{
+    text:"Non ho altro da offrire che sangue, fatica, lacrime e sudore.",
+    translation:true,
+    source:{label:"Discorso alla Camera dei Comuni, 13 maggio 1940",url:"https://api.parliament.uk/historic-hansard/commons/1940/may/13/prime-ministers-statement"}
+  },
+  "Ronald Reagan":{
+    text:"Signor Gorbaciov, abbatta questo muro!",
+    translation:true,
+    source:{label:"Discorso alla Porta di Brandeburgo",url:"https://www.reaganlibrary.gov/archives/speech/remarks-brandenburg-gate"}
+  },
+  "Barack Obama":{
+    text:"Yes we can.",
+    source:{label:"Discorso dopo le primarie del New Hampshire",url:"https://www.presidency.ucsb.edu/documents/address-new-hampshire-primary-election-results"}
+  },
+  "Fidel Castro":{
+    text:"La storia mi assolverà.",
+    translation:true,
+    source:{label:"La storia mi assolverà",url:"https://www.marxists.org/history/cuba/archive/castro/1953/10/16.htm"}
+  },
+  "Socrate":{
+    text:"Una vita senza ricerca non è degna di essere vissuta.",
+    translation:true,
+    source:{label:"Platone, Apologia di Socrate",url:"https://www.perseus.tufts.edu/hopper/text?doc=Plat.+Ap.+38a"}
+  },
+  "Sant'Agostino":{
+    text:"Ama e fa' ciò che vuoi.",
+    translation:true,
+    source:{label:"Omelie sulla Prima lettera di Giovanni, 7, 8",url:"https://www.newadvent.org/fathers/170207.htm"}
+  },
+  "Immanuel Kant":{
+    text:"Il cielo stellato sopra di me, la legge morale dentro di me.",
+    translation:true,
+    source:{label:"Critica della ragion pratica",url:"https://www.gutenberg.org/files/5683/5683-h/5683-h.htm"}
+  },
+  "Adam Smith":{
+    text:"Non è dalla benevolenza del macellaio che attendiamo il nostro pranzo.",
+    translation:true,
+    source:{label:"La ricchezza delle nazioni, libro I",url:"https://www.gutenberg.org/files/3300/3300-h/3300-h.htm"}
+  },
+  "John Stuart Mill":{
+    text:"Su se stesso, sul proprio corpo e sulla propria mente, l'individuo è sovrano.",
+    translation:true,
+    source:{label:"Sulla libertà, capitolo I",url:"https://www.gutenberg.org/files/34901/34901-h/34901-h.htm"}
+  },
+  "Karl Marx":{
+    text:"Proletari di tutti i paesi, unitevi!",
+    translation:true,
+    source:{label:"Manifesto del Partito Comunista",url:"https://www.marxists.org/archive/marx/works/1848/communist-manifesto/ch04.htm"}
+  },
+  "Friedrich Nietzsche":{
+    text:"Dio è morto.",
+    translation:true,
+    source:{label:"La gaia scienza, §125",url:"https://www.gutenberg.org/files/52915/52915-h/52915-h.htm"}
+  },
+  "Papa Francesco":{
+    text:"Chi sono io per giudicare?",
+    source:{label:"Conferenza stampa, 28 luglio 2013",url:"https://www.vatican.va/content/francesco/it/speeches/2013/july/documents/papa-francesco_20130728_gmg-conferenza-stampa.html"}
+  }
+};
 const PROFILE_DATA={
   "Karl Liebknecht":{
     confidence:"documentata",
@@ -3268,9 +3483,107 @@ const PROFILE_DATA={
     ]
   }
 };
+const PROFILE_LIFE={
+  "Karl Liebknecht":"1871–1919","Rosa Luxemburg":"1871–1919","Salvador Allende":"1908–1973","Olof Palme":"1927–1986",
+  "Enrico Berlinguer":"1922–1984","Thomas Sankara":"1949–1987","Nelson Mandela":"1918–2013","Martin Luther King":"1929–1968",
+  "Mahatma Gandhi":"1869–1948","Franklin D. Roosevelt":"1882–1945","Abraham Lincoln":"1809–1865","Giuseppe Mazzini":"1805–1872",
+  "Giuseppe Garibaldi":"1807–1882","Camillo Cavour":"1810–1861","Alcide De Gasperi":"1881–1954","Charles de Gaulle":"1890–1970",
+  "Winston Churchill":"1874–1965","Ronald Reagan":"1911–2004","Margaret Thatcher":"1925–2013","Silvio Berlusconi":"1936–2023",
+  "Lee Kuan Yew":"1923–2015","Hugo Chávez":"1954–2013","Che Guevara":"1928–1967","Fidel Castro":"1926–2016","Lenin":"1870–1924",
+  "Benito Mussolini":"1883–1945","Augusto Pinochet":"1915–2006","Sandro Pertini":"1896–1990","Giacomo Matteotti":"1885–1924",
+  "Palmiro Togliatti":"1893–1964","Aldo Moro":"1916–1978","Bettino Craxi":"1934–2000","Giulio Andreotti":"1919–2013",
+  "Enrico Mattei":"1906–1962","Giovanni Giolitti":"1842–1928","Luigi Sturzo":"1871–1959","John F. Kennedy":"1917–1963",
+  "Mao Zedong":"1893–1976","Tito":"1892–1980","Shinzo Abe":"1954–2022","Simón Bolívar":"1783–1830","Adolf Hitler":"1889–1945",
+  "Josef Stalin":"1878–1953","Francisco Franco":"1892–1975","António Salazar":"1889–1970","Juan Perón":"1895–1974",
+  "Evita Perón":"1919–1952","Jawaharlal Nehru":"1889–1964","Mustafa Kemal Atatürk":"1881–1938","Michail Gorbaciov":"1931–2022",
+  "Willy Brandt":"1913–1992","Konrad Adenauer":"1876–1967","Julius Nyerere":"1922–1999","Patrice Lumumba":"1925–1961",
+  "Kwame Nkrumah":"1909–1972","Lev Trockij":"1879–1940","Eduard Bernstein":"1850–1932","Piero Gobetti":"1901–1926",
+  "Carlo Rosselli":"1899–1937","Altiero Spinelli":"1907–1986","Benedetto Croce":"1866–1952","Giovanni Gentile":"1875–1944",
+  "Norberto Bobbio":"1909–2004","Umberto Eco":"1932–2016","Emma Goldman":"1869–1940","Pëtr Kropotkin":"1842–1921",
+  "Pierre-Joseph Proudhon":"1809–1865","G.W.F. Hegel":"1770–1831","Arthur Schopenhauer":"1788–1860","Søren Kierkegaard":"1813–1855",
+  "Alexis de Tocqueville":"1805–1859","Max Weber":"1864–1920","Carl Schmitt":"1888–1985","Isaiah Berlin":"1909–1997",
+  "Karl Popper":"1902–1994","Walter Benjamin":"1892–1940","Herbert Marcuse":"1898–1979","Robert Nozick":"1938–2002",
+  "Henry David Thoreau":"1817–1862","Karl Marx":"1818–1883","Michail Bakunin":"1814–1876","Friedrich Nietzsche":"1844–1900",
+  "Antonio Gramsci":"1891–1937","Hannah Arendt":"1906–1975","Albert Camus":"1913–1960","Simone de Beauvoir":"1908–1986",
+  "John M. Keynes":"1883–1946","Friedrich Hayek":"1899–1992","Murray Rothbard":"1926–1995","Ayn Rand":"1905–1982",
+  "John Rawls":"1921–2002","Michel Foucault":"1926–1984","Roger Scruton":"1944–2020","Papa Francesco":"1936–2025",
+  "John Stuart Mill":"1806–1873","Robespierre":"1758–1794","Napoleone":"1769–1821",
+  "Socrate":"470–399 a.C.","Platone":"428/427–348/347 a.C.","Aristotele":"384–322 a.C.","Epicuro":"341–270 a.C.",
+  "Giulio Cesare":"100–44 a.C.","Marco Aurelio":"121–180 d.C.","Confucio":"551–479 a.C.","Sant'Agostino":"354–430 d.C.",
+  "Tommaso d'Aquino":"1225–1274","Machiavelli":"1469–1527","Thomas Hobbes":"1588–1679","John Locke":"1632–1704",
+  "Baruch Spinoza":"1632–1677","Montesquieu":"1689–1755","Jean-Jacques Rousseau":"1712–1778","Voltaire":"1694–1778",
+  "Immanuel Kant":"1724–1804","Adam Smith":"1723–1790","Edmund Burke":"1729–1797","David Hume":"1711–1776",
+  "Thomas Jefferson":"1743–1826","Alexander Hamilton":"1755/1757–1804","George Washington":"1732–1799"
+};
+function eraFromLife(life){
+  const ys=(life.match(/\d{4}/g)||[]).map(Number);
+  if(!ys.length)return "Età contemporanea (XX-XXI secolo)";
+  const rom=["","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"];
+  const a=Math.ceil(ys[0]/100),b=Math.ceil(ys[ys.length-1]/100);
+  return "Età contemporanea ("+(a===b?rom[a]:rom[a]+"-"+rom[b])+" secolo)";
+}
+const PROFILE_QUOTES_MORE={
+  "Karl Liebknecht":{text:"Il nemico principale è nel nostro stesso paese.",translation:true,source:{label:"Volantino, maggio 1915"}},
+  "John F. Kennedy":{text:"Non chiederti che cosa il tuo Paese può fare per te: chiediti che cosa puoi fare tu per il tuo Paese.",translation:true,source:{label:"Discorso inaugurale, 20 gennaio 1961",url:"https://www.jfklibrary.org/learn/about-jfk/historic-speeches/inaugural-address"}},
+  "Nelson Mandela":{text:"È un ideale per il quale spero di vivere e, se necessario, per il quale sono pronto a morire.",translation:true,source:{label:"Discorso al processo di Rivonia, 20 aprile 1964"}},
+  "Charles de Gaulle":{text:"Qualunque cosa accada, la fiamma della resistenza francese non deve spegnersi e non si spegnerà.",translation:true,source:{label:"Discorso alla BBC, 22 giugno 1940"}},
+  "Margaret Thatcher":{text:"La signora non ha intenzione di tornare indietro.",translation:true,source:{label:"Congresso del Partito Conservatore, 10 ottobre 1980"}},
+  "Angela Merkel":{text:"Ce la faremo.",translation:true,source:{label:"Conferenza stampa, 31 agosto 2015"}},
+  "Jacinda Ardern":{text:"Loro siamo noi.",translation:true,source:{label:"Dopo l'attentato di Christchurch, 15 marzo 2019"}},
+  "Silvio Berlusconi":{text:"L'Italia è il Paese che amo.",source:{label:"Videomessaggio della «discesa in campo», 26 gennaio 1994"}},
+  "Giorgia Meloni":{text:"Io sono Giorgia, sono una donna, sono una madre, sono italiana, sono cristiana.",source:{label:"Comizio in piazza San Giovanni, 19 ottobre 2019"}},
+  "Giuseppe Conte":{text:"Sarò l'avvocato difensore del popolo italiano.",source:{label:"Dichiarazione dopo l'incarico, 23 maggio 2018"}},
+  "Hugo Chávez":{text:"Per ora.",translation:true,source:{label:"Messaggio televisivo dopo il golpe fallito, 4 febbraio 1992"}},
+  "Che Guevara":{text:"Fino alla vittoria, sempre.",translation:true,source:{label:"Lettera d'addio a Fidel Castro, 1965"}},
+  "Mao Zedong":{text:"Il potere politico nasce dalla canna del fucile.",translation:true,source:{label:"Problemi della guerra e della strategia, 1938"}},
+  "Giulio Cesare":{text:"Il dado è tratto.",translation:true,source:{label:"Svetonio, Vita di Cesare, 32"}},
+  "Giuseppe Mazzini":{text:"Pensiero e azione.",source:{label:"Motto della Giovine Italia, 1831"}},
+  "Giuseppe Garibaldi":{text:"Obbedisco.",source:{label:"Telegramma al generale La Marmora, 9 agosto 1866"}},
+  "Camillo Cavour":{text:"Libera Chiesa in libero Stato.",source:{label:"Discorso alla Camera, 27 marzo 1861"}},
+  "Giacomo Matteotti":{text:"Io il mio discorso l'ho fatto. Ora voi preparate il discorso funebre per me.",source:{label:"Detto ai colleghi dopo l'intervento del 30 maggio 1924"}},
+  "Carlo Rosselli":{text:"Oggi in Spagna, domani in Italia.",source:{label:"Radio Barcellona, 13 novembre 1936"}},
+  "Antonio Gramsci":{text:"Odio gli indifferenti.",source:{label:"La città futura, 11 febbraio 1917"}},
+  "Jawaharlal Nehru":{text:"Allo scoccare della mezzanotte, mentre il mondo dorme, l'India si sveglierà alla vita e alla libertà.",translation:true,source:{label:"Discorso «Tryst with Destiny», 14 agosto 1947"}},
+  "Mustafa Kemal Atatürk":{text:"Pace in patria, pace nel mondo.",translation:true,source:{label:"Motto, 1931"}},
+  "Willy Brandt":{text:"Vogliamo osare più democrazia.",translation:true,source:{label:"Dichiarazione di governo, 28 ottobre 1969"}},
+  "Eduard Bernstein":{text:"Ciò che comunemente si chiama il fine ultimo del socialismo per me non è nulla, il movimento è tutto.",translation:true,source:{label:"Le premesse del socialismo, 1899"}},
+  "Pierre-Joseph Proudhon":{text:"La proprietà è un furto!",translation:true,source:{label:"Che cos'è la proprietà?, 1840"}},
+  "Henry David Thoreau":{text:"Il miglior governo è quello che governa meno.",translation:true,source:{label:"La disobbedienza civile, 1849"}},
+  "Platone":null,
+  "Aristotele":{text:"L'uomo è per natura un animale politico.",translation:true,source:{label:"Politica, I, 2 (1253a)"}},
+  "Epicuro":{text:"La morte non è nulla per noi.",translation:true,source:{label:"Lettera a Meneceo, 124"}},
+  "Marco Aurelio":{text:"Ciò che non giova all'alveare non giova nemmeno all'ape.",translation:true,source:{label:"Meditazioni, VI, 54"}},
+  "Confucio":{text:"Ciò che non desideri per te, non farlo agli altri.",translation:true,source:{label:"Dialoghi, XV, 24"}},
+  "Thomas Hobbes":{text:"La vita dell'uomo è solitaria, povera, sgradevole, brutale e breve.",translation:true,source:{label:"Leviatano, cap. XIII, 1651"}},
+  "John Locke":{text:"Dove non c'è legge, non c'è libertà.",translation:true,source:{label:"Secondo trattato sul governo civile, §57, 1689"}},
+  "Baruch Spinoza":{text:"Il fine dello Stato è la libertà.",translation:true,source:{label:"Trattato teologico-politico, cap. XX, 1670"}},
+  "Montesquieu":{text:"Bisogna che, per la disposizione stessa delle cose, il potere arresti il potere.",translation:true,source:{label:"Lo spirito delle leggi, XI, 4, 1748"}},
+  "Jean-Jacques Rousseau":{text:"L'uomo è nato libero, e dappertutto è in catene.",translation:true,source:{label:"Il contratto sociale, I, 1, 1762"}},
+  "Voltaire":{text:"Se Dio non esistesse, bisognerebbe inventarlo.",translation:true,source:{label:"Epistola all'autore del libro «I tre impostori», 1768"}},
+  "David Hume":{text:"La ragione è, e deve essere soltanto, schiava delle passioni.",translation:true,source:{label:"Trattato sulla natura umana, II, 3, 3, 1739-40"}},
+  "G.W.F. Hegel":{text:"La nottola di Minerva inizia il suo volo solo sul far del crepuscolo.",translation:true,source:{label:"Lineamenti di filosofia del diritto, Prefazione, 1820"}},
+  "Arthur Schopenhauer":{text:"La vita oscilla, come un pendolo, tra il dolore e la noia.",translation:true,source:{label:"Il mondo come volontà e rappresentazione, §57"}},
+  "Søren Kierkegaard":{text:"La vita può essere compresa solo guardando all'indietro, ma deve essere vissuta guardando in avanti.",translation:true,source:{label:"Diari, 1843"}},
+  "Max Weber":{text:"La politica consiste in un lento e tenace superamento di dure difficoltà, da compiersi con passione e discernimento.",translation:true,source:{label:"La politica come professione, 1919"}},
+  "Carl Schmitt":{text:"Sovrano è chi decide sullo stato di eccezione.",translation:true,source:{label:"Teologia politica, 1922"}},
+  "Karl Popper":{text:"Posso sbagliarmi e tu puoi avere ragione, e con uno sforzo possiamo avvicinarci alla verità.",translation:true,source:{label:"La società aperta e i suoi nemici, cap. 24, 1945"}},
+  "Walter Benjamin":{text:"Non esiste un documento di cultura che non sia al tempo stesso un documento di barbarie.",translation:true,source:{label:"Tesi di filosofia della storia, VII, 1940"}},
+  "Albert Camus":{text:"Bisogna immaginare Sisifo felice.",translation:true,source:{label:"Il mito di Sisifo, 1942"}},
+  "Simone de Beauvoir":{text:"Donna non si nasce, lo si diventa.",translation:true,source:{label:"Il secondo sesso, 1949"}},
+  "John M. Keynes":{text:"Nel lungo periodo siamo tutti morti.",translation:true,source:{label:"A Tract on Monetary Reform, 1923"}},
+  "Friedrich Hayek":{text:"Il curioso compito dell'economia è dimostrare agli uomini quanto poco sanno di ciò che immaginano di poter progettare.",translation:true,source:{label:"La presunzione fatale, 1988"}},
+  "Ayn Rand":{text:"Giuro sulla mia vita e sul mio amore per essa che non vivrò mai per un altro uomo, né chiederò a un altro uomo di vivere per me.",translation:true,source:{label:"La rivolta di Atlante, 1957"}},
+  "John Rawls":{text:"La giustizia è la prima virtù delle istituzioni sociali, così come la verità lo è dei sistemi di pensiero.",translation:true,source:{label:"Una teoria della giustizia, §1, 1971"}},
+  "Michel Foucault":{text:"Dove c'è potere, c'è resistenza.",translation:true,source:{label:"La volontà di sapere, 1976"}}
+};
+delete PROFILE_QUOTES_MORE["Platone"];
 function profileMetadata(person){
-  const saved=PROFILE_DATA[person[0]]||{};
-  return {...saved,country:saved.country||(ITA.has(person[0])?"Italia":null),era:saved.era||null,updated:saved.updated||PROFILE_UPDATED,
+  const name=person[0],saved=PROFILE_DATA[name]||{};
+  const life=PROFILE_LIFE[name]||"";
+  const baseEra=saved.era||PROFILE_ERA_BY_NAME[name]||(life?eraFromLife(life):"Età contemporanea (XX-XXI secolo)");
+  return {...saved,country:saved.country||PROFILE_COUNTRY_HINTS[name]||(ITA.has(name)?"Italia":"Paese non indicato"),
+    era:baseEra,life:life,
+    quote:saved.quote||PROFILE_QUOTES[name]||PROFILE_QUOTES_MORE[name]||null,updated:saved.updated||PROFILE_UPDATED,
     confidence:saved.confidence||"indicativa",paraphrase:saved.paraphrase||null,facts:saved.facts||[],
     axes:AX.map((axis,j)=>({reason:null,sources:[],...(saved.axes&&saved.axes[j]||{})}))};
 }
@@ -3310,8 +3623,8 @@ function renderGallery(j){
   if(j!==undefined)galleryType=j;
   const idxs=PPL.map((p,k)=>k).filter(k=>galleryMatches(PPL[k]));
   gal.innerHTML=idxs.map(k=>{
-    const p=PPL[k],loc=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[p[0]],webp=window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[p[0]];
-    const ph=loc?'<img class="ph" width="72" height="72" loading="lazy" decoding="async" alt="'+esc(p[0])+'" src="'+esc(webp||loc)+'"'+(webp&&webp!==loc?' data-fallback="'+esc(loc)+'"':'')+'>':'<div class="ph ava" data-lazy="'+k+'">'+esc(ini(p[0]))+'</div>';
+    const p=PPL[k],loc=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[p[0]];
+    const ph=loc?'<img class="ph" width="72" height="72" loading="lazy" decoding="async" alt="'+esc(p[0])+'" src="'+esc(loc)+'">':'<div class="ph ava" data-lazy="'+k+'">'+esc(ini(p[0]))+'</div>';
     return '<button type="button" class="gallery-card" data-i="'+k+'" aria-label="Statistiche di '+esc(p[0])+'">'+ph+'<b>'+esc(p[0])+'</b><small>'+esc(p[1])+'</small></button>';
   }).join("");
   document.getElementById("galcount").textContent=idxs.length+" / "+PPL.length;
@@ -3330,16 +3643,16 @@ function showGallery(){
   app.innerHTML=head()+'<div class="sec">§ 02 · Archivio</div><h1>Galleria</h1><p>Tutti i '+PPL.length+' leader e filosofi contemplati nel test. Tocca una persona per vedere le sue statistiche e come farla uscire nel test.</p>'
     +'<div class="gallery-filters">'+GAL_FILTERS.map((f,j)=>'<button class="gallery-filter'+(j===galleryType?' active':'')+'" data-f="'+j+'">'+f[0]+'</button>').join("")+'</div>'
     +'<div class="gallery-controls"><input id="galsearch" type="search" placeholder="Cerca per nome" aria-label="Cerca per nome">'
-    +'<label>Paese<select id="galcountry"><option value="">Tutti i Paesi</option><option value="unknown">Non documentato</option></select></label>'
+    +'<label>Paese<select id="galcountry"><option value="">Tutti i Paesi</option></select></label>'
     +'<label>Epoca<select id="galera"><option value="">Tutte le epoche</option><option value="present">Attuale</option><option value="past">Passato</option></select></label>'
     +'<label>Asse<select id="galaxis"><option value="">Tutti gli assi</option>'+AX.map((a,j)=>'<option value="'+j+'">'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label>'
     +'<label>Valore<select id="galband"><option value="">Qualsiasi valore</option><option value="left">Polo iniziale</option><option value="middle">Intermedio (40–60)</option><option value="right">Polo opposto</option></select></label></div>'
-    +'<p class="notice">I Paesi e le epoche non sono ancora documentati per tutti i profili; i filtri mostrano solo i dati presenti.</p>'
+    +'<p class="notice">Paesi ed epoche indicano il contesto storico-geografico prevalente della persona.</p>'
     +'<div class="meta"><span id="galcount"></span></div><div class="gallery" id="gal"></div>'
     +'<div class="act"><button class="btn ghost" id="galback">← Indietro</button></div>';
   const gal=document.getElementById("gal");
   gal.addEventListener("click",e=>{const c=e.target.closest(".gallery-card");if(c)openPerson(+c.dataset.i)});
-  gal.addEventListener("error",e=>{const t=e.target;if(t.tagName==="IMG"&&t.classList.contains("ph")){if(t.dataset.fallback){const fallback=t.dataset.fallback;t.removeAttribute("data-fallback");t.src=fallback;return}const d=document.createElement("div");d.className="ph ava";d.textContent=ini(t.alt);t.replaceWith(d)}},true);
+  gal.addEventListener("error",e=>{const t=e.target;if(t.tagName==="IMG"&&t.classList.contains("ph")){const d=document.createElement("div");d.className="ph ava";d.textContent=ini(t.alt);t.replaceWith(d)}},true);
   document.querySelectorAll(".gallery-filter").forEach(b=>b.onclick=()=>{
     document.querySelectorAll(".gallery-filter").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");renderGallery(+b.dataset.f);
@@ -3403,7 +3716,7 @@ function ensureModal(){
   m.innerHTML='<div class="mwrap"><button type="button" class="mclose" aria-label="Chiudi">×</button><div class="mcard" id="mcard" tabindex="-1"></div></div>';
   document.body.appendChild(m);
   m.addEventListener("click",e=>{if(e.target===m||e.target.classList.contains("mclose"))closePerson()});
-  m.addEventListener("error",e=>{const t=e.target;if(t.tagName==="IMG"){if(t.dataset.fallback){const fallback=t.dataset.fallback;t.removeAttribute("data-fallback");t.src=fallback;return}const d=document.createElement("div");d.className=t.className+" ava";d.textContent=ini(t.alt);t.replaceWith(d)}},true);
+  m.addEventListener("error",e=>{const t=e.target;if(t.tagName==="IMG"){const d=document.createElement("div");d.className=t.className+" ava";d.textContent=ini(t.alt);t.replaceWith(d)}},true);
   document.addEventListener("keydown",e=>{
     if(!m.classList.contains("on"))return;
     if(e.key==="Escape"){closePerson();return}
@@ -3447,9 +3760,9 @@ function openPerson(k){
   if(pos===1) simMsg='Rispondendo come indicato sotto esci <b>'+esc(name)+'</b> come persona più compatibile ('+mine+'%).';
   else simMsg='Rispondendo come indicato sotto arrivi al <b>#'+pos+'</b> con '+mine+'%: davanti c\u2019è '+esc(PPL[top.i][0])+' ('+top.c+'%), il cui profilo è vicino al suo ('+comp(v,PPL[top.i][4])+'% di compatibilità tra i due).';
 
-  const loc=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name],webp=window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[name];
-  const ph=loc?'<img class="mph" alt="'+esc(name)+'" src="'+esc(webp||loc)+'"'+(webp&&webp!==loc?' data-fallback="'+esc(loc)+'"':'')+'>':'<div class="mph ph ava" id="mph">'+esc(ini(name))+'</div>';
-  const tags=[p[2]==="P"?"Politico":"Filosofo",p[3]?"Oggi":"Del passato"].concat(ITA.has(name)?["Italia"]:[]).map(t=>'<span class="tag">'+t+'</span>').join("");
+  const loc=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name];
+  const ph=loc?'<img class="mph" alt="'+esc(name)+'" src="'+esc(loc)+'">':'<div class="mph ph ava" id="mph">'+esc(ini(name))+'</div>';
+  const tags=[p[2]==="P"?"Politico":"Filosofo",p[3]?"Oggi":"Del passato"].concat(meta.country==="Italia"?["Italia"]:[]).map(t=>'<span class="tag">'+t+'</span>').join("");
   const bars=AX.map((a,j)=>'<div class="ax"><div class="ic">'+String(j+1).padStart(2,"0")+'</div><div><b>'+a[0]+'</b><small>contro '+a[1]+'</small><div class="trk"><i style="width:'+v[j]+'%"></i></div></div><div class="pc">'+v[j]+'%</div></div>').join("");
   const axisDetails=AX.map((a,j)=>'<div class="rax"><b>'+String(j+1).padStart(2,"0")+' · '+a[0]+' / '+a[1]+' — '+v[j]+'%</b>'
     +'<p>'+(meta.axes[j].reason?esc(meta.axes[j].reason):'Motivazione del punteggio non documentata.')+'</p>'
@@ -3462,10 +3775,14 @@ function openPerson(k){
   const facts=meta.facts.length?'<ol>'+meta.facts.slice(0,3).map(f=>'<li>'+esc(f.text||f)+(f.source?' <span class="hint">Fonte: '+sourceLink(f.source,"Apri fonte")+'</span>':"")+'</li>').join("")+'</ol>':'<p>Tre fatti chiave: non documentati.</p>';
   const similarText=related.length?esc(related[0].person[0]):'Non disponibile';
   const distantText=related.length?esc(related[related.length-1].person[0]):'Non disponibile';
+  const quoteSrc=meta.quote&&meta.quote.source?(sourceLink(meta.quote.source,"Fonte")||'<span>'+esc(meta.quote.source.label||"")+'</span>'):"";
+  const quote=meta.quote?'<figure class="profile-quote"><span class="quote-label">Citazione</span><blockquote><p>\u201c'+esc(meta.quote.text)+'\u201d</p></blockquote><figcaption><cite>\u2014 '+esc(name)+'</cite><span class="quote-source">'+(meta.quote.translation?'<span class="quote-tr">Traduzione italiana</span>':"")+quoteSrc+'</span></figcaption></figure>':"";
+  const summary=meta.paraphrase?'<p><b>In sintesi:</b> '+esc(meta.paraphrase)+(paraphraseSource?' <span class="hint">Fonte: '+paraphraseSource+'</span>':"")+'</p>':"";
 
   card.innerHTML='<div class="mhead">'+ph+'<div><div class="kick">'+(p[2]==="P"?"Politico":"Filosofo")+'</div><h2 id="mTitle">'+esc(name)+'</h2><p>'+esc(p[1])+'</p></div></div><div class="tags">'+tags+'</div>'
     +'<p class="notice">Confidenza complessiva: '+(meta.confidence==="documentata"?'documentata':'indicativa')+'. Ultimo aggiornamento: '+(meta.updated?esc(meta.updated):'data non registrata')+'.</p>'
-    +'<div class="box"><h3>Profilo biografico</h3><p>Frase rappresentativa (parafrasi): '+(meta.paraphrase?esc(meta.paraphrase):'non documentata')+(paraphraseSource?' <span class="hint">Fonte: '+paraphraseSource+'</span>':"")+'</p>'+facts+'<div class="row"><span>Epoca</span><span>'+esc(meta.era||'Non documentata')+'</span></div><div class="row"><span>Paese</span><span>'+esc(meta.country||'Non documentato')+'</span></div><div class="row"><span>Più simile*</span><span>'+similarText+'</span></div><div class="row"><span>Più distante*</span><span>'+distantText+'</span></div><p class="hint">* Confronto calcolato sui 12 punteggi indicativi presenti, non è un giudizio storico.</p></div>'
+    +quote
+    +'<div class="box"><h3>Profilo biografico</h3>'+summary+facts+'<div class="row"><span>Epoca</span><span>'+esc(meta.era)+'</span></div>'+(meta.life?'<div class="row"><span>Vita</span><span>'+esc(meta.life)+'</span></div>':'')+'<div class="row"><span>Paese</span><span>'+esc(meta.country)+'</span></div><div class="row"><span>Più simile*</span><span>'+similarText+'</span></div><div class="row"><span>Più distante*</span><span>'+distantText+'</span></div><p class="hint">* Confronto calcolato sui 12 punteggi indicativi presenti, non è un giudizio storico.</p></div>'
     +'<div class="box" style="margin-top:20px"><h3>Le sue posizioni sui 12 assi</h3>'+bars+'</div>'
     +'<div class="box"><h3>Motivazioni, fonti e contestazioni</h3>'+axisDetails+'</div>'
     +'<div class="box"><h3>Come farlo uscire</h3><p class="sim">'+simMsg+'</p>'
@@ -3568,9 +3885,8 @@ function comparisonMapMarkup(values,xAxis=0,yAxis=1){
 
 function heroCard(label, person, photoUrl){
   const initials = ini(person.n);
-  const fallback=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[person.n];
   const imageMarkup = photoUrl
-    ? '<img class="ph" alt="'+person.n+'" src="'+photoUrl+'"'+(fallback&&fallback!==photoUrl?' data-fallback="'+fallback+'"':'')+' onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.removeAttribute(\'data-fallback\')}else{this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ph ava\',textContent:\''+initials+'\'}))}">'
+    ? '<img class="ph" alt="'+person.n+'" src="'+photoUrl+'" onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ph ava\',textContent:\''+initials+'\'}))">'
     : '<div class="ph ava">'+initials+'</div>';
   return '<div class="hero"><div class="kick">'+label+'</div>'+imageMarkup+'<div class="big">'+person.c+'%</div><b>'+person.n+'</b><div style="color:var(--mute);font-size:14px">'+person.t+'</div></div>';
 }
@@ -3586,7 +3902,7 @@ async function result(){
   const stoppingNote=adaptiveStopReason==="max-questions"
     ? "Raggiunto il limite massimo di domande; la stima resta incerta per: "+(uncertainAxes.length?uncertainAxes.join(", "):"alcune dimensioni con copertura insufficiente")+"."
     : adaptiveStopReason==="no-eligible-questions"
-      ? "Conclusione anticipata: non restano domande eleggibili. La stima resta incerta per: "+(uncertainAxes.length?uncertainAxes.join(", "):"alcune dimensioni con copertura insufficiente")+"."
+      ? "Conclusione anticipata: altre domande non avrebbero chiarito le tue risposte su alcuni temi. La stima resta incerta per: "+(uncertainAxes.length?uncertainAxes.join(", "):"alcune dimensioni con copertura insufficiente")+"."
       : adaptiveStopReason==="neutral-responses"
         ? "Conclusione prudente: le risposte prevalentemente neutrali non hanno chiarito alcune dimensioni; la stima resta incerta per: "+uncertainAxes.join(", ")+"."
       : "Soglia minima di copertura raggiunta e incertezza contenuta.";
@@ -3665,7 +3981,7 @@ const IMG_CACHE={};
 // Restituisce SEMPRE un'immagine "pulita" (che non sporca il canvas) oppure null.
 async function loadImgClean(src,name){
   const isFile=location.protocol==="file:";
-  const local=(window.LOCAL_PHOTOS_WEBP&&window.LOCAL_PHOTOS_WEBP[name])||(window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name])||(src&&!/^https?:/i.test(src)?src:null);
+  const local=(window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name])||(src&&!/^https?:/i.test(src)?src:null);
   let im=null;
 
   // 1) Foto locale: preferita per l'uso offline e sicura nel canvas file://.

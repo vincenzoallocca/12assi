@@ -5,7 +5,10 @@
     minQuestions: 36,
     maxQuestions: 60,
     minPerAxis: 3,
-    maxUncertainty: 0.3
+    maxUncertainty: 0.3,
+    // Tetto di risposte per singolo asse: se un asse resta incerto perche' le risposte
+    // si contraddicono, altre domande non lo chiariscono. Infinity = nessun tetto.
+    maxPerAxis: Infinity
   });
 
   function normalizeQuestion(question, axisCount, id, legacyIndex) {
@@ -132,6 +135,11 @@
       stat.uncertainty <= options.maxUncertainty || stat.neutralRate > 0.5
     );
     const sufficient = askedIds.length >= options.minQuestions && allAxesCovered && allAxesCertain;
+    // Gli assi ancora incerti ma "esauriti" (tetto maxPerAxis raggiunto) non possono migliorare:
+    // non ha senso continuare a interrogare gli altri assi, gia' chiari, solo per arrivare a 60.
+    const remainingUncertaintyIsSettled = stats.every(stat =>
+      stat.uncertainty <= options.maxUncertainty || stat.answered >= options.maxPerAxis
+    );
     const emptyDiagnostics = { eligibleQuestionIds: [], candidateQuestionIds: [], targetAxes: [] };
 
     if (askedIds.length >= options.maxQuestions) {
@@ -144,8 +152,13 @@
       return { question: null, stopReason: "neutral-responses", stats, diagnostics: emptyDiagnostics };
     }
 
+    if (askedIds.length >= options.minQuestions && allAxesCovered && remainingUncertaintyIsSettled) {
+      return { question: null, stopReason: "no-eligible-questions", stats, diagnostics: emptyDiagnostics };
+    }
+
     const eligible = bank.filter(question =>
       !asked.has(question.id) &&
+      stats[question.axis].answered < options.maxPerAxis &&
       conditionMatches(question.eligibleWhen, stats[question.axis])
     );
     if (!eligible.length) {

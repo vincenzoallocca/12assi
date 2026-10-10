@@ -429,3 +429,38 @@ test("handles missing answers without counting them as neutral", () => {
   assert.equal(stats[0].uncertainty, 0.5);
   assert.deepEqual(getScores(bank, ["a0q0"], {}, 2), [50, 50]);
 });
+
+test("maxPerAxis stops probing an axis whose answers contradict each other", () => {
+  const bank = makeBank();
+  const asked = ["a0q0", "a0q1", "a0q2", "a1q0", "a1q1", "a1q2"];
+  // Risposte contraddittorie su entrambi gli assi: l'incertezza resta alta.
+  const answers = { a0q0: 2, a0q1: 2, a0q2: -2, a1q0: 2, a1q1: 2, a1q2: -2 };
+  const base = { askedIds: asked, answers, axisCount: 2 };
+  const uncapped = selectNextQuestion(bank, { ...base, config: { ...config, minQuestions: 6, maxQuestions: 10 } });
+  assert.ok(uncapped.question, "senza tetto continua a fare domande");
+  const capped = selectNextQuestion(bank, { ...base, config: { ...config, maxPerAxis: 3 } });
+  assert.equal(capped.question, null);
+  assert.equal(capped.stopReason, "no-eligible-questions");
+});
+
+test("maxPerAxis never blocks the minimum coverage of every axis", () => {
+  const bank = makeBank();
+  const next = selectNextQuestion(bank, {
+    askedIds: ["a0q0", "a0q1"], answers: { a0q0: 1, a0q1: 1 }, axisCount: 2,
+    config: { ...config, maxPerAxis: 3 }
+  });
+  assert.ok(next.question);
+});
+
+test("maxPerAxis stops once only exhausted axes are uncertain, without probing the clear ones", () => {
+  const bank = makeBank();
+  // Asse 0 contraddittorio ed esaurito (3 risposte), asse 1 coerente e chiaro.
+  const asked = ["a0q0", "a0q1", "a0q2", "a1q0", "a1q1", "a1q2"];
+  const answers = { a0q0: 2, a0q1: 2, a0q2: -2, a1q0: 2, a1q1: -2, a1q2: 2 };
+  const next = selectNextQuestion(bank, {
+    askedIds: asked, answers, axisCount: 2,
+    config: { ...config, maxPerAxis: 3 }
+  });
+  assert.equal(next.question, null);
+  assert.equal(next.stopReason, "no-eligible-questions");
+});
