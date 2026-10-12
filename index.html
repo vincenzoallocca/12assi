@@ -33,7 +33,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .opts{display:grid;gap:0;border-top:1px solid var(--line)}
 .opt{font:inherit;text-align:left;background:transparent;color:var(--ink);border:0;border-bottom:1px solid var(--line);padding:17px 4px;font-size:17px;cursor:pointer;display:flex;justify-content:space-between;transition:padding .15s,color .15s}
 .opt::after{content:"→";color:var(--mute)}
-.opt:hover{padding-left:14px;color:var(--accent)}.opt:hover::after{color:var(--accent)}
+@media(hover:hover){.opt:hover{padding-left:14px;color:var(--accent)}.opt:hover::after{color:var(--accent)}}
 .opt[aria-pressed="true"]{padding-left:14px;color:var(--accent)}
 .axtag{color:var(--mute)}
 @media(prefers-reduced-motion:reduce){.btn,.bar i,.opt{transition:none}}
@@ -123,6 +123,14 @@ details.how summary{cursor:pointer;padding:14px 0;font-family:ui-monospace,Menlo
 .report-text{display:block;width:100%;min-height:74px;resize:vertical;margin:8px 0}
 .report-copy{margin:0 0 12px;padding:9px 12px;font-size:11px}
 @media(max-width:420px){.map-controls,.gallery-controls{grid-template-columns:1fr}.gallery-controls input[type="search"]{grid-column:auto}}
+.logo:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.mcard a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+.alert{border:1px solid var(--accent);border-left-width:5px;background:rgba(255,59,31,.08);padding:14px 16px;margin:18px 0;color:var(--ink);font-size:15px;line-height:1.45}
+.alert b{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.1em;font-size:11px;color:var(--accent);margin-bottom:6px}
+details.filters{margin:0 0 12px}
+details.filters .gallery-controls{margin-top:0}
+.map-point{stroke:transparent;stroke-width:10px;paint-order:stroke}
+.axl{font-size:12px;color:var(--mute);display:flex;justify-content:space-between;gap:8px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -849,12 +857,28 @@ async function resolvePhotoNames(names){
   return Object.fromEntries(entries);
 }
 
-function head(){return '<div class="top0"><div class="logo" onclick="goHome()">12<span>/</span>assi</div><div class="stat">Test politico · percorso adattivo</div></div>'}
-function goHome(){currentPage="intro";intro()}
+function head(){return '<div class="top0"><div class="logo" role="button" tabindex="0" aria-label="Torna alla home" onclick="goHome()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();goHome()}">12<span>/</span>assi</div><div class="stat">Test politico · percorso adattivo</div></div>'}
+function goHome(){
+ if(currentPage==="quiz"&&order.length>0&&!confirm("Tornare alla home? Le risposte date finora andranno perse."))return;
+ currentPage="intro";intro()
+}
+/* cronologia: il tasto Indietro del telefono non deve far perdere il test */
+function pushPage(name){try{history.pushState({p:name},"")}catch(e){}}
+window.addEventListener("popstate",()=>{
+ if(currentPage==="quiz"&&order.length>0&&!confirm("Uscire dal test? Le risposte date finora andranno perse.")){pushPage("quiz");return}
+ if(document.querySelector(".modal.on")&&typeof closePerson==="function"){closePerson();pushPage(currentPage);return}
+ currentPage="intro";intro();
+});
+window.addEventListener("beforeunload",e=>{if(currentPage==="quiz"&&order.length>0){e.preventDefault();e.returnValue=""}});
+/* scorciatoie da tastiera: 1-5 per rispondere */
+document.addEventListener("keydown",e=>{
+ if(currentPage!=="quiz"||e.ctrlKey||e.metaKey||e.altKey)return;
+ if(/^[1-5]$/.test(e.key)){const b=document.querySelectorAll(".opt")[+e.key-1];if(b){e.preventDefault();b.click()}}
+});
 
 function intro(){
- app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>Le domande successive si adattano alle tue risposte per approfondire i temi più utili a comprendere le tue posizioni: tutti i 12 assi ricevono almeno 3 risposte. Il test si conclude quando le informazioni sono sufficienti o quando altre risposte non aiutano a chiarire le dimensioni ancora incerte; in ogni caso, non supera '+ADAPTIVE_CONFIG.maxQuestions+' domande. La durata varia in base alle risposte. Rispondi d\'istinto: alla fine vedi la tua ideologia, i politici e i filosofi (di ieri e di oggi) più compatibili con te, e i Paesi più vicini. Poi scarichi tutto in un PNG.</p><p class="notice">Le risposte non vengono salvate o inviate. Il percorso è ricalcolato nel browser; le foto mancanti possono essere richieste a Wikimedia quando visualizzate.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
- document.getElementById("go").onclick=()=>{currentPage="quiz";order=[];ans=Array(QUIZ_QUESTIONS.length);i=0;adaptiveStopReason=null;followUpNoticeShown=false;advanceAdaptive()};
+ app.innerHTML=head()+'<div class="sec">§ 01 · Test</div><h1>Dove ti <em>collochi</em> davvero?</h1><p>Rispondi d\'istinto a circa 40 domande (massimo '+ADAPTIVE_CONFIG.maxQuestions+'): si adattano alle tue risposte per capire meglio i temi più incerti. Alla fine vedi la tua ideologia, i politici e i filosofi più vicini a te e i Paesi più compatibili, e puoi salvare tutto in un PNG.</p><p class="notice">Le risposte non vengono salvate o inviate. Il percorso è ricalcolato nel browser; le foto mancanti possono essere richieste a Wikimedia quando visualizzate.</p><div class="act"><button class="btn" id="go">Inizia il test →</button><button class="btn ghost" id="gallery">Galleria</button></div>';
+ document.getElementById("go").onclick=()=>{pushPage("quiz");currentPage="quiz";order=[];ans=Array(QUIZ_QUESTIONS.length);i=0;adaptiveStopReason=null;followUpNoticeShown=false;advanceAdaptive()};
  document.getElementById("gallery").onclick=showGallery;
 }
 
@@ -3589,9 +3613,9 @@ function profileMetadata(person){
 }
 let galleryType=0,galleryQuery="",galleryCountry="",galleryEra="",galleryAxis="",galleryBand="";
 function galleryMatches(person){
-  const meta=profileMetadata(person),query=galleryQuery.trim().toLocaleLowerCase("it");
+  const meta=profileMetadata(person),query=stripAccents(galleryQuery.trim().toLocaleLowerCase("it"));
   if(!GAL_FILTERS[galleryType][1](person))return false;
-  if(query&&!person[0].toLocaleLowerCase("it").includes(query))return false;
+  if(query&&!stripAccents(person[0].toLocaleLowerCase("it")).includes(query))return false;
   if(galleryCountry==="unknown"&&meta.country)return false;
   if(galleryCountry&&galleryCountry!=="unknown"&&meta.country!==galleryCountry)return false;
   if(galleryEra==="present"&&!person[3]||galleryEra==="past"&&person[3])return false;
@@ -3639,14 +3663,16 @@ function renderGallery(j){
 }
 
 function showGallery(){
+  if(currentPage!=="gallery")pushPage("gallery");
   currentPage="gallery";
   app.innerHTML=head()+'<div class="sec">§ 02 · Archivio</div><h1>Galleria</h1><p>Tutti i '+PPL.length+' leader e filosofi contemplati nel test. Tocca una persona per vedere le sue statistiche e come farla uscire nel test.</p>'
     +'<div class="gallery-filters">'+GAL_FILTERS.map((f,j)=>'<button class="gallery-filter'+(j===galleryType?' active':'')+'" data-f="'+j+'">'+f[0]+'</button>').join("")+'</div>'
-    +'<div class="gallery-controls"><input id="galsearch" type="search" placeholder="Cerca per nome" aria-label="Cerca per nome">'
+    +'<div class="gallery-controls" style="grid-template-columns:1fr"><input id="galsearch" type="search" placeholder="Cerca per nome" aria-label="Cerca per nome"></div>'
+    +'<details class="how filters" id="galfilters"><summary>Filtri: Paese, epoca, asse</summary><div class="gallery-controls">'
     +'<label>Paese<select id="galcountry"><option value="">Tutti i Paesi</option></select></label>'
     +'<label>Epoca<select id="galera"><option value="">Tutte le epoche</option><option value="present">Attuale</option><option value="past">Passato</option></select></label>'
     +'<label>Asse<select id="galaxis"><option value="">Tutti gli assi</option>'+AX.map((a,j)=>'<option value="'+j+'">'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label>'
-    +'<label>Valore<select id="galband"><option value="">Qualsiasi valore</option><option value="left">Polo iniziale</option><option value="middle">Intermedio (40–60)</option><option value="right">Polo opposto</option></select></label></div>'
+    +'<label>Valore<select id="galband"><option value="">Qualsiasi valore</option><option value="left">Polo iniziale</option><option value="middle">Intermedio (40–60)</option><option value="right">Polo opposto</option></select></label></div></details>'
     +'<p class="notice">Paesi ed epoche indicano il contesto storico-geografico prevalente della persona.</p>'
     +'<div class="meta"><span id="galcount"></span></div><div class="gallery" id="gal"></div>'
     +'<div class="act"><button class="btn ghost" id="galback">← Indietro</button></div>';
@@ -3667,6 +3693,7 @@ function showGallery(){
   document.getElementById("galaxis").value=galleryAxis;
   document.getElementById("galband").value=galleryBand;
   document.getElementById("galback").onclick=goHome;
+  if(galleryCountry||galleryEra||galleryAxis||galleryBand)document.getElementById("galfilters").open=true;
   renderGallery(0);
   window.scrollTo(0,0);
 }
@@ -3763,10 +3790,10 @@ function openPerson(k){
   const loc=window.LOCAL_PHOTOS&&window.LOCAL_PHOTOS[name];
   const ph=loc?'<img class="mph" alt="'+esc(name)+'" src="'+esc(loc)+'">':'<div class="mph ph ava" id="mph">'+esc(ini(name))+'</div>';
   const tags=[p[2]==="P"?"Politico":"Filosofo",p[3]?"Oggi":"Del passato"].concat(meta.country==="Italia"?["Italia"]:[]).map(t=>'<span class="tag">'+t+'</span>').join("");
-  const bars=AX.map((a,j)=>'<div class="ax"><div class="ic">'+String(j+1).padStart(2,"0")+'</div><div><b>'+a[0]+'</b><small>contro '+a[1]+'</small><div class="trk"><i style="width:'+v[j]+'%"></i></div></div><div class="pc">'+v[j]+'%</div></div>').join("");
+  const bars=AX.map((a,j)=>'<div class="ax"><div class="ic">'+String(j+1).padStart(2,"0")+'</div><div><b>'+a[0]+'</b><div class="trk"><i style="width:'+v[j]+'%"></i></div><div class="axl"><span>'+a[0]+' '+v[j]+'%</span><span>'+(100-v[j])+'% '+a[1]+'</span></div></div><div class="pc">'+v[j]+'%</div></div>').join("");
   const axisDetails=AX.map((a,j)=>'<div class="rax"><b>'+String(j+1).padStart(2,"0")+' · '+a[0]+' / '+a[1]+' — '+v[j]+'%</b>'
-    +'<p>'+(meta.axes[j].reason?esc(meta.axes[j].reason):'Motivazione del punteggio non documentata.')+'</p>'
-    +'<p class="hint">Confidenza: '+(meta.axes[j].confidence==="documentata"?'documentata':'indicativa')+'. '+(meta.axes[j].sources.length?'Fonti: '+meta.axes[j].sources.map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.label||s.url)+'</a>').join(' · '):'Nessuna fonte collegata.')+'</p>'
+    +(meta.axes[j].reason?'<p>'+esc(meta.axes[j].reason)+'</p>':'')
+    +(meta.axes[j].sources.length?'<p class="hint">Fonti: '+meta.axes[j].sources.map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.label||s.url)+'</a>').join(' · ')+'</p>':'')
     +'<details><summary>Contesta questo punteggio</summary><label>Valore proposto (0–100)<input type="number" min="0" max="100" step="1" value="'+v[j]+'"></label><label>Motivazione<textarea class="report-text" maxlength="1200" placeholder="Spiega la correzione e, se possibile, indica una fonte verificabile."></textarea></label><button class="btn ghost report-copy" type="button" data-axis="'+j+'">Copia segnalazione</button><p class="hint">La segnalazione resta sul tuo dispositivo; copiala e inviala al progetto tramite un canale di contatto.</p></details></div>').join("");
   const rec=AX.map((a,j)=>'<div class="rax"><b>'+String(j+1).padStart(2,"0")+' · '+a[0]+' / '+a[1]+' — '+v[j]+'%</b>'
     +Q.map((q,qi)=>q[0]===j?'<div class="rq">'+esc(q[2])+'<em>'+esc(ansLabel(ans[qi]))+'</em></div>':"").join("")+'</div>').join("");
@@ -3780,11 +3807,11 @@ function openPerson(k){
   const summary=meta.paraphrase?'<p><b>In sintesi:</b> '+esc(meta.paraphrase)+(paraphraseSource?' <span class="hint">Fonte: '+paraphraseSource+'</span>':"")+'</p>':"";
 
   card.innerHTML='<div class="mhead">'+ph+'<div><div class="kick">'+(p[2]==="P"?"Politico":"Filosofo")+'</div><h2 id="mTitle">'+esc(name)+'</h2><p>'+esc(p[1])+'</p></div></div><div class="tags">'+tags+'</div>'
-    +'<p class="notice">Confidenza complessiva: '+(meta.confidence==="documentata"?'documentata':'indicativa')+'. Ultimo aggiornamento: '+(meta.updated?esc(meta.updated):'data non registrata')+'.</p>'
+    +'<p class="notice">Confidenza complessiva: '+(meta.confidence==="documentata"?'documentata':'indicativa')+(meta.updated?'. Ultimo aggiornamento: '+esc(meta.updated):'')+'.</p>'
     +quote
     +'<div class="box"><h3>Profilo biografico</h3>'+summary+facts+'<div class="row"><span>Epoca</span><span>'+esc(meta.era)+'</span></div>'+(meta.life?'<div class="row"><span>Vita</span><span>'+esc(meta.life)+'</span></div>':'')+'<div class="row"><span>Paese</span><span>'+esc(meta.country)+'</span></div><div class="row"><span>Più simile*</span><span>'+similarText+'</span></div><div class="row"><span>Più distante*</span><span>'+distantText+'</span></div><p class="hint">* Confronto calcolato sui 12 punteggi indicativi presenti, non è un giudizio storico.</p></div>'
     +'<div class="box" style="margin-top:20px"><h3>Le sue posizioni sui 12 assi</h3>'+bars+'</div>'
-    +'<div class="box"><h3>Motivazioni, fonti e contestazioni</h3>'+axisDetails+'</div>'
+    +'<div class="box"><h3>Motivazioni, fonti e contestazioni</h3><p class="hint">Per molti assi non c\'è ancora una motivazione documentata: i punteggi sono stime indicative. Se pensi che uno sia sbagliato, aprilo e contestalo.</p>'+axisDetails+'</div>'
     +'<div class="box"><h3>Come farlo uscire</h3><p class="sim">'+simMsg+'</p>'
     +'<details class="how"><summary>Mostra le risposte da dare (' + Q.length + ' domande)</summary>'+rec+'</details></div>';
   card.querySelectorAll(".report-copy").forEach(button=>button.addEventListener("click",()=>copyReport(button,name,+button.dataset.axis)));
@@ -3809,10 +3836,11 @@ function ask(){
  const isFollowUp=QUESTION_BANK[activeQuestionIndex].followUp||stats[q[0]].answered>=ADAPTIVE_CONFIG.minPerAxis;
  const showFollowUpNotice=isFollowUp&&!followUpNoticeShown;
  if(showFollowUpNotice)followUpNoticeShown=true;
- app.innerHTML=head()+'<div class="bar" role="progressbar" aria-label="Copertura minima dei dodici assi" aria-valuemin="0" aria-valuemax="'+required+'" aria-valuenow="'+covered+'" aria-valuetext="'+covered+' di '+required+' risposte minime per coprire i dodici assi"><i style="width:'+Math.round(covered/required*100)+'%"></i></div><div class="meta" role="status" aria-live="polite" aria-atomic="true"><span>Risposte date: '+order.length+'</span><span class="axtag">Copertura minima '+covered+' / '+required+' · percorso adattivo, massimo '+ADAPTIVE_CONFIG.maxQuestions+'</span></div><div class="sec">'+ax[0]+' — '+ax[1]+'</div>'+(showFollowUpNotice?'<p class="hint" role="status" aria-live="polite">Approfondiamo questo tema per comprendere meglio la tua posizione.</p>':'')+'<div class="q" id="question-text" role="heading" aria-level="2" aria-live="polite" aria-atomic="true" tabindex="-1">'+q[2]+'</div><div class="opts" role="group" aria-label="Opzioni di risposta">'+OPT.map((o,k)=>'<button class="opt" data-k="'+k+'" aria-pressed="'+(ans[activeQuestionIndex]===o[1]?'true':'false')+'">'+o[0]+'</button>').join("")+'</div>'+(i>0?'<div class="act"><button class="btn ghost" id="back" aria-label="Torna alla domanda precedente">← Indietro</button></div>':'');
- let answered=false;
+ const minQ=ADAPTIVE_CONFIG.minQuestions,phase1=i<minQ,pct=phase1?Math.round(i/minQ*100):100;
+ app.innerHTML=head()+'<div class="bar" role="progressbar" aria-label="Avanzamento del test" aria-valuemin="0" aria-valuemax="'+minQ+'" aria-valuenow="'+Math.min(i,minQ)+'" aria-valuetext="'+(phase1?'Domanda '+(i+1)+' di circa '+minQ:'Domande di approfondimento')+'"><i style="width:'+pct+'%"></i></div><div class="meta" role="status" aria-live="polite" aria-atomic="true"><span>Domanda '+(i+1)+'</span><span class="axtag">'+(phase1?'ne mancano circa '+(minQ-i-1)+' · massimo '+ADAPTIVE_CONFIG.maxQuestions:'approfondimento · massimo '+ADAPTIVE_CONFIG.maxQuestions)+'</span></div></div><div class="sec">'+ax[0]+' — '+ax[1]+'</div>'+(showFollowUpNotice?'<p class="hint" role="status" aria-live="polite">Approfondiamo questo tema per comprendere meglio la tua posizione.</p>':'')+'<div class="q" id="question-text" role="heading" aria-level="2" aria-live="polite" aria-atomic="true" tabindex="-1">'+q[2]+'</div><div class="opts" role="group" aria-label="Opzioni di risposta">'+OPT.map((o,k)=>'<button class="opt" data-k="'+k+'" aria-pressed="'+(ans[activeQuestionIndex]===o[1]?'true':'false')+'">'+o[0]+'</button>').join("")+'</div>'+(i>0?'<div class="act"><button class="btn ghost" id="back" aria-label="Torna alla domanda precedente">← Indietro</button></div>':'');
+ let answered=false;const shownAt=Date.now();
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-  if(answered||renderToken!==quizRenderToken||currentPage!=="quiz")return;
+  if(answered||Date.now()-shownAt<350||renderToken!==quizRenderToken||currentPage!=="quiz")return;
   answered=true;
   order=order.slice(0,i);ans[activeQuestionIndex]=OPT[b.dataset.k][1];order.push(activeQuestionIndex);i=order.length;advanceAdaptive()
  });
@@ -3864,12 +3892,12 @@ const rank=(arr,sc)=>{
 const ini=n=>n.split(" ").filter(w=>w.length>2||w===w.toUpperCase()).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 
 function radarMarkup(values){
-  const cx=190,cy=170,r=112,point=(value,index,scale=1)=>{
+  const cx=190,cy=170,r=100,point=(value,index,scale=1)=>{
     const angle=(Math.PI*2*index/AX.length)-Math.PI/2,distance=r*value/100*scale;
     return [cx+Math.cos(angle)*distance,cy+Math.sin(angle)*distance];
   };
   const grid=[25,50,75,100].map(level=>'<polygon class="grid" points="'+AX.map((_,j)=>point(level,j).join(",")).join(" ")+'"></polygon>').join("");
-  const spokes=AX.map((_,j)=>{const [x,y]=point(100,j);return '<line class="grid" x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'"></line><text x="'+point(116,j)[0]+'" y="'+point(116,j)[1]+'" text-anchor="middle">'+String(j+1).padStart(2,"0")+'</text>'}).join("");
+  const spokes=AX.map((_,j)=>{const [x,y]=point(100,j);return '<line class="grid" x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'"></line><text x="'+point(116,j)[0]+'" y="'+point(116,j)[1]+'" text-anchor="middle">'+esc(AX[j][0].length>11?AX[j][0].slice(0,10)+"…":AX[j][0])+'</text>'}).join("");
   return '<svg class="chart" viewBox="0 0 380 340" role="img" aria-label="Grafico radar dei tuoi punteggi sui dodici assi"><title>Il tuo profilo sui dodici assi</title>'+grid+spokes+'<polygon class="radar-shape" points="'+values.map((v,j)=>point(v,j).join(",")).join(" ")+'"></polygon></svg>';
 }
 
@@ -3878,9 +3906,9 @@ function comparisonMapMarkup(values,xAxis=0,yAxis=1){
   const coords=profile=>[left+profile[xAxis]/100*plotW,top+(100-profile[yAxis])/100*plotH];
   const positions=PPL.map((person,index)=>{const [x,y]=coords(person[4]);return {person,index,x,y,distance:Math.hypot(person[4][xAxis]-values[xAxis],person[4][yAxis]-values[yAxis])}}).sort((a,b)=>a.distance-b.distance);
   const grid=[0,25,50,75,100].map(v=>'<line class="grid" x1="'+(left+plotW*v/100)+'" y1="'+top+'" x2="'+(left+plotW*v/100)+'" y2="'+(top+plotH)+'"></line><line class="grid" x1="'+left+'" y1="'+(top+plotH*(1-v/100))+'" x2="'+(left+plotW)+'" y2="'+(top+plotH*(1-v/100))+'"></line>').join("");
-  const dots=positions.map(point=>'<circle class="map-point" tabindex="0" role="button" data-person="'+point.index+'" cx="'+point.x.toFixed(1)+'" cy="'+point.y.toFixed(1)+'" r="4"><title>'+esc(point.person[0])+': '+point.person[4][xAxis]+'% / '+point.person[4][yAxis]+'%</title></circle>').join("");
+  const dots=positions.map(point=>'<circle class="map-point" tabindex="-1" aria-hidden="true" data-person="'+point.index+'" cx="'+point.x.toFixed(1)+'" cy="'+point.y.toFixed(1)+'" r="5"><title>'+esc(point.person[0])+': '+point.person[4][xAxis]+'% / '+point.person[4][yAxis]+'%</title></circle>').join("");
   const [ux,uy]=coords(values),rating=distance=>Math.round(100-distance/Math.sqrt(2));
-  return '<svg class="chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Mappa di profili e utente sugli assi selezionati">'+grid+dots+'<circle class="map-user" cx="'+ux.toFixed(1)+'" cy="'+uy.toFixed(1)+'" r="7"><title>Il tuo profilo</title></circle><text x="'+(left+plotW/2)+'" y="'+(h-8)+'" text-anchor="middle">'+esc(AX[xAxis][0]+' → '+AX[xAxis][1])+'</text><text x="12" y="'+(top+plotH/2)+'" text-anchor="middle" transform="rotate(-90 12 '+(top+plotH/2)+')">'+esc(AX[yAxis][0]+' → '+AX[yAxis][1])+'</text></svg><div class="map-nearest">'+positions.slice(0,5).map(point=>'<button type="button" data-person="'+point.index+'"><span>'+esc(point.person[0])+'</span><span>'+rating(point.distance)+'% vicinanza</span></button>').join("")+'</div>';
+  return '<svg class="chart" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Mappa di profili e utente sugli assi selezionati">'+grid+dots+'<circle class="map-user" cx="'+ux.toFixed(1)+'" cy="'+uy.toFixed(1)+'" r="7"><title>Il tuo profilo</title></circle><text x="'+(left+plotW/2)+'" y="'+(h-8)+'" text-anchor="middle">'+esc(AX[xAxis][0]+' → '+AX[xAxis][1])+'</text><text x="12" y="'+(top+plotH/2)+'" text-anchor="middle" transform="rotate(-90 12 '+(top+plotH/2)+')">'+esc(AX[yAxis][0]+' → '+AX[yAxis][1])+'</text></svg><p class="hint" style="margin-top:10px">Ogni punto è una persona; il punto rosso sei tu. Le più vicine a te su questi due assi:</p><div class="map-nearest">'+positions.slice(0,5).map(point=>'<button type="button" data-person="'+point.index+'"><span>'+esc(point.person[0])+'</span><span>'+rating(point.distance)+'% vicina</span></button>').join("")+'</div>';
 }
 
 function heroCard(label, person, photoUrl){
@@ -3923,20 +3951,26 @@ async function result(){
 
   const photoMap = await resolvePhotoNames(photoNames);
 
-  const bars=AX.map((a,k)=>'<div class="ax"><div class="ic">'+String(k+1).padStart(2,"0")+'</div><div><b>'+a[0]+'</b><small>contro '+a[1]+'</small><div class="trk"><i style="width:'+sc[k]+'%"></i></div></div><div class="pc">'+sc[k]+'%</div></div>').join("");
+  const bars=AX.map((a,k)=>'<div class="ax"><div class="ic">'+String(k+1).padStart(2,"0")+'</div><div><b>'+a[0]+'</b><div class="trk"><i style="width:'+sc[k]+'%"></i></div><div class="axl"><span>'+a[0]+' '+sc[k]+'%</span><span>'+(100-sc[k])+'% '+a[1]+'</span></div></div><div class="pc">'+sc[k]+'%</div></div>').join("");
   const rowsOf=(arr,sub)=>arr.map((p,j)=>'<div class="row"><span>'+(sub?(j+1)+'. ':'')+p.n+(sub?'<small style="display:block;color:var(--mute);font-size:12px">'+p.t+'</small>':'')+'</span><span>'+p.c+'%</span></div>').join("");
   const world=ppl.filter(p=>p.a&&p.k==="P"&&!ITA.has(p.n)).slice(0,3);
 
-  app.innerHTML=head()+'<div class="card"><div class="kick">§ 03 · '+ide.cat+'</div><h2>'+ide.n+'</h2>'
+  const given=order.map(ix=>ans[ix]).filter(Number.isFinite);
+  const neutralShare=given.length?given.filter(v=>v===0).length/given.length:0;
+  const meanRaw=given.length?given.reduce((a,b)=>a+b,0)/given.length:0;
+  const flat=sc.every(v=>v>=43&&v<=57);
+  const unreliable=neutralShare>=0.5?"Hai risposto «neutrale» a più della metà delle domande, quindi il test non ha abbastanza informazioni.":Math.abs(meanRaw)>=1.2?"Hai risposto quasi sempre allo stesso modo (sempre d'accordo o sempre in disaccordo): le domande hanno versioni opposte, quindi le risposte si annullano.":flat?"I tuoi punteggi sono tutti vicini al 50%: il test non è riuscito a distinguere le tue posizioni.":"";
+  const alertBox=unreliable?'<div class="alert" role="alert"><b>Risultato poco affidabile</b>'+unreliable+' Le etichette e le percentuali sotto sono solo indicative: prova a rifare il test scegliendo più spesso posizioni nette.</div>':"";
+  app.innerHTML=head()+'<div class="card"><div class="kick">§ 03 · '+ide.cat+'</div><h2>'+ide.n+'</h2>'+alertBox
   +'<div class="duo">'+(O?heroCard("Oggi · Italia",O,photoMap[O.n]||null):"")+(Pp?heroCard("Del passato",Pp,photoMap[Pp.n]||null):"")+'</div>'
   +'<div class="box"><h3>Nel mondo, oggi</h3>'+rowsOf(world,true)+'</div>'
-  +'<div class="box"><h3>I tuoi 12 assi · stima orientativa</h3>'+bars+'<p class="notice">Punteggi calcolati con la formula esistente sui soli item presentati ('+order.length+' in totale). Copertura per asse: '+AX.map((axis,j)=>esc(axis[0])+' '+coverage[j]).join(' · ')+'. '+stoppingNote+' Il percorso e le soglie sono euristici, non validati psicometricamente; risultati di percorsi diversi non sono calibrati clinicamente.</p></div>'
+  +'<div class="box"><h3>I tuoi 12 assi · stima orientativa</h3>'+bars+'<p class="notice">Stima orientativa basata su '+order.length+' risposte, non uno strumento scientifico validato. '+(adaptiveStopReason?stoppingNote:'')+'</p><details class="how"><summary>Dettagli tecnici</summary><p class="hint">Risposte per asse: '+AX.map((axis,j)=>esc(axis[0])+' '+coverage[j]).join(' · ')+'.</p></details></div>'
   +'<div class="box"><h3>Radar · il tuo profilo</h3>'+radarMarkup(sc)+'</div>'
-  +'<div class="box" id="political-map"><div class="map-controls"><label>Asse orizzontale<select id="map-x">'+AX.map((a,k)=>'<option value="'+k+'">'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label><label>Asse verticale<select id="map-y">'+AX.map((a,k)=>'<option value="'+k+'"'+(k===1?' selected':'')+'>'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label></div><div id="map-plot"></div><p class="hint">La vicinanza qui usa solo i due assi selezionati; gli altri non entrano nel calcolo.</p></div>'
-  +'<div class="notice">Profili dei personaggi: stime indicative. Data di aggiornamento e fonti non registrate; nessun controllo automatico esterno.</div>'
+  +'<div class="box" id="political-map"><div class="map-controls"><label>Asse orizzontale<select id="map-x">'+AX.map((a,k)=>'<option value="'+k+'">'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label><label>Asse verticale<select id="map-y">'+AX.map((a,k)=>'<option value="'+k+'"'+(k===1?' selected':'')+'>'+esc(a[0]+' / '+a[1])+'</option>').join("")+'</select></label></div><div id="map-plot"></div><p class="hint">Attenzione: qui conta solo la distanza sui due assi scelti, quindi le percentuali sono diverse da quelle del risultato complessivo.</p></div>'
+  +'<p class="hint">I profili dei personaggi sono stime indicative.</p>'
   +'<div class="box"><h3>Le tue personalità</h3><div class="tabs" id="tabs"></div><div id="plist"></div></div>'
   +'<div class="box"><h3>Paesi vicini</h3>'+rowsOf(ctr.slice(0,3),false)+'</div></div>'
-  +'<div class="act"><button class="btn" id="wa">Condividi su WhatsApp</button><button class="btn ghost" id="png">Scarica PNG ↓</button><button class="btn ghost" id="cp">Copia testo</button><button class="btn ghost" id="again">Rifai</button></div><p id="msg" class="mono" style="margin-top:14px;font-size:11px"></p>';
+  +'<div class="act"><button class="btn" id="wa">Condividi immagine</button><button class="btn ghost" id="png">Scarica PNG ↓</button><button class="btn ghost" id="cp">Copia testo</button><button class="btn ghost" id="again">Rifai</button></div><p id="msg" class="mono" style="margin-top:14px;font-size:11px"></p>';
 
   document.getElementById("again").onclick=()=>{currentPage="intro";intro()};
   const T=[["Tutti",p=>1],["Politici",p=>p.k==="P"],["Filosofi",p=>p.k==="F"],["Italia oggi",p=>p.a&&ITA.has(p.n)],["Mondo oggi",p=>p.a&&!ITA.has(p.n)],["Del passato",p=>!p.a]];
